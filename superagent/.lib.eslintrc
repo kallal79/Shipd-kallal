@@ -1,0 +1,37 @@
+{
+  "extends": ["eslint:recommended", "plugin:node/recommended"],
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "node/no-unsupported-features/es-builtins": ["error", {
+      "version": ">=6.4.0",
+      "ignores": [
+      ]
+    }],
+    "node/no-deprecated-api": "off",
+    "no-console": "off",
+    "no-unused-vars": "off",
+    "no-empty": "off",
+    "no-func-assign": "off",
+    "no-global-assign": ["error", {"exceptions": ["exports"]}],
+    "no-fallthrough": "off",
+    "no-constant-condition": "off",
+    "node/no-exports-assign": "off",
+    "no-unsafe-finally": "off"
+  },
+  "overrides": [
+    {
+      "files": [ "lib/client.js" ],
+      "globals": {
+      }
+    },
+    {
+      "files": [ "lib/node/http2wrapper.js" ],
+      "rules": {
+        "node/no-unsupported-features/es-builtins": "off",
+        "node/no-unsupported-features/node-builtins": "off"
+      }
+    }
+  ]
+}
