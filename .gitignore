@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Test coverage & runtime caches
+.nyc_output/
+**/.nyc_output/
+coverage/
+**/.coverage/
+
+# Internal git repositories
+.git_internal/
+**/.git_internal/
+temp_superagent_clone/
+temp_agent.patch
+scratch/repo/

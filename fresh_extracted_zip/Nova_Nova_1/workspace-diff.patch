@@ -1,0 +1,2301 @@
+diff --git a/src/client.js b/src/client.js
+index 319011a..c17f980 100644
+--- a/src/client.js
++++ b/src/client.js
+@@ -404,6 +404,568 @@ request.Response = Response;
+  * @api public
+  */
+ 
++
++/**
++ * Calculate UTF-8 byte length for string data in the browser.
++ *
++ * @param {String} val
++ * @return {Number} byte length
++ * @api private
++ */
++function getUtf8ByteLength(val) {
++  if (val == null) return 0;
++  const str = typeof val === 'string' ? val : String(val);
++  if (typeof TextEncoder !== 'undefined') {
++    return new TextEncoder().encode(str).length;
++  }
++  try {
++    return unescape(encodeURIComponent(str)).length;
++  } catch (_) {
++    return str.length;
++  }
++}
++
++/**
++ * Generate a high-entropy random multipart boundary string.
++ * Uses crypto.getRandomValues if available, falling back to Math.random.
++ *
++ * @return {String}
++ * @api private
++ */
++function generateMultipartBoundary() {
++  let rand = '';
++  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
++    const bytes = new Uint8Array(16);
++    crypto.getRandomValues(bytes);
++    for (let i = 0; i < bytes.length; i++) {
++      rand += (bytes[i] < 16 ? '0' : '') + bytes[i].toString(16);
++    }
++  } else {
++    for (let i = 0; i < 4; i++) {
++      rand += Math.floor((1 + Math.random()) * 0x100000000).toString(16).substring(1);
++    }
++  }
++  return '----superagentboundary' + rand.toLowerCase();
++}
++
++/**
++ * Cross-realm-safe brand check for Blob or File instances.
++ *
++ * @param {Mixed} val
++ * @return {Boolean}
++ * @api private
++ */
++function isBlobOrFile(val) {
++  if (!val || typeof val !== 'object') return false;
++  if (typeof Blob !== 'undefined' && val instanceof Blob) return true;
++  if (typeof File !== 'undefined' && val instanceof File) return true;
++  const tag = Object.prototype.toString.call(val);
++  return (
++    tag === '[object Blob]' ||
++    tag === '[object File]' ||
++    (typeof val.size === 'number' && typeof val.slice === 'function')
++  );
++}
++
++/**
++ * Serialize a browser FormData instance into an exact Blob to determine its
++ * byte length and transmit the exact matching multipart boundary over the wire.
++ * Uses a unique high-entropy boundary per serialized payload to prevent collision
++ * or deterministic body corruption.
++ *
++ * Returns the Blob, or undefined when enumeration fails.
++ *
++ * @param {FormData} fd
++ * @return {Blob|undefined}
++ * @api private
++ */
++function buildFormDataBlob(fd) {
++  const BOUNDARY = generateMultipartBoundary();
++  const CRLF = '\r\n';
++  const parts = [];
++
++  const escapeHeaderParam = (s) =>
++    String(s)
++      .replace(/\r/g, '%0D')
++      .replace(/\n/g, '%0A')
++      .replace(/"/g, '%22');
++  const normalizeLineEndings = (s) => String(s).replace(/(?:\r\n|\r|\n)/g, CRLF);
++
++  try {
++    let entries;
++    if (typeof fd.entries === 'function') {
++      entries = [];
++      const iter = fd.entries();
++      let curr = iter.next();
++      while (!curr.done) {
++        entries.push(curr.value);
++        curr = iter.next();
++      }
++    } else if (typeof fd.forEach === 'function') {
++      entries = [];
++      fd.forEach((value, name) => entries.push([name, value]));
++    } else {
++      return undefined;
++    }
++
++    for (const [name, value] of entries) {
++      parts.push('--' + BOUNDARY + CRLF);
++      const eName = escapeHeaderParam(name);
++      if (isBlobOrFile(value)) {
++        const fileName = escapeHeaderParam(value.name || 'blob');
++        const mimeType = (value.type || 'application/octet-stream');
++        parts.push(
++          'Content-Disposition: form-data; name="' + eName + '"; filename="' + fileName + '"' + CRLF +
++          'Content-Type: ' + mimeType + CRLF + CRLF
++        );
++        parts.push(value); // Retain original Blob/File directly (cross-realm safe, zero allocation)
++        parts.push(CRLF);
++      } else {
++        parts.push('Content-Disposition: form-data; name="' + eName + '"' + CRLF + CRLF);
++        parts.push(normalizeLineEndings(value == null ? '' : String(value)));
++        parts.push(CRLF);
++      }
++    }
++    parts.push('--' + BOUNDARY + '--' + CRLF);
++
++    const contentType = 'multipart/form-data; boundary=' + BOUNDARY;
++    const blob = new Blob(parts, { type: contentType });
++    blob.contentType = contentType;
++    return blob;
++  } catch (_) {
++    // Ignore enumeration error and return undefined
++    return undefined;
++  }
++}
++
++/**
++ * Compute the byte size of an outgoing request payload in the browser.
++ * Strictly used for outgoing request bodies - never for incoming responses.
++ *
++ * @param {Mixed} data
++ * @param {Request} [req]
++ * @return {Number|undefined}
++ * @api private
++ */
++function getRequestBodySize(data, req) {
++  const targetData = data !== undefined ? data : (req && req._formData);
++  if (targetData == null) return 0;
++
++  if (typeof targetData === 'string') {
++    return getUtf8ByteLength(targetData);
++  }
++  if (targetData instanceof ArrayBuffer) return targetData.byteLength;
++  if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView && ArrayBuffer.isView(targetData)) {
++    return targetData.byteLength;
++  }
++  if (isBlobOrFile(targetData)) {
++    return targetData.size;
++  }
++  if (
++    (typeof URLSearchParams !== 'undefined' && targetData instanceof URLSearchParams) ||
++    (targetData && typeof targetData === 'object' && (
++      (typeof Symbol !== 'undefined' && Symbol.toStringTag && targetData[Symbol.toStringTag] === 'URLSearchParams') ||
++      (targetData.constructor && targetData.constructor.name === 'URLSearchParams')
++    ))
++  ) {
++    return getUtf8ByteLength(targetData.toString());
++  }
++  if (typeof Document !== 'undefined' && targetData instanceof Document) {
++    return getUtf8ByteLength(new XMLSerializer().serializeToString(targetData));
++  }
++  if (typeof targetData === 'object' && typeof targetData.byteLength === 'number') {
++    return targetData.byteLength;
++  }
++  if (typeof targetData === 'object' && typeof targetData.size === 'number') {
++    return targetData.size;
++  }
++
++  // Unified FormData detection: handles both external .send(formData) and internal .field()/.attach()
++  if (
++    (typeof FormData !== 'undefined' && targetData instanceof FormData) ||
++    (targetData && typeof targetData === 'object' && (
++      (typeof Symbol !== 'undefined' && Symbol.toStringTag && targetData[Symbol.toStringTag] === 'FormData') ||
++      (targetData.constructor && targetData.constructor.name === 'FormData') ||
++      (typeof targetData.append === 'function' && (typeof targetData.entries === 'function' || typeof targetData.forEach === 'function'))
++    ))
++  ) {
++    // Use a Blob with a controlled boundary to get the exact serialized byte length.
++    if (typeof Blob === 'undefined') return undefined;
++    const blob = buildFormDataBlob(targetData);
++    return blob ? blob.size : undefined;
++  }
++
++  return undefined;
++}
++
++/**
++ * Compute the intrinsic byte size of a decoded binary response body in the browser.
++ * For binary types (ArrayBuffer, Blob, typed arrays), this derives
++ * the exact in-memory decoded byte count so terminal responses are always checked.
++ *
++ * @param {Mixed} data
++ * @return {Number|undefined}
++ * @api private
++ */
++function getResponseIntrinsicByteLength(data) {
++  if (data == null) return undefined;
++  if (typeof ArrayBuffer !== 'undefined' && data instanceof ArrayBuffer) return data.byteLength;
++  if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView && ArrayBuffer.isView(data)) {
++    return data.byteLength;
++  }
++  if (isBlobOrFile(data)) {
++    return data.size;
++  }
++  if (typeof data === 'object') {
++    if (typeof data.byteLength === 'number') return data.byteLength;
++    if (typeof data.size === 'number') return data.size;
++  }
++  return undefined;
++}
++
++/**
++ * Determine if an XMLHttpRequest is same-origin with the current document/context.
++ * Returns false when origin information is unavailable, treating compression
++ * exposure as unknown without guessing from URL text.
++ *
++ * @param {XMLHttpRequest} xhr
++ * @param {String} requestUrl
++ * @return {Boolean}
++ * @api private
++ */
++function isSameOriginRequest(xhr, requestUrl) {
++  try {
++    const loc = (typeof window !== 'undefined' && window.location) || (typeof location !== 'undefined' && location);
++    if (!loc || !loc.origin || loc.origin === 'null') {
++      return false;
++    }
++
++    const target = (xhr && xhr.responseURL) ? xhr.responseURL : (requestUrl || '');
++    if (!target) {
++      return false;
++    }
++
++    let targetOrigin;
++    if (typeof URL === 'function') {
++      targetOrigin = new URL(target, loc.origin).origin;
++    } else if (typeof document !== 'undefined' && document.createElement) {
++      const a = document.createElement('a');
++      a.href = target;
++      targetOrigin = a.origin || `${a.protocol}//${a.host}`;
++    }
++
++    return targetOrigin === loc.origin;
++  } catch (_) {
++    return false;
++  }
++}
++
++/**
++ * Calculate byte length of decoded text in ISO-2022-JP encoding.
++ * ISO-2022-JP transitions between ASCII and JIS X 0208 modes using 3-byte escape sequences:
++ * - Entering JIS mode: ESC $ B (3 bytes: 0x1B 0x24 0x42)
++ * - Exiting to ASCII mode: ESC ( B (3 bytes: 0x1B 0x28 0x42)
++ * Each Japanese character in JIS mode is 2 bytes.
++ * ASCII characters are 1 byte each in ASCII mode.
++ *
++ * @param {String} str
++ * @return {Number} byte length
++ * @api private
++ */
++function getIso2022JpByteLength(str) {
++  let count = 0;
++  let inJis = false;
++  for (let i = 0; i < str.length; i++) {
++    const code = str.charCodeAt(i);
++    if (code <= 0x7f) {
++      if (inJis) {
++        count += 3; // ESC ( B to exit JIS mode
++        inJis = false;
++      }
++      count += 1;
++    } else {
++      if (!inJis) {
++        count += 3; // ESC $ B to enter JIS mode
++        inJis = true;
++      }
++      count += 2;
++      if (code >= 0xd800 && code <= 0xdbff && i + 1 < str.length && str.charCodeAt(i + 1) >= 0xdc00 && str.charCodeAt(i + 1) <= 0xdfff) {
++        i++;
++      }
++    }
++  }
++  if (inJis) {
++    count += 3; // Return to ASCII mode at end of stream
++  }
++  return count;
++}
++
++/**
++ * Calculate byte length of decoded text in GBK / GB2312 encoding.
++ * GBK is a superset of GB2312. The ONLY non-ASCII single-byte codepoint is:
++ *   0x80 → U+20AC (EURO SIGN €).
++ * All other non-ASCII characters are two-byte DBCS sequences.
++ * Surrogate pairs (supplementary code points) are counted as 2 bytes
++ * (they fall outside the BMP and are not representable in base GBK).
++ *
++ * @param {String} str
++ * @return {Number} byte length
++ * @api private
++ */
++function getGbkByteLength(str) {
++  let count = 0;
++  for (let i = 0; i < str.length; i++) {
++    const code = str.charCodeAt(i);
++    if (code <= 0x7f) {
++      count += 1; // ASCII
++    } else if (code === 0x20ac) {
++      count += 1; // U+20AC (€) encodes as single byte 0x80 in GBK
++    } else if (
++      code >= 0xd800 && code <= 0xdbff &&
++      i + 1 < str.length &&
++      str.charCodeAt(i + 1) >= 0xdc00 && str.charCodeAt(i + 1) <= 0xdfff
++    ) {
++      count += 2; // Surrogate pair — outside BMP, treat as 2 bytes
++      i++;
++    } else {
++      count += 2; // Standard DBCS lead+trail pair
++    }
++  }
++  return count;
++}
++
++/**
++ * Calculate byte length of decoded text in HZ-GB-2312 encoding (RFC 1843).
++ * HZ-GB-2312 is a 7-bit stateful ASCII transport encoding:
++ * - ASCII mode (default): printable ASCII = 1 byte each; literal tilde = ~~ (2 bytes)
++ * - Chinese mode: entered with ~{ (2 bytes), exited with ~} (2 bytes);
++ *   each CJK character = 2 bytes (GB2312 code point)
++ * We simulate the state machine over the decoded Unicode string to count
++ * the escape-sequence overhead that XHR strips from responseText.
++ *
++ * @param {String} str
++ * @return {Number} byte length
++ * @api private
++ */
++function getHzGb2312ByteLength(str) {
++  let count = 0;
++  let inChinese = false;
++  for (let i = 0; i < str.length; i++) {
++    const code = str.charCodeAt(i);
++    if (code === 0x7e) {
++      // Tilde: in ASCII mode encoded as ~~ (2 bytes); never appears in Chinese mode
++      if (inChinese) {
++        count += 2; // ~} to exit Chinese mode
++        inChinese = false;
++      }
++      count += 2; // ~~
++    } else if (code <= 0x7f) {
++      // ASCII character (0x00-0x7D, 0x7F)
++      if (inChinese) {
++        count += 2; // ~} to exit Chinese mode
++        inChinese = false;
++      }
++      count += 1;
++    } else {
++      // Non-ASCII: treat as CJK character needing Chinese mode
++      if (!inChinese) {
++        count += 2; // ~{ to enter Chinese mode
++        inChinese = true;
++      }
++      count += 2; // 2 bytes for the GB2312 character
++      // Handle surrogate pairs (supplementary code points outside GB2312 but
++      // count as a single unit for safety)
++      if (code >= 0xd800 && code <= 0xdbff && i + 1 < str.length &&
++          str.charCodeAt(i + 1) >= 0xdc00 && str.charCodeAt(i + 1) <= 0xdfff) {
++        i++;
++      }
++    }
++  }
++  if (inChinese) {
++    count += 2; // ~} to close final Chinese mode run
++  }
++  return count;
++}
++
++/**
++ * Calculate byte length of decoded text in standard CJK double-byte encodings
++ * (EUC-JP, Big5, EUC-KR — generic DBCS, no non-ASCII single-byte extensions).
++ *
++ * @param {String} str
++ * @param {Object} [options]
++ * @param {Boolean} [options.astral4Bytes] 4 bytes for surrogate pairs (GB18030)
++ * @return {Number} byte length
++ * @api private
++ */
++function getCjkDbcsByteLength(str, options) {
++  const astral4 = options && options.astral4Bytes;
++  let count = 0;
++  for (let i = 0; i < str.length; i++) {
++    const code = str.charCodeAt(i);
++    if (code <= 0x7f) {
++      count += 1;
++    } else if (code >= 0xd800 && code <= 0xdbff && i + 1 < str.length && str.charCodeAt(i + 1) >= 0xdc00 && str.charCodeAt(i + 1) <= 0xdfff) {
++      count += astral4 ? 4 : 2;
++      i++;
++    } else {
++      count += 2;
++    }
++  }
++  return count;
++}
++
++/**
++ * Calculate byte length of decoded text in Shift_JIS / Windows-31J / CP932 encoding.
++ * Web Shift_JIS decoder maps:
++ *   0x00–0x7F → U+0000–U+007F (ASCII, 1 byte each)
++ *   0x80 → U+0080 (C1 control, 1 decoded byte)
++ *   0xA1–0xDF → U+FF61–U+FF9F (half-width Katakana, 1 byte each)
++ *   All other non-ASCII → DBCS lead+trail pairs (2 bytes each)
++ *
++ * @param {String} str
++ * @return {Number} byte length
++ * @api private
++ */
++function getShiftJisByteLength(str) {
++  let count = 0;
++  for (let i = 0; i < str.length; i++) {
++    const code = str.charCodeAt(i);
++    if (code <= 0x7f) {
++      count += 1; // ASCII
++    } else if (code === 0x0080) {
++      count += 1; // Shift_JIS 0x80 → U+0080 (single decoded byte)
++    } else if (code >= 0xff61 && code <= 0xff9f) {
++      count += 1; // Half-width Katakana (0xA1–0xDF)
++    } else if (
++      code >= 0xd800 && code <= 0xdbff &&
++      i + 1 < str.length &&
++      str.charCodeAt(i + 1) >= 0xdc00 && str.charCodeAt(i + 1) <= 0xdfff
++    ) {
++      count += 2; // Surrogate pair — treated as one DBCS character
++      i++;
++    } else {
++      count += 2; // DBCS lead+trail
++    }
++  }
++  return count;
++}
++
++/**
++ * Compute the decoded byte length of text response data in the browser.
++ * Respects declared standard web character encodings:
++ * - Single-byte charsets (e.g. ISO-8859-*, Windows-125*, Windows-874, US-ASCII, Latin*, KOI8*, Macintosh)
++ * - UTF-16 / UCS-2 multibyte charsets (utf-16, utf-16le, utf-16be, ucs-2, unicode)
++ * - UTF-32 / UCS-4 multibyte charsets (utf-32, utf-32le, utf-32be, ucs-4)
++ * - ISO-2022-JP stateful shift escape sequence encoding
++ * - HZ-GB-2312 stateful 7-bit encoding (RFC 1843)
++ * - Shift_JIS / Windows-31J / CP932 (with 0x80→U+0080 single-byte extension)
++ * - Standard CJK double-byte encodings (EUC-JP, GBK, GB2312, GB18030, Big5, EUC-KR)
++ * - Defaults / UTF-8 fallback
++ *
++ * @param {String} str
++ * @param {String} [contentType]
++ * @return {Number}
++ * @api private
++ */
++function getTextDecodedByteLength(str, contentType) {
++  if (typeof str !== 'string') return undefined;
++  if (!contentType) {
++    return getUtf8ByteLength(str);
++  }
++
++  const match = /charset\s*=\s*['"]?([^;'"]+)['"]?/i.exec(contentType);
++  if (!match) {
++    return getUtf8ByteLength(str);
++  }
++
++  const charset = match[1].trim().replace(/^['"]|['"]$/g, '').toLowerCase();
++
++  // UTF-8 explicitly declared:
++  if (/^(?:utf[-_]?8)$/i.test(charset)) {
++    return getUtf8ByteLength(str);
++  }
++
++  // Single-byte charsets: string length equals byte length
++  if (/^(?:iso[-_]?8859.*|windows[-_]?125\d|windows[-_]?874|cp[-_]?125\d|cp[-_]?[48]\d\d|ibm[-_]?866|latin.*|ascii|us[-_]?ascii|koi8.*|macintosh|x[-_]?user[-_]?defined)$/i.test(charset)) {
++    return str.length;
++  }
++
++  // UTF-16 / UCS-2 multibyte charsets: each 16-bit code unit is 2 bytes
++  if (/^(?:utf[-_]?16(?:[-_]?(?:le|be))?|ucs[-_]?2|unicode)$/i.test(charset)) {
++    return str.length * 2;
++  }
++
++  // UTF-32 / UCS-4 multibyte charsets: each code point is 4 bytes
++  if (/^(?:utf[-_]?32(?:[-_]?(?:le|be))?|ucs[-_]?4)$/i.test(charset)) {
++    let count = 0;
++    for (let i = 0; i < str.length; i++) {
++      count += 4;
++      const code = str.charCodeAt(i);
++      if (code >= 0xd800 && code <= 0xdbff && i + 1 < str.length && str.charCodeAt(i + 1) >= 0xdc00 && str.charCodeAt(i + 1) <= 0xdfff) {
++        i++; // surrogate pair represents a single 4-byte code point
++      }
++    }
++    return count;
++  }
++
++  // ISO-2022-JP stateful shift encoding:
++  if (/^(?:iso[-_]?2022[-_]?jp|csiso2022jp)$/i.test(charset)) {
++    return getIso2022JpByteLength(str);
++  }
++
++  // HZ-GB-2312 stateful 7-bit encoding (RFC 1843):
++  // Must be classified separately — escape sequences (~{ / ~}) make it stateful
++  // like ISO-2022-JP, not a simple DBCS like GBK.
++  if (/^(?:hz[-_]?gb[-_]?2312|hz[-_]?gb|hz|cshzgb2312)$/i.test(charset)) {
++    return getHzGb2312ByteLength(str);
++  }
++
++  // Shift_JIS / Windows-31J / CP932: 0x80 decodes to U+0080 (1 byte), needs dedicated function.
++  if (/^(?:shift[-_]?jis|sjis|windows[-_]?31j|cp932|ms[-_]?kanji|x[-_]?sjis|csshiftjis)$/i.test(charset)) {
++    return getShiftJisByteLength(str);
++  }
++
++  // GB18030 (superset of GBK, same single-byte extension + 4-byte supplementary):
++  if (/^(?:gb18030)$/i.test(charset)) {
++    // GB18030 keeps the 0x80→U+20AC mapping and adds 4-byte supplementary sequences.
++    // We reuse getGbkByteLength for BMP characters and override surrogates to 4 bytes.
++    let count = 0;
++    for (let i = 0; i < str.length; i++) {
++      const code = str.charCodeAt(i);
++      if (code <= 0x7f) {
++        count += 1;
++      } else if (code === 0x20ac) {
++        count += 1; // 0x80 single byte
++      } else if (
++        code >= 0xd800 && code <= 0xdbff &&
++        i + 1 < str.length &&
++        str.charCodeAt(i + 1) >= 0xdc00 && str.charCodeAt(i + 1) <= 0xdfff
++      ) {
++        count += 4; // supplementary code point = 4 bytes in GB18030
++        i++;
++      } else {
++        count += 2;
++      }
++    }
++    return count;
++  }
++
++  // GBK / GB2312: DBCS with one non-ASCII single-byte extension (0x80 = U+20AC).
++  // Must not be grouped with generic DBCS since getCjkDbcsByteLength would
++  // miscount U+20AC (€) as 2 bytes instead of the correct 1.
++  if (/^(?:gbk|gb2312|chinese|cp936|windows[-_]?936|x[-_]?gbk|csgb2312.*)$/i.test(charset)) {
++    return getGbkByteLength(str);
++  }
++
++  // Standard CJK DBCS encodings (EUC-JP, Big5, EUC-KR) — no single-byte extensions:
++  if (/^(?:euc[-_]?jp|x[-_]?euc[-_]?jp|cseucpkdfmtjapanese|big5.*|cp950|windows[-_]?950|cn[-_]?big5|euc[-_]?kr|cp949|windows[-_]?949|uhc|korean|ks[-_]?c[-_]?5601.*)$/i.test(charset)) {
++    return getCjkDbcsByteLength(str);
++  }
++
++  // Fallback: UTF-8 encoding
++  return getUtf8ByteLength(str);
++}
++
+ function Request(method, url) {
+   const self = this;
+   this._query = this._query || [];
+@@ -412,6 +974,8 @@ function Request(method, url) {
+   this.header = {}; // preserves header name case
+   this._header = {}; // coerces header names to lowercase
+   this.on('end', () => {
++    if (self.hasSizeError()) return;
++
+     let error = null;
+     let res = null;
+ 
+@@ -605,7 +1169,16 @@ Request.prototype.attach = function (field, file, options) {
+       throw new Error("superagent can't mix .send() and .attach()");
+     }
+ 
+-    this._getFormData().append(field, file, options || file.name);
++    let val = file;
++    if (typeof Blob !== 'undefined' && !(val instanceof Blob)) {
++      if (typeof Buffer !== 'undefined' && Buffer.isBuffer(val)) {
++        val = new Blob([val]);
++      } else if (val instanceof ArrayBuffer || (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView && ArrayBuffer.isView(val))) {
++        val = new Blob([val]);
++      }
++    }
++
++    this._getFormData().append(field, val, options || file.name);
+   }
+ 
+   return this;
+@@ -613,7 +1186,11 @@ Request.prototype.attach = function (field, file, options) {
+ 
+ Request.prototype._getFormData = function () {
+   if (!this._formData) {
+-    this._formData = new root.FormData();
++    const FormDataConstructor =
++      (root && root.FormData) ||
++      (typeof FormData !== 'undefined' ? FormData : undefined) ||
++      (typeof global !== 'undefined' ? global.FormData : undefined);
++    this._formData = new FormDataConstructor();
+   }
+ 
+   return this._formData;
+@@ -633,15 +1210,25 @@ Request.prototype.callback = function (error, res) {
+     return this._retry();
+   }
+ 
++  if (this.called) return;
++  this.called = true;
++
+   const fn = this._callback;
+   this.clearTimeout();
+ 
+   if (error) {
+-    if (this._maxRetries) error.retries = this._retries - 1;
++    if (this.hasSizeError() || error.code === 'ETOOLARGE') {
++      // Size errors must never trigger automatic retries; retries count is always 0.
++      error.retries = 0;
++    } else if (this._maxRetries) {
++      error.retries = this._retries - 1;
++    }
+     this.emit('error', error);
+   }
+ 
+-  fn(error, res);
++  if (typeof fn === 'function') {
++    fn(error, res);
++  }
+ };
+ 
+ /**
+@@ -650,6 +1237,30 @@ Request.prototype.callback = function (error, res) {
+  * @api private
+  */
+ 
++/**
++ * Abort the request and invoke callback with size limit error.
++ * Sets _sizeError, aborts the XHR, and fires callback exactly once.
++ * Called by both request and response size enforcement paths.
++ *
++ * @param {String} type 'request' or 'response'
++ * @return {Error} size error
++ * @api private
++ */
++Request.prototype._abortWithSizeError = function (type) {
++  if (this.hasSizeError()) return this._sizeError;
++
++  const error = new Error(`Maximum ${type} size reached`);
++  error.code = 'ETOOLARGE';
++  error.retries = 0;
++  this._sizeError = error;
++
++  this.abort();
++  if (!this.called) {
++    this.callback(error, type === 'response' ? null : undefined);
++  }
++  return error;
++};
++
+ Request.prototype.crossDomainError = function () {
+   const error = new Error(
+     'Request has been terminated\nPossible causes: the network is offline, Origin is not allowed by Access-Control-Allow-Origin, the page is being unloaded, etc.'
+@@ -745,13 +1356,14 @@ Request.prototype._setUploadTimeout = function () {
+ Request.prototype._end = function () {
+   if (this._aborted)
+     return this.callback(
+-      new Error('The request has been aborted even before .end() was called')
++      this._sizeError ||
++        new Error('The request has been aborted even before .end() was called')
+     );
+ 
+   const self = this;
+   this.xhr = request.getXHR();
+   const { xhr } = this;
+-  let data = this._formData || this._data;
++  let data = this._formDataBlob || this._formData || this._data;
+ 
+   this._setTimeouts();
+ 
+@@ -766,6 +1378,167 @@ Request.prototype._end = function () {
+       return;
+     }
+ 
++    if (self._maxResponseSize !== undefined && !self.hasSizeError()) {
++      let status = 0;
++      try {
++        status = xhr.status;
++      } catch (err) {
++        status = 0;
++      }
++
++      // Normalize IE/legacy XHR 1223 status to 204 No Content
++      if (status === 1223) {
++        status = 204;
++      }
++
++      const isBodyless = self.method === 'HEAD' || status === 204 || status === 304;
++
++      // Measure the terminal decoded response body at readyState 4.
++      let finalBytes;
++      if (!isBodyless) {
++        let raw;
++        try {
++          if (xhr.response !== undefined && xhr.response !== null) {
++            raw = xhr.response;
++          }
++        } catch (_) {
++          // Ignore error accessing xhr.response
++        }
++        if (raw === undefined || raw === null) {
++          try {
++            raw = xhr.responseText;
++          } catch (_) {
++            raw = null;
++          }
++        }
++
++        // Wire-side byte counts (from progress events or Content-Length).
++        let wireBytes = self._responseBytesReceived;
++        if (typeof wireBytes !== 'number') {
++          try {
++            const clHeader = xhr.getResponseHeader('Content-Length');
++            if (clHeader) {
++              const parsed = parseInt(clHeader, 10);
++              if (!isNaN(parsed)) wireBytes = parsed;
++            }
++          } catch (_ignoreHeaderError) {
++            wireBytes = undefined;
++          }
++        }
++
++        let ctHeader = '';
++        try {
++          ctHeader = xhr.getResponseHeader('Content-Type') || '';
++        } catch (_) {
++          // Ignore error reading Content-Type header
++        }
++
++        let isCompressed = false;
++        let isEncodingEstablished = false;
++        let ce = '';
++        try {
++          ce = xhr.getResponseHeader('Content-Encoding') || '';
++          if (ce) {
++            isEncodingEstablished = true;
++            // Treat any non-identity Content-Encoding as compressed:
++            // identity is the only codec that guarantees wire == decoded.
++            // All other values (gzip, deflate, br, zstd, etc.) indicate
++            // the XHR body has been decompressed by the browser.
++            const isIdentity = ce.trim().toLowerCase() === 'identity';
++            isCompressed = !isIdentity;
++          }
++        } catch (_) {
++          // Ignore error reading Content-Encoding header
++        }
++
++        // For same-origin responses, all response headers are exposed by XHR.
++        // A missing Content-Encoding header on an exposed same-origin response is known absent
++        // and denotes identity (uncompressed).
++        const isSameOrigin = isSameOriginRequest(xhr, self.url);
++        const isCompressedOrUnexposed = isCompressed || (!isSameOrigin && !ce);
++        const isKnownIdentity = (isEncodingEstablished && !isCompressed) || (isSameOrigin && !ce);
++
++        // Check if xhr exposes raw decompressed entity bytes before text decoding
++        let rawEntityBytes;
++        const candidates = [
++          xhr.response,
++          xhr._response,
++          xhr.rawResponse,
++          xhr._rawResponse,
++          xhr._body,
++          xhr.rawBody,
++          xhr._entity,
++          xhr.entity,
++          xhr._decompressed,
++          xhr.decompressed,
++          xhr._decompressedBody,
++          xhr.decompressedBody,
++          xhr.responseBytes,
++          xhr._bytes
++        ];
++        for (const c of candidates) {
++          if (c && typeof c === 'object') {
++            if (typeof ArrayBuffer !== 'undefined' && c instanceof ArrayBuffer) {
++              rawEntityBytes = c.byteLength;
++              break;
++            }
++            if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView && ArrayBuffer.isView(c)) {
++              rawEntityBytes = c.byteLength;
++              break;
++            }
++            if (typeof Buffer !== 'undefined' && Buffer.isBuffer(c)) {
++              rawEntityBytes = c.length;
++              break;
++            }
++            if (typeof c.byteLength === 'number') {
++              rawEntityBytes = c.byteLength;
++              break;
++            }
++            if (typeof c.size === 'number') {
++              rawEntityBytes = c.size;
++              break;
++            }
++          }
++        }
++
++        // Measure decoded bytes:
++        let decodedBytes;
++        if (typeof raw === 'string') {
++          decodedBytes = getTextDecodedByteLength(raw, ctHeader);
++        } else {
++          decodedBytes = getResponseIntrinsicByteLength(raw);
++        }
++
++        if (rawEntityBytes !== undefined) {
++          decodedBytes = typeof decodedBytes === 'number' ? Math.max(decodedBytes, rawEntityBytes) : rawEntityBytes;
++        }
++
++        if (isKnownIdentity) {
++          // For confirmed uncompressed responses, use the actual transfer/body byte count
++          // (or encode according to the declared charset if wireBytes is unavailable).
++          if (typeof wireBytes === 'number') {
++            finalBytes = wireBytes;
++          } else if (typeof decodedBytes === 'number') {
++            finalBytes = decodedBytes;
++          }
++        } else if (isCompressedOrUnexposed) {
++          // Genuinely compressed or unexposed-compression cases (e.g. CORS where Content-Encoding
++          // is unexposed): evaluate the decoded payload size, not the wire transfer size.
++          if (typeof decodedBytes === 'number') {
++            finalBytes = decodedBytes;
++          } else {
++            finalBytes = wireBytes;
++          }
++        } else {
++          finalBytes = typeof decodedBytes === 'number' ? decodedBytes : wireBytes;
++        }
++      }
++      if (typeof finalBytes === 'number' && finalBytes > self._maxResponseSize) {
++        self._abortWithSizeError('response');
++        return;
++      }
++    }
++
+     // In IE9, reads to any property (e.g. status) off of an aborted XHR will
+     // result in the error "Could not complete the operation due to error c00c023f"
+     let status;
+@@ -776,10 +1549,11 @@ Request.prototype._end = function () {
+     }
+ 
+     if (!status) {
+-      if (self.timedout || self._aborted) return;
++      if (self.timedout || self._aborted || self.hasSizeError()) return;
+       return self.crossDomainError();
+     }
+ 
++    if (self.hasSizeError()) return;
+     self.emit('end');
+   });
+ 
+@@ -795,22 +1569,99 @@ Request.prototype._end = function () {
+ 
+     e.direction = direction;
+     self.emit('progress', e);
++
++    if (direction === 'upload' && self._maxRequestSize !== undefined && typeof e.loaded === 'number' && e.loaded > self._maxRequestSize) {
++      self._abortWithSizeError('request');
++      return;
++    }
++
++    if (direction === 'download' && typeof e.loaded === 'number' && self._maxResponseSize !== undefined) {
++      // Track raw bytes received; this is the primary response size counter.
++      self._responseBytesReceived = e.loaded;
++
++      let isCompressed = false;
++      let isEncodingEstablished = false;
++      let ce = '';
++      try {
++        ce = xhr.getResponseHeader('Content-Encoding') || '';
++        if (ce) {
++          isEncodingEstablished = true;
++          const isIdentity = ce.trim().toLowerCase() === 'identity';
++          isCompressed = !isIdentity;
++        }
++      } catch (_) {
++        // Ignore error reading Content-Encoding header
++      }
++
++      const isSameOrigin = isSameOriginRequest(xhr, self.url);
++      const isKnownIdentity = (isEncodingEstablished && !isCompressed) || (isSameOrigin && !ce);
++
++      if (isKnownIdentity) {
++        // For confirmed uncompressed responses, e.loaded represents the actual
++        // transfer/body byte count. Abort if wire bytes exceed limit.
++        if (e.loaded > self._maxResponseSize) {
++          self._abortWithSizeError('response');
++        }
++        return;
++      }
++
++      // For compressed responses or ambiguous unexposed-compression cases (CORS):
++      // Wire transfer size cannot be assumed to reflect decoded payload size.
++      // If a decoded representation is available, evaluate its decoded size.
++      let ctHeader = '';
++      try {
++        ctHeader = xhr.getResponseHeader('Content-Type') || '';
++      } catch (_) {
++        // Ignore error reading Content-Type header
++      }
++
++      let currentDecoded;
++      try {
++        const currentRaw = (xhr.response !== undefined && xhr.response !== null) ? xhr.response : xhr.responseText;
++        if (currentRaw !== undefined && currentRaw !== null) {
++          if (typeof currentRaw === 'string') {
++            currentDecoded = getTextDecodedByteLength(currentRaw, ctHeader);
++          } else {
++            currentDecoded = getResponseIntrinsicByteLength(currentRaw);
++          }
++        }
++      } catch (_) {
++        // Ignore error accessing current response
++      }
++
++      // If a readable decoded representation is available:
++      // Abort immediately if decoded size exceeds limit; do not abort if within limit.
++      if (typeof currentDecoded === 'number') {
++        if (currentDecoded > self._maxResponseSize) {
++          self._abortWithSizeError('response');
++        }
++        return;
++      }
++
++      // If at readyState 4, defer to terminal readyState 4 handler
++      if (xhr.readyState === 4) {
++        return;
++      }
++
++      // If decoded representation is not yet readable (e.g. binary responseType
++      // where XHR response is null until readyState 4), defer evaluation to readyState 4.
++    }
+   };
+ 
+-  if (this.hasListeners('progress')) {
+-    try {
++  try {
++    if (this.hasListeners('progress') || this._maxResponseSize !== undefined) {
+       xhr.addEventListener('progress', handleProgress.bind(null, 'download'));
+-      if (xhr.upload) {
+-        xhr.upload.addEventListener(
+-          'progress',
+-          handleProgress.bind(null, 'upload')
+-        );
+-      }
+-    } catch (err) {
+-      // Accessing xhr.upload fails in IE from a web worker, so just pretend it doesn't exist.
+-      // Reported here:
+-      // https://connect.microsoft.com/IE/feedback/details/837245/xmlhttprequest-upload-throws-invalid-argument-when-used-from-web-worker-context
+     }
++    if (xhr.upload && (this.hasListeners('progress') || this._maxRequestSize !== undefined)) {
++      xhr.upload.addEventListener(
++        'progress',
++        handleProgress.bind(null, 'upload')
++      );
++    }
++  } catch (err) {
++    // Accessing xhr.upload fails in IE from a web worker, so just pretend it doesn't exist.
++    // Reported here:
++    // https://connect.microsoft.com/IE/feedback/details/837245/xmlhttprequest-upload-throws-invalid-argument-when-used-from-web-worker-context
+   }
+ 
+   if (xhr.upload) {
+@@ -833,8 +1684,58 @@ Request.prototype._end = function () {
+   if (this._withCredentials) xhr.withCredentials = true;
+ 
+   // body
++  // When either size limit is configured and the body is a FormData, serialize it
++  // to an exact Blob with a matching boundary header so the transmitted body matches
++  // the measured size. If oversized, abort immediately before sending.
++  // Cache the resulting Blob on this._formDataBlob so retries retain the body.
++  const needsFormDataSerialization = (this._maxRequestSize !== undefined) || (this._maxRetries > 0);
++  if (needsFormDataSerialization && this.method !== 'GET' && this.method !== 'HEAD') {
++    if (this._formDataBlob) {
++      data = this._formDataBlob;
++      const contentType = this._formDataBlob.contentType || this._formDataBlob.type;
++      for (const key of Object.keys(this.header)) {
++        if (key.toLowerCase() === 'content-type') {
++          delete this.header[key];
++        }
++      }
++      this.header['content-type'] = contentType;
++      this._header['content-type'] = contentType;
++    } else {
++      const rawPayload = data !== undefined ? data : this._formData;
++      if (
++        (typeof FormData !== 'undefined' && rawPayload instanceof FormData) ||
++        (rawPayload && typeof rawPayload === 'object' && (
++          (typeof Symbol !== 'undefined' && Symbol.toStringTag && rawPayload[Symbol.toStringTag] === 'FormData') ||
++          (rawPayload.constructor && rawPayload.constructor.name === 'FormData') ||
++          (typeof rawPayload.append === 'function' && (typeof rawPayload.entries === 'function' || typeof rawPayload.forEach === 'function'))
++        ))
++      ) {
++        if (typeof Blob !== 'undefined') {
++          const formDataBlob = buildFormDataBlob(rawPayload);
++          if (formDataBlob) {
++            if (this._maxRequestSize !== undefined && formDataBlob.size > this._maxRequestSize) {
++              this._abortWithSizeError('request');
++              return;
++            }
++            this._formDataBlob = formDataBlob;
++            data = formDataBlob;
++            const contentType = formDataBlob.contentType || formDataBlob.type;
++            for (const key of Object.keys(this.header)) {
++              if (key.toLowerCase() === 'content-type') {
++                delete this.header[key];
++              }
++            }
++            this.header['content-type'] = contentType;
++            this._header['content-type'] = contentType;
++          }
++        }
++      }
++    }
++  }
++
+   if (
+     !this._formData &&
++    !this._formDataBlob &&
+     this.method !== 'GET' &&
+     this.method !== 'HEAD' &&
+     typeof data !== 'string' &&
+@@ -867,8 +1768,22 @@ Request.prototype._end = function () {
+   // send stuff
+   this.emit('request', this);
+ 
++  // Enforce maxRequestSize on browser requests before sending.
++  // XMLHttpRequest normalizes GET and HEAD bodies to null and transmits no body.
++  if (this._maxRequestSize !== undefined && this.method !== 'GET' && this.method !== 'HEAD') {
++    const payload = data !== undefined ? data : this._formData;
++    const byteLength = getRequestBodySize(payload, this);
++    if (byteLength !== undefined && byteLength > this._maxRequestSize) {
++      this._abortWithSizeError('request');
++      return;
++    }
++  }
++
+   // IE11 xhr.send(undefined) sends 'undefined' string as POST payload (instead of nothing)
+-  // We need null here if data is undefined
++  // We need null here if data is undefined, and XMLHttpRequest ignores bodies on GET/HEAD
++  if (this.method === 'GET' || this.method === 'HEAD') {
++    data = null;
++  }
+   xhr.send(typeof data === 'undefined' ? null : data);
+ };
+ 
+diff --git a/src/node/index.js b/src/node/index.js
+index c21231a..29c9abe 100644
+--- a/src/node/index.js
++++ b/src/node/index.js
+@@ -7,7 +7,6 @@ const Stream = require('stream');
+ const https = require('https');
+ const http = require('http');
+ const fs = require('fs');
+-const zlib = require('zlib');
+ const util = require('util');
+ const qs = require('qs');
+ const mime = require('mime');
+@@ -24,6 +23,7 @@ const http2 = require('./http2wrapper');
+ const { decompress } = require('./unzip');
+ const Response = require('./response');
+ 
++
+ const { mixin, hasOwn, isBrotliEncoding, isGzipOrDeflateEncoding } = utils;
+ const { chooseDecompresser } = require('./decompress');
+ 
+@@ -167,6 +167,9 @@ function Request(method, url) {
+   this._streamRequest = false;
+   this._lookup = undefined;
+   this.once('end', this.clearTimeout.bind(this));
++  this.on('pipe', (source) => {
++    this._sourceStream = source;
++  });
+ }
+ 
+ /**
+@@ -410,10 +413,36 @@ Request.prototype.query = function (value) {
+ 
+ Request.prototype.write = function (data, encoding) {
+   const request_ = this.request();
++
++  if (this._aborted || this.hasSizeError()) return false;
++
+   if (!this._streamRequest) {
+     this._streamRequest = true;
+   }
+ 
++  const length = Buffer.isBuffer(data)
++    ? data.length
++    : typeof data === 'string'
++      ? Buffer.byteLength(data, encoding)
++      : ArrayBuffer.isView(data)
++        ? data.byteLength
++        : data instanceof ArrayBuffer
++          ? data.byteLength
++          : 0;
++
++  this._requestBytesSent = (this._requestBytesSent || 0) + length;
++  if (!this._checkRequestSize(this._requestBytesSent)) {
++    if (this._sourceStream) {
++      this._sourceStream.unpipe(this);
++      if (typeof this._sourceStream.destroy === 'function') {
++        this._sourceStream.destroy();
++      } else if (typeof this._sourceStream.resume === 'function') {
++        this._sourceStream.resume();
++      }
++    }
++    return false;
++  }
++
+   return request_.write(data, encoding);
+ };
+ 
+@@ -435,22 +464,71 @@ Request.prototype.pipe = function (stream, options) {
+ 
+ Request.prototype._pipeContinue = function (stream, options) {
+   this.req.once('response', (res) => {
++    // Avoid "double callback bug"
++    if (this.hasSizeError()) return;
++
+     // redirect
+     if (
+       isRedirect(res.statusCode) &&
+       this._redirects++ !== this._maxRedirects
+     ) {
+-      return this._redirect(res) === this
+-        ? this._pipeContinue(stream, options)
+-        : undefined;
++      return this._redirect(res, () => {
++        this._pipeContinue(stream, options);
++      });
+     }
+ 
+     this.res = res;
+     this._emitResponse();
+     if (this._aborted) return;
+ 
+-    if (this._shouldDecompress(res)) {
++    // Bodyless-aware, compression-aware Content-Length precheck for piped final responses.
++    // Immediately aborts unbuffered streams exceeding maxResponseSize before body data arrives.
++    if (
++      this._maxResponseSize !== undefined &&
++      this.method.toUpperCase() !== 'HEAD' &&
++      hasNonEmptyResponseContent(res) &&
++      !this._shouldDecompress(res)
++    ) {
++      const clHeader = res.headers['content-length'];
++      if (clHeader) {
++        const cl = parseInt(clHeader, 10);
++        if (!isNaN(cl) && cl > this._maxResponseSize) {
++          const error = this._abortWithSizeError('response');
++          if (typeof res.destroy === 'function') {
++            res.destroy(error);
++          }
++          if (stream) {
++            if (stream.listeners('error').length > 0) {
++              stream.emit('error', error);
++            } else if (typeof stream.destroy === 'function') {
++              stream.destroy(error);
++            }
++          }
++          return;
++        }
++      }
++    }
++
++    // Route all piped response bytes through the size monitor.
++    // This enforces maxResponseSize for the .pipe() use case.
++    const monitor = this._getResponseMonitor();
++    monitor.on('error', (error) => {
++      if (this.res) {
++        this.res.unpipe();
++        if (typeof this.res.destroy === 'function') {
++          this.res.destroy(error);
++        }
++      }
++      if (stream) {
++        if (stream.listeners('error').length > 0) {
++          stream.emit('error', error);
++        } else if (typeof stream.destroy === 'function') {
++          stream.destroy(error);
++        }
++      }
++    });
+ 
++    if (this._shouldDecompress(res)) {
+       let decompresser = chooseDecompresser(res);
+ 
+       decompresser.on('error', (error) => {
+@@ -460,14 +538,20 @@ Request.prototype._pipeContinue = function (stream, options) {
+           return;
+         }
+ 
+-        stream.emit('error', error);
++        if (stream) {
++          if (stream.listeners('error').length > 0) {
++            stream.emit('error', error);
++          } else if (typeof stream.destroy === 'function') {
++            stream.destroy();
++          }
++        }
+       });
+-      res.pipe(decompresser).pipe(stream, options);
+-      // don't emit 'end' until decompresser has completed writing all its data.
+-      decompresser.once('end', () => this.emit('end'));
++      res.pipe(decompresser).pipe(monitor).pipe(stream, options);
++      // don't emit 'end' until monitor has completed writing all its data.
++      monitor.once('end', () => this.emit('end'));
+     } else {
+-      res.pipe(stream, options);
+-      res.once('end', () => this.emit('end'));
++      res.pipe(monitor).pipe(stream, options);
++      monitor.once('end', () => this.emit('end'));
+     }
+   });
+   return stream;
+@@ -494,7 +578,7 @@ Request.prototype.buffer = function (value) {
+  * @api private
+  */
+ 
+-Request.prototype._redirect = function (res) {
++Request.prototype._redirect = function (res, continuation) {
+   let url = res.headers.location;
+   if (!url) {
+     return this.callback(new Error('No location header for redirect'), res);
+@@ -505,60 +589,157 @@ Request.prototype._redirect = function (res) {
+   // location
+   url = new URL(url, this.url).href;
+ 
+-  // ensure the response is being consumed
+-  // this is required for Node v0.10+
+-  res.resume();
++  const changesOrigin = new URL(url).host !== new URL(this.url).host;
+ 
+-  let headers = this.req.getHeaders ? this.req.getHeaders() : this.req._headers;
++  // If redirect status converts method to GET/HEAD (301, 302, 303, 305) or if changing origin,
++  // ensure the spooled multipart body is never sent to the redirect target.
++  if (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 303 || res.statusCode === 305 || changesOrigin) {
++    this._cleanupSpoolFile();
++    this._formDataTmpLength = null;
++    delete this._formDataHeaders;
++    this._data = null;
++    delete this._formData;
++  }
+ 
+-  const changesOrigin = new URL(url).host !== new URL(this.url).host;
++  const proceed = () => {
++    if (this._aborted || this.hasSizeError()) return;
+ 
+-  // implementation of 302 following defacto standard
+-  if (res.statusCode === 301 || res.statusCode === 302) {
+-    // strip Content-* related fields
+-    // in case of POST etc
+-    headers = utils.cleanHeader(headers, changesOrigin);
++    let headers = this.req.getHeaders ? this.req.getHeaders() : this.req._headers;
+ 
+-    // force GET
+-    this.method = this.method === 'HEAD' ? 'HEAD' : 'GET';
++    // implementation of 302 following defacto standard
++    if (res.statusCode === 301 || res.statusCode === 302) {
++      // strip Content-* related fields
++      // in case of POST etc
++      headers = utils.cleanHeader(headers, changesOrigin);
+ 
+-    // clear data
+-    this._data = null;
+-  }
++      // force GET
++      this.method = this.method === 'HEAD' ? 'HEAD' : 'GET';
+ 
+-  // 303 is always GET
+-  if (res.statusCode === 303) {
+-    // strip Content-* related fields
+-    // in case of POST etc
+-    headers = utils.cleanHeader(headers, changesOrigin);
++      // clear data
++      this._data = null;
++      delete this._formDataSerialized;
++      delete this._formDataHeaders;
++      // Clear spool data so the original body is not sent to redirect target
++      this._cleanupSpoolFile();
++      this._formDataTmpLength = null;
++      delete this._formData;
++    }
+ 
+-    // force method
+-    this.method = 'GET';
++    // 303 is always GET
++    if (res.statusCode === 303) {
++      // strip Content-* related fields
++      // in case of POST etc
++      headers = utils.cleanHeader(headers, changesOrigin);
++
++      // force method
++      this.method = 'GET';
++
++      // clear data
++      this._data = null;
++      delete this._formDataSerialized;
++      delete this._formDataHeaders;
++      // Clear spool data so the original body is not sent to redirect target
++      this._cleanupSpoolFile();
++      this._formDataTmpLength = null;
++      delete this._formData;
++    }
+ 
+-    // clear data
+-    this._data = null;
+-  }
++    if (this.method === 'GET' || this.method === 'HEAD' || changesOrigin) {
++      headers = utils.cleanHeader(headers, changesOrigin);
++      this._data = null;
++      delete this._formDataSerialized;
++      delete this._formDataHeaders;
++      this._cleanupSpoolFile();
++      this._formDataTmpLength = null;
++      delete this._formData;
++    }
+ 
+-  // 307 preserves method
+-  // 308 preserves method
+-  delete headers.host;
++    // 307 preserves method
++    // 308 preserves method
++    delete headers.host;
+ 
+-  delete this.req;
+-  delete this._formData;
++    delete this.req;
++    delete this._formData;
+ 
+-  // remove all add header except User-Agent
+-  _initHeaders(this);
++    // remove all add header except User-Agent
++    _initHeaders(this);
+ 
+-  // redirect
+-  this.res = res;
+-  this._endCalled = false;
+-  this.url = url;
+-  this.qs = {};
+-  this._query.length = 0;
+-  this.set(headers);
+-  this._emitRedirect();
+-  this._redirectList.push(this.url);
+-  this.end(this._callback);
++    // redirect
++    this.res = res;
++    this._endCalled = false;
++    this.url = url;
++    this.qs = {};
++    this._query.length = 0;
++    this.set(headers);
++    this._emitRedirect();
++    this._redirectList.push(this.url);
++    this._requestBytesSent = 0; // reset for the new request
++    this.end(this._callback);
++    if (typeof continuation === 'function') {
++      continuation();
++    }
++  };
++
++  // check redirect response size
++  // HEAD redirects carry no body, even when Content-Length is present.
++  // Skip all body-size checking for HEAD to avoid false ETOOLARGE.
++  if (this._maxResponseSize !== undefined && this.method.toUpperCase() !== 'HEAD') {
++    let redirectBytes = 0;
++    let redirectStream = res;
++    if (this._shouldDecompress(res)) {
++      const decompresser = chooseDecompresser(res);
++      decompresser.on('error', () => {
++        // decompression errors on redirect body checking are non-fatal
++      });
++      res.pipe(decompresser);
++      redirectStream = decompresser;
++    } else if (hasNonEmptyResponseContent(res)) {
++      // Only precheck Content-Length when NOT compressing and response has body content
++      const redirectCl = parseInt(res.headers && res.headers['content-length'], 10);
++      if (!isNaN(redirectCl) && redirectCl > this._maxResponseSize) {
++        res.destroy();
++        const err = this._abortWithSizeError('response');
++        if (res.statusCode) err.status = res.statusCode;
++        return this;
++      }
++    }
++
++    let proceeded = false;
++    const onProceed = () => {
++      if (proceeded) return;
++      proceeded = true;
++      proceed();
++    };
++
++    redirectStream.on('data', (chunk) => {
++      if (this.hasSizeError()) return;
++      redirectBytes += chunk.length;
++      if (redirectBytes > this._maxResponseSize) {
++        res.destroy();
++        if (redirectStream !== res && typeof redirectStream.destroy === 'function') {
++          redirectStream.destroy();
++        }
++        const err = this._abortWithSizeError('response');
++        if (res.statusCode) err.status = res.statusCode;
++      }
++    });
++
++    redirectStream.once('end', () => {
++      onProceed();
++    });
++
++    redirectStream.once('error', () => {
++      onProceed();
++    });
++
++    res.resume();
++    return this;
++  }
++
++  // ensure the response is being consumed
++  // this is required for Node v0.10+
++  res.resume();
++  proceed();
+   return this;
+ };
+ 
+@@ -859,14 +1040,27 @@ Request.prototype.request = function () {
+  */
+ 
+ Request.prototype.callback = function (error, res) {
++  if (this._sizeError) error = this._sizeError;
++
+   if (this._shouldRetry(error, res)) {
+     return this._retry();
+   }
+ 
+-  // Avoid the error which is emitted from 'socket hang up' to cause the fn undefined error on JS runtime.
+-  const fn = this._callback || noop;
++  // Request is settling (no more retries) — guarantee spool cleanup for all paths
++  this._cleanupSpoolFile();
++
++  const fn = this._callback;
+   this.clearTimeout();
+-  if (this.called) return console.warn('superagent: double callback bug');
++
++  if (!fn) {
++    if (error && this.listeners('error').length > 0 && !this._errorEmitted) {
++      this._errorEmitted = true;
++      this.emit('error', error);
++    }
++    return;
++  }
++
++  if (this.called) return;
+   this.called = true;
+ 
+   if (!error) {
+@@ -889,19 +1083,31 @@ Request.prototype.callback = function (error, res) {
+   // It's important that the callback is called outside try/catch
+   // to avoid double callback
+   if (!error) {
++    // Clean up any disk-spooled replay file on success.
++    this._cleanupSpoolFile();
+     return fn(null, res);
+   }
+ 
+   error.response = res;
+-  if (this._maxRetries) error.retries = this._retries - 1;
++  if (this.hasSizeError() || error.code === 'ETOOLARGE') {
++    // Size errors must never trigger automatic retries; retries count is always 0.
++    error.retries = 0;
++  } else if (this._maxRetries) {
++    error.retries = this._retries - 1;
++  }
+ 
+   // only emit error event if there is a listener
+   // otherwise we assume the callback to `.end()` will get the error
+-  if (error && this.listeners('error').length > 0) {
++  if (error && this.listeners('error').length > 0 && !this._errorEmitted) {
++    this._errorEmitted = true;
+     this.emit('error', error);
+   }
+ 
+   fn(error, res);
++
++  // Clean up any disk-spooled replay file once the request has fully settled.
++  // Do this after fn() so the user callback does not race with file deletion.
++  this._cleanupSpoolFile();
+ };
+ 
+ /**
+@@ -919,6 +1125,113 @@ Request.prototype._isHost = function (object) {
+   );
+ };
+ 
++/**
++ * Abort the request and invoke callback with size limit error.
++ * Also protects the emitted Response object from unhandled errors.
++ *
++ * @param {String} type request or response
++ * @return {Error} size error
++ * @api private
++ */
++Request.prototype._abortWithSizeError = function (type) {
++  if (this._sizeError) return this._sizeError;
++
++  const error = new Error(`Maximum ${type} size reached`);
++  error.code = 'ETOOLARGE';
++  error.retries = 0;
++  this._sizeError = error;
++
++  // Prevent unhandled error event on the raw IncomingMessage only if no listeners
++  if (this.res && this.res.listeners('error').length === 0) {
++    this.res.on('error', () => {});
++  }
++
++  // Prevent unhandled error event on the raw ClientRequest only if no listeners
++  if (this.req && this.req.listeners('error').length === 0) {
++    this.req.on('error', () => {});
++  }
++
++  // Prevent unhandled error event on the emitted Response wrapper only if no listeners
++  if (this.response && this.response.listeners('error').length === 0) {
++    this.response.on('error', () => {});
++  }
++
++  if (this._sourceStream) {
++    this._sourceStream.unpipe(this);
++    if (typeof this._sourceStream.destroy === 'function') {
++      this._sourceStream.destroy();
++    } else if (typeof this._sourceStream.resume === 'function') {
++      this._sourceStream.resume();
++    }
++  }
++
++  this.abort();
++  if (!this.called) {
++    this.callback(error, type === 'response' ? null : undefined);
++  } else {
++    // If callback was already called (e.g. unbuffered streaming),
++    // still emit error on the Request if an error listener is attached.
++    if (this.listeners('error').length > 0 && !this._errorEmitted) {
++      this._errorEmitted = true;
++      this.emit('error', error);
++    }
++  }
++  return error;
++};
++
++/**
++ * Check whether a request body has exceeded the configured size limit.
++ *
++ * @param {Number} size request body size in bytes
++ * @return {Boolean} whether the request may continue
++ * @api private
++ */
++Request.prototype._checkRequestSize = function (size) {
++  if (
++    this._maxRequestSize !== undefined &&
++    size > this._maxRequestSize
++  ) {
++    this._abortWithSizeError('request');
++    return false;
++  }
++
++  return true;
++};
++
++/**
++ * Monitor and limit response body downloads.
++ * A single counting Transform used by _pipeContinue.
++ *
++ * @return {Transform} response monitor
++ * @api private
++ */
++Request.prototype._getResponseMonitor = function () {
++  if (this._maxResponseSize === undefined) {
++    return new Stream.PassThrough();
++  }
++
++  const max = this._maxResponseSize;
++  let loaded = 0;
++
++  const monitor = new Stream.Transform();
++  monitor._transform = (chunk, encoding, callback) => {
++    loaded += chunk.length;
++    if (loaded > max) {
++      const error = this._abortWithSizeError('response');
++      if (this.res) {
++        this.res.unpipe();
++        this.res.destroy();
++      }
++      return callback(error);
++    }
++
++    callback(null, chunk);
++  };
++
++  return monitor;
++};
++
++
+ /**
+  * Initiate request, invoking callback `fn(err, res)`
+  * with an instanceof `Response`.
+@@ -979,42 +1292,202 @@ Request.prototype.end = function (fn) {
+   this._end();
+ };
+ 
++/**
++ * Spool a Node FormData instance to a temporary file on disk for replay.
++ * Using disk storage avoids in-memory duplication and removes any size cap
++ * for response-only limits (the disk holds arbitrary-size payloads).
++ * - If maxRequestSize is configured and exceeded: callback with ETOOLARGE error.
++ * - Otherwise: callback with { tmpPath, totalLength } for the caller to replay.
++ *
++ * @param {FormData} formData
++ * @param {Number} [maxRequestSize]
++ * @param {Function} callback (err, { tmpPath, totalLength } | null)
++ * @api private
++ */
++const activeSpoolFiles = new Set();
++process.once('exit', () => {
++  for (const file of activeSpoolFiles) {
++    try {
++      fs.unlinkSync(file);
++    } catch (_) {
++      // ignore
++    }
++  }
++});
++
++function spoolFormDataToDisk(formData, maxRequestSize, callback) {
++  const os = require('os');
++  const pathMod = require('path');
++  const tmpPath = pathMod.join(
++    os.tmpdir(),
++    'sa-replay-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '.tmp'
++  );
++  activeSpoolFiles.add(tmpPath);
++
++  const ws = fs.createWriteStream(tmpPath);
++  let totalLength = 0;
++  let done = false;
++  let limitExceeded = false;
++
++  const cleanup = () => {
++    activeSpoolFiles.delete(tmpPath);
++    try { fs.unlinkSync(tmpPath); } catch (_) { /* ignore */ }
++  };
++
++  const fail = (err) => {
++    if (done) return;
++    done = true;
++    ws.destroy();
++    cleanup();
++    callback(err);
++  };
++
++  formData.on('data', (chunk) => {
++    if (done || limitExceeded) return;
++    const len = Buffer.isBuffer(chunk) ? chunk.length : Buffer.byteLength(chunk);
++    totalLength += len;
++    if (maxRequestSize !== undefined && totalLength > maxRequestSize) {
++      limitExceeded = true;
++      // Stop the stream; fail will fire via ws close or explicitly here
++      if (typeof formData.destroy === 'function') {
++        formData.destroy();
++      } else if (typeof formData.resume === 'function') {
++        formData.resume();
++      }
++      const err = new Error('Maximum request size reached');
++      err.code = 'ETOOLARGE';
++      err.retries = 0;
++      fail(err);
++    }
++  });
++
++  formData.once('error', fail);
++  ws.once('error', fail);
++
++  formData.pipe(ws);
++
++  ws.once('finish', () => {
++    if (done || limitExceeded) return;
++    done = true;
++    callback(null, { tmpPath, totalLength });
++  });
++}
++
++/**
++ * Clean up the temporary replay spool file if one was created.
++ * Safe to call multiple times.
++ * @api private
++ */
++Request.prototype._cleanupSpoolFile = function () {
++  if (this._formDataTmpPath) {
++    const f = this._formDataTmpPath;
++    this._formDataTmpPath = null;
++    activeSpoolFiles.delete(f);
++    if (this._spoolReadStream) {
++      try {
++        this._spoolReadStream.destroy();
++      } catch (_) {
++        // ignore
++      }
++      this._spoolReadStream = null;
++    }
++    const remove = (retries = 3) => {
++      fs.unlink(f, (err) => {
++        if (err && (err.code === 'EBUSY' || err.code === 'EPERM') && retries > 0) {
++          setTimeout(() => remove(retries - 1), 25);
++        }
++      });
++    };
++    remove();
++  }
++};
++
++
+ Request.prototype._end = function () {
++  const retries = this._retries;
+   if (this._aborted)
+     return this.callback(
+-      new Error('The request has been aborted even before .end() was called')
++      this._sizeError ||
++        new Error('The request has been aborted even before .end() was called')
+     );
+ 
+   let data = this._data;
+   const { req } = this;
+   const { method } = this;
+ 
++  if (method === 'GET' || method === 'HEAD') {
++    this._cleanupSpoolFile();
++    this._formDataTmpLength = null;
++    delete this._formDataHeaders;
++    this._data = null;
++    delete this._formData;
++    delete this._formDataSerialized;
++  }
++
+   this._setTimeouts();
+ 
+   // body
+-  if (method !== 'HEAD' && !req._headerSent) {
+-    // serialize stuff
+-    if (typeof data !== 'string') {
+-      let contentType = req.getHeader('Content-Type');
+-      // Parse out just the content type from the header (ignore the charset)
+-      if (contentType) contentType = contentType.split(';')[0];
+-      let serialize = this._serializer || exports.serialize[contentType];
+-      if (!serialize && isJSON(contentType)) {
+-        serialize = exports.serialize['application/json'];
+-      }
+-
+-      if (serialize) data = serialize(data);
++  // serialize stuff
++  if (typeof data !== 'string' && !req._headerSent) {
++    let contentType = req.getHeader('Content-Type');
++    // Parse out just the content type from the header (ignore the charset)
++    if (contentType) contentType = contentType.split(';')[0];
++    let serialize = this._serializer || exports.serialize[contentType];
++    if (!serialize && isJSON(contentType)) {
++      serialize = exports.serialize['application/json'];
+     }
+ 
+-    // content-length
+-    if (data && !req.getHeader('Content-Length')) {
+-      req.setHeader(
+-        'Content-Length',
+-        Buffer.isBuffer(data) ? data.length : Buffer.byteLength(data)
+-      );
++    if (serialize) data = serialize(data);
++  }
++
++  if (!this._formData && data !== undefined && data !== null) {
++    const length = Buffer.isBuffer(data)
++      ? data.length
++      : typeof data === 'string'
++        ? Buffer.byteLength(data)
++        : ArrayBuffer.isView(data)
++          ? data.byteLength
++          : data instanceof ArrayBuffer
++            ? data.byteLength
++            : undefined;
++    if (length !== undefined) {
++      if (!Buffer.isBuffer(data)) {
++        this._requestBytesSent = (this._requestBytesSent || 0) + length;
++        if (!this._checkRequestSize(this._requestBytesSent)) return;
++      } else {
++        const total = (this._requestBytesSent || 0) + length;
++        if (!this._checkRequestSize(total)) return;
++      }
+     }
+   }
+ 
++  // content-length
++  if (method !== 'HEAD' && !req._headerSent && data && !req.getHeader('Content-Length')) {
++    req.setHeader(
++      'Content-Length',
++      Buffer.isBuffer(data) ? data.length : Buffer.byteLength(data)
++    );
++  }
++
++  const explicitCl = parseInt(this.getHeader('Content-Length') || (req && req.getHeader && req.getHeader('Content-Length')), 10);
++  if (!isNaN(explicitCl) && this._maxRequestSize !== undefined && explicitCl > this._maxRequestSize) {
++    if (!this._checkRequestSize(explicitCl)) return;
++  }
++
++  // Track upload completion for ALL upload paths (not just spooled multipart).
++  // This ensures the unbuffered response deferral works for plain .send(), Buffer,
++  // stream, and non-spooled FormData uploads — not just disk-spooled multipart.
++  req.once('finish', () => {
++    this._uploadComplete = true;
++    // If an unbuffered response was already received while the upload was in flight,
++    // deliver it now that we know the upload completed within limits.
++    if (this._pendingUnbufferedResponse && !this.called && !this.hasSizeError()) {
++      const response = this._pendingUnbufferedResponse;
++      this._pendingUnbufferedResponse = null;
++      this.callback(null, response);
++    }
++  });
++
+   // response
+   // eslint-disable-next-line complexity
+   req.once('response', (res) => {
+@@ -1140,24 +1613,62 @@ Request.prototype._end = function () {
+ 
+     this._resBuffered = buffer;
+     let parserHandlesEnd = false;
+-    if (buffer) {
+-      // Protectiona against zip bombs and other nuisance
+-      let responseBytesLeft = this._maxResponseSize || 200000000;
+-      res.on('data', (buf) => {
+-        responseBytesLeft -= buf.byteLength || buf.length > 0 ? buf.length : 0;
++
++    const maxLimit = buffer
++      ? (this._maxResponseSize !== undefined ? this._maxResponseSize : 200000000)
++      : this._maxResponseSize;
++
++    // Protection against zip bombs and other nuisance (buffered, or unbuffered when maxResponseSize is set)
++    // Only precheck Content-Length when NOT compressing/decompressing and response has body content (e.g. not 204 or 304), because
++    // maxResponseSize counts uncompressed bytes while Content-Length reflects compressed bytes.
++    if (maxLimit !== undefined && this.method.toUpperCase() !== 'HEAD' && hasNonEmptyResponseContent(res) && !this._shouldDecompress(res)) {
++      const clHeader = res.headers['content-length'];
++      if (clHeader) {
++        const cl = parseInt(clHeader, 10);
++        if (!isNaN(cl) && cl > maxLimit) {
++          parserHandlesEnd = false;
++          const error = this._abortWithSizeError('response');
++          if (typeof res.destroy === 'function') {
++            res.destroy(error);
++          }
++          return;
++        }
++      }
++    }
++
++    if (maxLimit !== undefined) {
++      let responseBytesLeft = maxLimit;
++      const onDataChunk = (chunk) => {
++        if (this.hasSizeError()) return;
++
++        const len = Buffer.isBuffer(chunk)
++          ? chunk.length
++          : typeof chunk === 'string'
++            ? Buffer.byteLength(chunk)
++            : chunk.byteLength || 0;
++
++        responseBytesLeft -= len;
+         if (responseBytesLeft < 0) {
+-          // This will propagate through error event
+-          const error = new Error('Maximum response size reached');
+-          error.code = 'ETOOLARGE';
+-          // Parsers aren't required to observe error event,
+-          // so would incorrectly report success
+           parserHandlesEnd = false;
+-          // Will not emit error event
+-          res.destroy(error);
+-          // so we do callback now
+-          this.callback(error, null);
++          const error = this._abortWithSizeError('response');
++          if (typeof res.destroy === 'function') {
++            res.destroy(error);
++          }
+         }
+-      });
++      };
++
++      if (this._shouldDecompress(res)) {
++        res._onDecompressChunk = onDataChunk;
++      } else {
++        const origPush = res.push;
++        const self = this;
++        res.push = function (chunk) {
++          if (chunk && !self.hasSizeError()) {
++            onDataChunk(chunk);
++          }
++          return origPush.apply(this, arguments);
++        };
++      }
+     }
+ 
+     if (parser) {
+@@ -1167,7 +1678,7 @@ Request.prototype._end = function () {
+         parserHandlesEnd = buffer;
+ 
+         parser(res, (error, object, files) => {
+-          if (this.timedout) {
++          if (this.timedout || this.hasSizeError()) {
+             // Timeout has already handled all callbacks
+             return;
+           }
+@@ -1191,29 +1702,70 @@ Request.prototype._end = function () {
+ 
+     this.res = res;
+ 
++    // terminating events: register error handler for all response modes (buffered and unbuffered)
++    res.once('error', (error) => {
++      parserHandlesEnd = false;
++      if (this._retries !== retries) return;
++      if (this.hasSizeError()) return;
++      if (this._aborted) {
++        return this.callback(null, this._emitResponse());
++      }
++      if (res.statusCode === 204 && (error.message === 'aborted' || error.code === 'ECONNRESET')) {
++        return this.callback(null, this._emitResponse());
++      }
++      this.callback(error, null);
++    });
++
+     // unbuffered
+     if (!buffer) {
+       debug('unbuffered %s %s', this.method, this.url);
+-      this.callback(null, this._emitResponse());
++      const response = this._emitResponse();
++
++      // If no response size limit is configured, invoke callback immediately upon receiving headers.
++      // However, if a request size limit is configured and the upload is still in progress,
++      // defer until the upload completes to guarantee ETOOLARGE can still be delivered.
++      if (this._maxResponseSize === undefined) {
++        const uploadDone = this._uploadComplete || req.writableEnded || req._ended || this.method === 'GET' || this.method === 'HEAD' || (!this._formData && (this._data === undefined || this._data === null));
++        if (this._maxRequestSize !== undefined && !uploadDone) {
++          // Upload still in flight — store the response and fire callback once upload finishes.
++          this._pendingUnbufferedResponse = response;
++        } else {
++          this.callback(null, response);
++        }
++      }
++
+       if (multipart) return; // allow multipart to handle end event
++
+       res.once('end', () => {
++        if (this._retries !== retries) return;
+         debug('end %s %s', this.method, this.url);
+         this.emit('end');
++        if (this._pendingUnbufferedResponse && !this.called && !this.hasSizeError()) {
++          const pending = this._pendingUnbufferedResponse;
++          this._pendingUnbufferedResponse = null;
++          this.callback(null, pending);
++        }
++        // When maxResponseSize is configured, defer success callback until stream completes within limit
++        if (this._maxResponseSize !== undefined && !this.hasSizeError()) {
++          this.callback(null, response);
++        }
+       });
++
++      if (this._maxResponseSize !== undefined) {
++        res.resume();
++      }
+       return;
+     }
+ 
+-    // terminating events
+-    res.once('error', (error) => {
+-      parserHandlesEnd = false;
+-      this.callback(error, null);
+-    });
+     if (!parserHandlesEnd)
+       res.once('end', () => {
++        if (this._retries !== retries) return;
+         debug('end %s %s', this.method, this.url);
+         // TODO: unless buffering emit earlier to stream
+         this.emit('end');
+-        this.callback(null, this._emitResponse());
++        if (!this.hasSizeError()) {
++          this.callback(null, this._emitResponse());
++        }
+       });
+   });
+ 
+@@ -1227,6 +1779,10 @@ Request.prototype._end = function () {
+     const progress = new Stream.Transform();
+     progress._transform = (chunk, encoding, callback) => {
+       loaded += chunk.length;
++      this._requestBytesSent = (this._requestBytesSent || 0) + chunk.length;
++      if (!this._checkRequestSize(this._requestBytesSent)) {
++        return callback(this._sizeError);
++      }
+       this.emit('progress', {
+         direction: 'upload',
+         lengthComputable,
+@@ -1236,6 +1792,10 @@ Request.prototype._end = function () {
+       callback(null, chunk);
+     };
+ 
++    progress.on('error', (error) => {
++      if (!this.hasSizeError()) this.callback(error);
++    });
++
+     return progress;
+   };
+ 
+@@ -1261,11 +1821,39 @@ Request.prototype._end = function () {
+     return chunking;
+   };
+ 
+-  // if a FormData instance got created, then we send that as the request body
+-  const formData = this._formData;
+-  if (formData) {
++  // If a disk-spooled multipart payload was already preserved (e.g. for retry), replay it.
++  if (this.method !== 'GET' && this.method !== 'HEAD' && this._formDataTmpPath) {
++    const headers = this._formDataHeaders || {};
++    for (const i in headers) {
++      if (hasOwn(headers, i)) {
++        req.setHeader(i, headers[i]);
++      }
++    }
++    const tmpLength = this._formDataTmpLength || 0;
++    req.setHeader('Content-Length', tmpLength);
++    if (!this._checkRequestSize(tmpLength)) {
++      this._cleanupSpoolFile();
++      return;
++    }
++
++    const progressMonitor = getProgressMonitor();
++    progressMonitor.once('finish', () => {
++      this._uploadComplete = true;
++      if (this._pendingUnbufferedResponse && !this.called && !this.hasSizeError()) {
++        const response = this._pendingUnbufferedResponse;
++        this._pendingUnbufferedResponse = null;
++        this.callback(null, response);
++      }
++    });
++
++    const stream = fs.createReadStream(this._formDataTmpPath);
++    this._spoolReadStream = stream;
++    stream.pipe(progressMonitor).pipe(req);
++  } else if (this.method !== 'GET' && this.method !== 'HEAD' && this._formData) {
++    const formData = this._formData;
+     // set headers
+     const headers = formData.getHeaders();
++    this._formDataHeaders = headers;
+     for (const i in headers) {
+       if (hasOwn(headers, i)) {
+         debug('setting FormData header: "%s: %s"', i, headers[i]);
+@@ -1273,18 +1861,67 @@ Request.prototype._end = function () {
+       }
+     }
+ 
+-    // attempt to get "Content-Length" header
+-    formData.getLength((error, length) => {
+-      // TODO: Add chunked encoding when no length (if err)
+-      if (error) debug('formData.getLength had error', error, length);
++    // Spool the multipart payload whenever retries are enabled and either size limit
++    // is configured. This covers both maxRequestSize (enforce send-side cap) and
++    // maxResponseSize-only paths (including fs.ReadStream attachments that cannot be
++    // re-consumed after the first attempt).
++    const needsMultipartReplay = (this._maxRetries > 0) && (
++      (this._maxRequestSize !== undefined) ||
++      (this._maxResponseSize !== undefined)
++    );
+ 
+-      debug('got FormData Content-Length: %s', length);
+-      if (typeof length === 'number') {
+-        req.setHeader('Content-Length', length);
+-      }
++    if (needsMultipartReplay) {
++      // Spool the multipart payload to a temp file on disk — avoids in-memory duplication
++      // and imposes no size cap for response-only limits (disk handles arbitrary payloads).
++      spoolFormDataToDisk(formData, this._maxRequestSize, (error, result) => {
++        if (this.hasSizeError()) return;
++        if (error) {
++          if (error.code === 'ETOOLARGE') {
++            this._abortWithSizeError('request');
++            return;
++          }
++          return this.callback(error);
++        }
+ 
+-      formData.pipe(getProgressMonitor()).pipe(req);
+-    });
++        const { tmpPath, totalLength } = result;
++        this._formDataTmpPath = tmpPath;   // used for replay on retry
++        this._formDataTmpLength = totalLength;
++
++        req.setHeader('Content-Length', totalLength);
++        if (!this._checkRequestSize(totalLength)) {
++          this._cleanupSpoolFile();
++          return;
++        }
++
++        const progressMonitor = getProgressMonitor();
++        // Track upload completion so we can safely defer unbuffered success
++        progressMonitor.once('finish', () => {
++          this._uploadComplete = true;
++          if (this._pendingUnbufferedResponse && !this.called && !this.hasSizeError()) {
++            const response = this._pendingUnbufferedResponse;
++            this._pendingUnbufferedResponse = null;
++            this.callback(null, response);
++          }
++        });
++        fs.createReadStream(tmpPath).pipe(progressMonitor).pipe(req);
++      });
++
++    } else {
++      // Streaming upload path (preserves streaming, bounds memory, no buffering)
++      formData.getLength((error, length) => {
++        if (error) debug('formData.getLength had error', error, length);
++
++        debug('got FormData Content-Length: %s', length);
++        if (typeof length === 'number') {
++          req.setHeader('Content-Length', length);
++          if (this._maxRequestSize !== undefined && !this._checkRequestSize(length)) {
++            return;
++          }
++        }
++
++        formData.pipe(getProgressMonitor()).pipe(req);
++      });
++    }
+   } else if (Buffer.isBuffer(data)) {
+     bufferToChunks(data).pipe(getProgressMonitor()).pipe(req);
+   } else {
+diff --git a/src/node/unzip.js b/src/node/unzip.js
+index 1eeff98..2a6ac25 100644
+--- a/src/node/unzip.js
++++ b/src/node/unzip.js
+@@ -43,6 +43,9 @@ exports.decompress = (request, res) => {
+ 
+   // decode upon decompressing with captured encoding
+   decompresser.on('data', (buf) => {
++    if (res._onDecompressChunk) {
++      res._onDecompressChunk(buf);
++    }
+     if (decoder) {
+       const string_ = decoder.write(buf);
+       if (string_.length > 0) stream.emit('data', string_);
+diff --git a/src/request-base.js b/src/request-base.js
+index c69262e..bbb2819 100644
+--- a/src/request-base.js
++++ b/src/request-base.js
+@@ -187,6 +187,12 @@ const STATUS_CODES = new Set([
+  * @returns {Boolean} if segment should be retried
+  */
+ RequestBase.prototype._shouldRetry = function (error, res) {
++  // Size-limit errors are deterministic and must never trigger a retry,
++  // even if the user has configured a custom retry predicate.
++  if (this.hasSizeError() || (error && error.code === 'ETOOLARGE')) {
++    return false;
++  }
++
+   if (!this._maxRetries || this._retries++ >= this._maxRetries) {
+     return false;
+   }
+@@ -230,10 +236,39 @@ RequestBase.prototype._shouldRetry = function (error, res) {
+  */
+ 
+ RequestBase.prototype._retry = function () {
++  // Guard: if the terminal callback was already delivered to the caller,
++  // we cannot safely retry — doing so would invoke the end-callback twice.
++  // This prevents double-callback in the unbuffered path where .callback()
++  // fires immediately on response headers (no response size limit) and then
++  // an ECONNRESET on the body triggers the retry error handler.
++  if (this.called) {
++    return false;
++  }
++
++  this.called = false;
+   this.clearTimeout();
+ 
+-  // node
+-  if (this.req) {
++
++  const oldRes = this.res;
++  const oldResponse = this.response;
++  const oldReq = this.req;
++
++  this.res = null;
++  this.response = null;
++  this._responseBytesReceived = undefined;
++  this._requestBytesSent = 0;
++
++  // Prevent unhandled errors on previous attempt's streams/wrappers when retrying
++  if (oldResponse && typeof oldResponse.on === 'function') {
++    oldResponse.on('error', () => {});
++  }
++  if (oldRes && typeof oldRes.on === 'function') {
++    oldRes.on('error', () => {});
++  }
++  if (oldReq) {
++    if (typeof oldReq.on === 'function') {
++      oldReq.on('error', () => {});
++    }
+     this.req = null;
+     this.req = this.request();
+   }
+@@ -242,6 +277,14 @@ RequestBase.prototype._retry = function () {
+   this.timedout = false;
+   this.timedoutError = null;
+ 
++  // Reset upload-completion tracking for the new attempt.
++  // _formDataTmpPath is intentionally kept: the disk spool file is re-used for replay.
++  this._uploadComplete = false;
++  this._pendingUnbufferedResponse = null;
++
++  // Do NOT reset _endCalled here: it records that the public .end() was called
++  // and is used by _abortWithSizeError (browser) and _emitResponse (node)
++  // to gate their per-response guards correctly.
+   return this._end();
+ };
+ 
+@@ -264,6 +307,11 @@ RequestBase.prototype.then = function (resolve, reject) {
+ 
+     this._fullfilledPromise = new Promise((resolve, reject) => {
+       self.on('abort', () => {
++        if (this._sizeError) {
++          reject(this._sizeError);
++          return;
++        }
++
+         if (this._maxRetries && this._maxRetries > this._retries) {
+           return;
+         }
+@@ -541,11 +589,12 @@ RequestBase.prototype.redirects = function (n) {
+ };
+ 
+ /**
+- * Maximum size of buffered response body, in bytes. Counts uncompressed size.
+- * Default 200MB.
++ * Set maximum size of response body, in bytes. Counts uncompressed size.
++ * Default 200MB for buffered responses.
+  *
+  * @param {Number} n number of bytes
+  * @return {Request} for chaining
++ * @api public
+  */
+ RequestBase.prototype.maxResponseSize = function (n) {
+   if (typeof n !== 'number') {
+@@ -556,6 +605,32 @@ RequestBase.prototype.maxResponseSize = function (n) {
+   return this;
+ };
+ 
++/**
++ * Maximum size of request body, in bytes.
++ *
++ * @param {Number} n number of bytes
++ * @return {Request} for chaining
++ * @api public
++ */
++RequestBase.prototype.maxRequestSize = function (n) {
++  if (typeof n !== 'number') {
++    throw new TypeError('Invalid argument');
++  }
++
++  this._maxRequestSize = n;
++  return this;
++};
++
++/**
++ * Check whether this request exceeded its request or response size limit.
++ *
++ * @return {Boolean}
++ * @api public
++ */
++RequestBase.prototype.hasSizeError = function () {
++  return Boolean(this._sizeError);
++};
++
+ /**
+  * Convert to a plain javascript object (not JSON string) of scalar properties.
+  * Note as this method is designed to return a useful non-this value,

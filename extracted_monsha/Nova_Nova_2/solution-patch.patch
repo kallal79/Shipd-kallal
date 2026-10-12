@@ -1,0 +1,421 @@
+diff --git a/src/node/index.js b/src/node/index.js
+index c21231a..ae0573e 100644
+--- a/src/node/index.js
++++ b/src/node/index.js
+@@ -165,6 +165,7 @@ function Request(method, url) {
+   this.qsRaw = this._query; // Unused, for backwards compatibility only
+   this._redirectList = [];
+   this._streamRequest = false;
++  this._requestBytes = 0;
+   this._lookup = undefined;
+   this.once('end', this.clearTimeout.bind(this));
+ }
+@@ -414,6 +415,14 @@ Request.prototype.write = function (data, encoding) {
+     this._streamRequest = true;
+   }
+ 
++  const byteLength = getByteLength(data, encoding);
++  const requestBytes = this._requestBytes + byteLength;
++  if (!this._checkRequestSize(requestBytes)) {
++    return false;
++  }
++
++  this._requestBytes = requestBytes;
++
+   return request_.write(data, encoding);
+ };
+ 
+@@ -808,6 +817,7 @@ Request.prototype.request = function () {
+     // because node will emit a faux-error "socket hang up"
+     // when request is aborted before a connection is made
+     if (this._aborted) return;
++    if (this._sizeError) return;
+     // if not the same, we are in the **old** (cancelled) request,
+     // so need to continue (same as for above)
+     if (this._retries !== retries) return;
+@@ -904,6 +914,53 @@ Request.prototype.callback = function (error, res) {
+   fn(error, res);
+ };
+ 
++/**
++ * Create and record a size-limit error, terminate the active stream, and
++ * invoke the callback when .end() has supplied one.
++ *
++ * @param {Error} error
++ * @param {Stream} stream
++ * @return {Error}
++ * @api private
++ */
++Request.prototype._setSizeError = function (error, stream) {
++  if (this._sizeError) return this._sizeErrorError;
++
++  this._sizeError = true;
++  this._sizeErrorError = error;
++
++  const stream_ = stream || this.req;
++  if (stream_ && !stream_.destroyed) {
++    if (typeof stream_.abort === 'function') stream_.abort();
++    else stream_.destroy(error);
++  }
++
++  if (this._endCalled && !this.called) {
++    this.callback(error);
++  }
++
++  return error;
++};
++
++/**
++ * Check a complete or cumulative request-body byte count.
++ *
++ * @param {Number} bytes
++ * @return {Boolean}
++ * @api private
++ */
++Request.prototype._checkRequestSize = function (bytes) {
++  if (
++    this._maxRequestSize !== undefined &&
++    bytes > this._maxRequestSize
++  ) {
++    this._setSizeError(this._createSizeError('request'));
++    return false;
++  }
++
++  return true;
++};
++
+ /**
+  * Check if `obj` is a host object,
+  *
+@@ -980,6 +1037,10 @@ Request.prototype.end = function (fn) {
+ };
+ 
+ Request.prototype._end = function () {
++  if (this._sizeError) {
++    return this.callback(this._sizeErrorError);
++  }
++
+   if (this._aborted)
+     return this.callback(
+       new Error('The request has been aborted even before .end() was called')
+@@ -1013,6 +1074,14 @@ Request.prototype._end = function () {
+         Buffer.isBuffer(data) ? data.length : Buffer.byteLength(data)
+       );
+     }
++
++    if (
++      data !== undefined &&
++      data !== null &&
++      !this._checkRequestSize(getByteLength(data))
++    ) {
++      return;
++    }
+   }
+ 
+   // response
+@@ -1140,22 +1209,25 @@ Request.prototype._end = function () {
+ 
+     this._resBuffered = buffer;
+     let parserHandlesEnd = false;
++    let responseSizeError = false;
+     if (buffer) {
+       // Protectiona against zip bombs and other nuisance
+-      let responseBytesLeft = this._maxResponseSize || 200000000;
++      const maxResponseSize =
++        this._maxResponseSize === undefined ? 200000000 : this._maxResponseSize;
++      let responseBytes = 0;
+       res.on('data', (buf) => {
+-        responseBytesLeft -= buf.byteLength || buf.length > 0 ? buf.length : 0;
+-        if (responseBytesLeft < 0) {
+-          // This will propagate through error event
++        if (responseSizeError) return;
++
++        responseBytes += getByteLength(buf);
++        if (responseBytes > maxResponseSize) {
++          responseSizeError = true;
+           const error = new Error('Maximum response size reached');
+           error.code = 'ETOOLARGE';
+           // Parsers aren't required to observe error event,
+           // so would incorrectly report success
+           parserHandlesEnd = false;
+-          // Will not emit error event
+-          res.destroy(error);
+-          // so we do callback now
+-          this.callback(error, null);
++          // _setSizeError destroys the response and invokes the callback.
++          this._setSizeError(error, res);
+         }
+       });
+     }
+@@ -1167,7 +1239,7 @@ Request.prototype._end = function () {
+         parserHandlesEnd = buffer;
+ 
+         parser(res, (error, object, files) => {
+-          if (this.timedout) {
++          if (this.timedout || responseSizeError) {
+             // Timeout has already handled all callbacks
+             return;
+           }
+@@ -1205,11 +1277,13 @@ Request.prototype._end = function () {
+ 
+     // terminating events
+     res.once('error', (error) => {
++      if (responseSizeError) return;
+       parserHandlesEnd = false;
+       this.callback(error, null);
+     });
+     if (!parserHandlesEnd)
+       res.once('end', () => {
++        if (responseSizeError) return;
+         debug('end %s %s', this.method, this.url);
+         // TODO: unless buffering emit earlier to stream
+         this.emit('end');
+@@ -1220,13 +1294,32 @@ Request.prototype._end = function () {
+   this.emit('request', this);
+ 
+   const getProgressMonitor = () => {
+-    const lengthComputable = true;
+     const total = req.getHeader('Content-Length');
++    const lengthComputable = total !== undefined;
+     let loaded = 0;
+ 
+     const progress = new Stream.Transform();
+     progress._transform = (chunk, encoding, callback) => {
+-      loaded += chunk.length;
++      const chunkLength = getByteLength(chunk, encoding);
++      const nextLoaded = loaded + chunkLength;
++      if (
++        this._maxRequestSize !== undefined &&
++        nextLoaded > this._maxRequestSize
++      ) {
++        this._setSizeError(
++          this._createSizeError('request'),
++          req
++        );
++        // Stop CombinedStream as soon as a stream's actual byte count is
++        // known to exceed the configured limit.
++        if (formData && typeof formData.destroy === 'function') {
++          formData.destroy();
++        }
++        callback();
++        return;
++      }
++
++      loaded = nextLoaded;
+       this.emit('progress', {
+         direction: 'upload',
+         lengthComputable,
+@@ -1283,15 +1376,38 @@ Request.prototype._end = function () {
+         req.setHeader('Content-Length', length);
+       }
+ 
++      if (
++        typeof length === 'number' &&
++        !this._checkRequestSize(length)
++      ) {
++        formData.destroy();
++        return;
++      }
++
+       formData.pipe(getProgressMonitor()).pipe(req);
+     });
+   } else if (Buffer.isBuffer(data)) {
++    if (!this._checkRequestSize(data.length)) return;
+     bufferToChunks(data).pipe(getProgressMonitor()).pipe(req);
+   } else {
++    if (
++      data !== undefined &&
++      data !== null &&
++      !this._checkRequestSize(getByteLength(data))
++    ) {
++      return;
++    }
+     req.end(data);
+   }
+ };
+ 
++function getByteLength(data, encoding) {
++  if (typeof data === 'string') return Buffer.byteLength(data, encoding);
++  if (data && typeof data.byteLength === 'number') return data.byteLength;
++  if (data && typeof data.length === 'number') return data.length;
++  return 0;
++}
++
+ // Check whether response has a non-0-sized gzip-encoded body
+ Request.prototype._shouldDecompress = (res) => {
+   return hasNonEmptyResponseContent(res) && (isGzipOrDeflateEncoding(res) || isBrotliEncoding(res));
+diff --git a/src/request-base.js b/src/request-base.js
+index c69262e..ceef8d8 100644
+--- a/src/request-base.js
++++ b/src/request-base.js
+@@ -187,6 +187,12 @@ const STATUS_CODES = new Set([
+  * @returns {Boolean} if segment should be retried
+  */
+ RequestBase.prototype._shouldRetry = function (error, res) {
++  // A size error means that retrying the request would produce the same
++  // result. A retry callback cannot opt a size error back into retrying.
++  if (this._sizeError || (error && error.code === 'ETOOLARGE')) {
++    return false;
++  }
++
+   if (!this._maxRetries || this._retries++ >= this._maxRetries) {
+     return false;
+   }
+@@ -556,6 +562,46 @@ RequestBase.prototype.maxResponseSize = function (n) {
+   return this;
+ };
+ 
++/**
++ * Maximum size of the outgoing request body, in bytes.
++ *
++ * @param {Number} n number of bytes
++ * @return {Request} for chaining
++ */
++RequestBase.prototype.maxRequestSize = function (n) {
++  if (typeof n !== 'number') {
++    throw new TypeError('Invalid argument');
++  }
++
++  this._maxRequestSize = n;
++
++  // Node can receive writes before maxRequestSize() is called. Check those
++  // bytes when the limit is configured as well.
++  if (
++    this._requestBytes > n &&
++    typeof this._setSizeError === 'function'
++  ) {
++    this._setSizeError(this._createSizeError('request'));
++  }
++
++  return this;
++};
++
++/**
++ * Whether this request exceeded either configured size limit.
++ *
++ * @return {Boolean}
++ */
++RequestBase.prototype.hasSizeError = function () {
++  return this._sizeError === true;
++};
++
++RequestBase.prototype._createSizeError = function (direction) {
++  const error = new Error(`Maximum ${direction} size reached`);
++  error.code = 'ETOOLARGE';
++  return error;
++};
++
+ /**
+  * Convert to a plain javascript object (not JSON string) of scalar properties.
+  * Note as this method is designed to return a useful non-this value,
+diff --git a/test/node/size-limits.js b/test/node/size-limits.js
+new file mode 100644
+index 0000000..ddadfd8
+--- /dev/null
++++ b/test/node/size-limits.js
+@@ -0,0 +1,105 @@
++'use strict';
++
++const assert = require('assert');
++const getSetup = require('../support/setup');
++const request = require('../support/client');
++
++describe('request size limits', () => {
++  let base;
++
++  before(async () => {
++    const setup = await getSetup();
++    base = setup.uri;
++  });
++
++  it('counts request body bytes and allows the exact limit', async () => {
++    const req = request
++      .post(`${base}/echo`)
++      .maxRequestSize(2)
++      .type('text/plain')
++      .send('é');
++
++    const res = await req;
++    assert.equal(res.text, 'é');
++    assert.equal(req.hasSizeError(), false);
++  });
++
++  it('returns ETOOLARGE for an oversized send body', (done) => {
++    const req = request
++      .post(`${base}/echo`)
++      .maxRequestSize(1)
++      .type('text/plain')
++      .send('é');
++
++    req.end((error) => {
++      assert.equal(error.code, 'ETOOLARGE');
++      assert.equal(req.hasSizeError(), true);
++      done();
++    });
++  });
++
++  it('counts bytes written through req.write()', (done) => {
++    const req = request.post(`${base}/echo`).maxRequestSize(2);
++    assert.equal(req.write('é'), true);
++    assert.equal(req.write('a'), false);
++
++    req.end((error) => {
++      assert.equal(error.code, 'ETOOLARGE');
++      assert.equal(req.hasSizeError(), true);
++      done();
++    });
++  });
++
++  it('does not retry a response size error or call back twice', (done) => {
++    let retryCount = 0;
++    const req = request
++      .get(`${base}/json`)
++      .maxResponseSize(1)
++      .retry(2, () => {
++        retryCount++;
++        return true;
++      });
++    let callbackCount = 0;
++
++    req.end((error) => {
++      callbackCount++;
++      assert.equal(error.code, 'ETOOLARGE');
++      assert.equal(req.hasSizeError(), true);
++      setImmediate(() => {
++        assert.equal(callbackCount, 1);
++        assert.equal(retryCount, 0);
++        done();
++      });
++    });
++  });
++
++  it('enforces multipart Content-Length and reports upload progress', async () => {
++    const req = request
++      .post(`${base}/echo`)
++      .field('name', 'Tobi');
++    const length = await new Promise((resolve, reject) => {
++      req._formData.getLength((error, value) => {
++        if (error) reject(error);
++        else resolve(value);
++      });
++    });
++    const progress = [];
++    req
++      .maxRequestSize(length)
++      .on('progress', (event) => progress.push(event));
++
++    await req;
++    assert.equal(req.hasSizeError(), false);
++    assert(progress.some((event) => event.direction === 'upload'));
++
++    const oversized = request
++      .post(`${base}/echo`)
++      .field('name', 'Tobi')
++      .maxRequestSize(length - 1);
++    const error = await new Promise((resolve) => {
++      oversized.end(resolve);
++    });
++    assert.equal(error.code, 'ETOOLARGE');
++    assert.equal(oversized.hasSizeError(), true);
++  });
++});

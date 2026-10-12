@@ -1,0 +1,1643 @@
+diff --git a/.<harness>-eval/f2p.json b/.<harness>-eval/f2p.json
+new file mode 100644
+index 0000000..4c78caf
+--- /dev/null
++++ b/.<harness>-eval/f2p.json
+@@ -0,0 +1 @@
++["hasSizeError() should return strict boolean false before any request is made::hidden verification tests hasSizeError() should return strict boolean false before any request is made", "hasSizeError() should return strict boolean true after a maxResponseSize error::hidden verification tests hasSizeError() should return strict boolean true after a maxResponseSize error", "should emit ETOOLARGE on browser request send overflow::hidden verification tests should emit ETOOLARGE on browser request send overflow", "should emit ETOOLARGE on browser response download progress overflow::hidden verification tests should emit ETOOLARGE on browser response download progress overflow", "should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach::hidden verification tests should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach", "should emit ETOOLARGE on maxRequestSize exceeded during multipart upload::hidden verification tests should emit ETOOLARGE on maxRequestSize exceeded during multipart upload", "should emit ETOOLARGE when Buffer payload exceeds maxRequestSize::hidden verification tests should emit ETOOLARGE when Buffer payload exceeds maxRequestSize", "should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize::hidden verification tests should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize", "should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)::hidden verification tests should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)", "should enforce maxRequestSize using reported Content-Length for multipart::hidden verification tests should enforce maxRequestSize using reported Content-Length for multipart", "should have hasSizeError true after Promise response overflow::hidden verification tests should have hasSizeError true after Promise response overflow", "should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded::hidden verification tests should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded", "should invoke callback with ETOOLARGE on unbuffered chunked response overflow::hidden verification tests should invoke callback with ETOOLARGE on unbuffered chunked response overflow", "should measure byte length for JSON object payload in maxRequestSize::hidden verification tests should measure byte length for JSON object payload in maxRequestSize", "should measure byte length for multibyte UTF-8 strings in maxRequestSize::hidden verification tests should measure byte length for multibyte UTF-8 strings in maxRequestSize", "should not retry request size error when retry(3) is configured::hidden verification tests should not retry request size error when retry(3) is configured", "should not retry response size error when retry(3) is configured::hidden verification tests should not retry response size error when retry(3) is configured", "should not settle browser request at readyState 1 and complete normally at readyState 4::hidden verification tests should not settle browser request at readyState 1 and complete normally at readyState 4", "should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary::hidden verification tests should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary", "should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary::hidden verification tests should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary", "should reject Promise with ETOOLARGE on request overflow::hidden verification tests should reject Promise with ETOOLARGE on request overflow", "should reject Promise with ETOOLARGE on response overflow::hidden verification tests should reject Promise with ETOOLARGE on response overflow", "should reject Promise with ETOOLARGE on unbuffered chunked response overflow::hidden verification tests should reject Promise with ETOOLARGE on unbuffered chunked response overflow", "should return false from hasSizeError() when no size limit is exceeded::hidden verification tests should return false from hasSizeError() when no size limit is exceeded", "should route multipart formData through an upload progress monitor and emit upload progress::hidden verification tests should route multipart formData through an upload progress monitor and emit upload progress", "should succeed for in-limit multipart upload with 200 status::hidden verification tests should succeed for in-limit multipart upload with 200 status"]
+diff --git a/.<harness>-eval/p2p.json b/.<harness>-eval/p2p.json
+new file mode 100644
+index 0000000..c89fd58
+--- /dev/null
++++ b/.<harness>-eval/p2p.json
+@@ -0,0 +1 @@
++["should parse links::utils.parseLinks(str) should parse links", "should return false when content encoding is bla::utils.isBrotliEncoding(res) should return false when content encoding is bla", "should return false when content encoding is bla::utils.isGzipOrDeflateEncoding(res) should return false when content encoding is bla", "should return the field parameters::utils.params(str) should return the field parameters", "should return the mime type::utils.type(str) should return the mime type", "should return true when content encoding - nested patterns::utils.isBrotliEncoding(res) should return true when content encoding - nested patterns", "should return true when content encoding - nested patterns::utils.isGzipOrDeflateEncoding(res) should return true when content encoding - nested patterns", "should return true when content encoding has a lot of spaces followed with br::utils.isBrotliEncoding(res) should return true when content encoding has a lot of spaces followed with br", "should return true when content encoding has a lot of spaces followed with gzip::utils.isGzipOrDeflateEncoding(res) should return true when content encoding has a lot of spaces followed with gzip", "should return true when content encoding is br::utils.isBrotliEncoding(res) should return true when content encoding is br", "should return true when content encoding is deflate::utils.isGzipOrDeflateEncoding(res) should return true when content encoding is deflate", "should return true when content encoding is gzip::utils.isGzipOrDeflateEncoding(res) should return true when content encoding is gzip", "should return true when content encoding repeates it self wuth a lot of spaces::utils.isBrotliEncoding(res) should return true when content encoding repeates it self wuth a lot of spaces", "should return true when content encoding repeates it self wuth a lot of spaces::utils.isGzipOrDeflateEncoding(res) should return true when content encoding repeates it self wuth a lot of spaces", "should return true when content encoding repeates it self::utils.isBrotliEncoding(res) should return true when content encoding repeates it self", "should return true when content encoding repeates it self::utils.isGzipOrDeflateEncoding(res) should return true when content encoding repeates it self"]
+diff --git a/.<harness>-eval/protected.json b/.<harness>-eval/protected.json
+new file mode 100644
+index 0000000..fe51488
+--- /dev/null
++++ b/.<harness>-eval/protected.json
+@@ -0,0 +1 @@
++[]
+diff --git a/.<harness>-eval/runner.sh b/.<harness>-eval/runner.sh
+new file mode 100644
+index 0000000..887567e
+--- /dev/null
++++ b/.<harness>-eval/runner.sh
+@@ -0,0 +1,4 @@
++#!/bin/bash
++export ORIGINAL_PATH="$PATH"
++export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
++exec python3 "$(dirname "$0")/wrapper.py" "$@"
+diff --git a/.<harness>-eval/wrapper.py b/.<harness>-eval/wrapper.py
+new file mode 100644
+index 0000000..8bb9754
+--- /dev/null
++++ b/.<harness>-eval/wrapper.py
+@@ -0,0 +1,402 @@
++from __future__ import annotations
++import argparse
++import copy
++import json
++import os
++import re
++import shutil
++import subprocess
++import tempfile
++import xml.etree.ElementTree as ET
++from pathlib import Path
++
++_HERE = Path(__file__).resolve().parent
++P2P = json.loads((_HERE / "p2p.json").read_text(encoding="utf-8"))
++F2P = json.loads((_HERE / "f2p.json").read_text(encoding="utf-8"))
++NORMALIZE_HASH_PREFIX = True
++# Repo-relative test artifacts (hidden test files + the contributor's
++# test.sh) shipped by the test_patch. Loaded once at startup; on-disk
++# tampering after this read can't change the in-memory list. Missing file =
++# older dispatch without the protect list → empty (back-compatible).
++try:
++    PROTECTED_FILES = json.loads((_HERE / "protected.json").read_text(encoding="utf-8"))
++except OSError:
++    PROTECTED_FILES = []
++
++# `./test.sh` runs the contributor's toolchain (`go`, `npm`, `cargo`,
++# …), which usually expects the original problem-image PATH —
++# /opt/go/bin etc. `runner.sh` sanitized the wrapper's own PATH to
++# block model-planted shims; we restore the original PATH here for
++# subprocesses we shell out to.
++_TEST_SH_ENV = dict(os.environ)
++_original_path = _TEST_SH_ENV.pop("ORIGINAL_PATH", None)
++if _original_path:
++    _TEST_SH_ENV["PATH"] = _original_path
++
++# Grade-time code-execution hardening: neutralize cargo's rustc-wrapper /
++# rustc-workspace-wrapper. A model-supplied wrapper binary runs arbitrary
++# code at *compile* time (Env Linter on `kh70wsr8gvsyaftc0z9a89x0yn872jnb`),
++# so it can forge the JUnit before rustc even starts. cargo takes the wrapper
++# from the `RUSTC_WRAPPER` / `RUSTC_WORKSPACE_WRAPPER` env vars or the
++# `build.rustc-wrapper` / `build.rustc-workspace-wrapper` config keys.
++# Empirically (cargo 1.94): dropping the bare env vars and forcing the
++# `CARGO_BUILD_*` overrides to "" disables the wrapper for both the env
++# channel and a single config key. Setting the *bare* var to "" is worse
++# than dropping it — it leaves the config wrapper live for cargo's
++# `rustc -vV` probe. No honest workload in our base images uses a
++# rustc-wrapper, so this only ever disables a (would-be) compile cache; it
++# can't flip an honest pass/fail. The both-config-keys-at-once edge is
++# closed by `sanitize_cargo_config()` before each run.
++for _wrapper_var in ("RUSTC_WRAPPER", "RUSTC_WORKSPACE_WRAPPER"):
++    _TEST_SH_ENV.pop(_wrapper_var, None)
++_TEST_SH_ENV["CARGO_BUILD_RUSTC_WRAPPER"] = ""
++_TEST_SH_ENV["CARGO_BUILD_RUSTC_WORKSPACE_WRAPPER"] = ""
++
++# Pre-grade hygiene: clobber `.git/hooks/` so a model-added
++# `post-checkout` / `pre-commit` / etc. can't fire when the
++# contributor's test.sh shells to git. Env Linter on
++# `kh798kq83dfftky9xzfq4m5q0n83y78c` verified the attack end-to-
++# end: model adds `/app/.git/hooks/post-checkout` that installs a
++# forging pytest plugin; test.sh's `git checkout HEAD -- ...`
++# triggers it as root. `.git/hooks/` doesn't carry any legitimate
++# grade-time semantics — removing it is safe for honest workloads.
++shutil.rmtree(".git/hooks", ignore_errors=True)
++
++parser = argparse.ArgumentParser(add_help=False)
++parser.add_argument("--junit-output-path", required=True)
++parser.add_argument("--session-timeout")
++args, _ = parser.parse_known_args()
++
++
++def _normalize_name_once(name: str) -> str:
++    name = name.strip().replace("::", ".")
++    if NORMALIZE_HASH_PREFIX:
++        name = re.sub(r"^#\d+\s+", "", name)
++        name = re.sub(r"(?<=\.)#\d+\s+", "", name)
++    # Strip trailing " (line N)" — Rust doctest nodeids carry the
++    # source line of the doctest comment, e.g.
++    # `minijinja.environment - environment.Environment<'source>.add_template (line 169)`.
++    # When an agent legitimately edits the file (e.g. adds a struct
++    # field on its own line above the doctest), every doctest's line
++    # number shifts and the wrapper's `add_missing_failures` reports
++    # synthetic baseline failures because the expected nodeid in
++    # p2p.json (with the OLD line number) doesn't match the JUnit-
++    # emitted nodeid (with the NEW line number). Stripping the line
++    # suffix on both sides makes baseline matching line-agnostic so
++    # idiomatic Rust edits don't trip the hard regression guard.
++    # Observed on agent_run `rd7b5z52751eebxse0w0183yz986m9fx`
++    # (minijinja): agent passed all 68 hidden tests but ~20
++    # baseline doctests false-failed, eval correctly identified
++    # the verifier bug, AUTO-OVERRIDE flipped verdict to FAIL.
++    name = re.sub(r"\s*\(line\s+\d+\)\s*$", "", name)
++    # Collapse whitespace around dots: JUnit keeps a trailing space on the
++    # classname attribute while the name is trimmed, so the joined expected id
++    # `mod.Class .test` must canonicalize to `mod.Class.test` to match the
++    # component-stripped present id. Names with internal spaces aren't around a
++    # dot, so they're untouched.
++    name = re.sub(r"\s*\.\s*", ".", name)
++    # Canonicalize non-deterministic memory addresses: objects with no custom
++    # repr render as `<... object at 0x7f..>`, and pytest builds a parametrize
++    # id from that repr — but the pointer changes every run, so the id is
++    # present in run 1 and missing in run 2. >=6 hex digits = an address.
++    name = re.sub(r"0x[0-9a-fA-F]{6,}", "0xADDR", name)
++    return name
++
++
++def normalize_name(name: str) -> str:
++    # Apply to a fixed point so normalization is idempotent: the dot-boundary
++    # collapse can expose a `#<n> ` counter the hash strip already passed, and
++    # the matcher normalizes the stored id one more time than the emitted id.
++    prev = None
++    while name != prev:
++        prev = name
++        name = _normalize_name_once(name)
++    return name
++
++
++def load_suites(path: Path) -> list[ET.Element]:
++    if not path.exists() or path.stat().st_size == 0:
++        return []
++    root = ET.parse(path).getroot()
++    if root.tag == "testsuite":
++        suites = [root]
++    elif root.tag == "testsuites":
++        suites = [child for child in root if child.tag == "testsuite"]
++        # node:test (and other flat reporters) emit <testcase> as direct
++        # children of <testsuites> with no <testsuite> wrapper when there are
++        # no sub-suites; collect those into a synthetic suite so they aren't
++        # dropped from the present set.
++        loose = [child for child in root if child.tag == "testcase"]
++        if loose:
++            synthetic = ET.Element("testsuite", name="root")
++            synthetic.extend(loose)
++            suites.append(synthetic)
++    else:
++        raise ValueError(f"Unsupported JUnit root tag in {path}: {root.tag}")
++    for suite in suites:
++        for case in suite.findall(".//testcase"):
++            case.attrib["name"] = normalize_name(case.attrib.get("name", ""))
++    return suites
++
++
++def testcase_nodeid(case: ET.Element) -> str:
++    raw_name = case.attrib.get("name", "")
++    raw_classname = case.attrib.get("classname", "")
++    name = normalize_name(raw_name)
++    case.attrib["name"] = name
++    classname = normalize_name(raw_classname)
++    # jest-junit can report classname == name (the full display title in BOTH
++    # attributes); the join below would then DOUBLE it ("title.title"), which
++    # never matches the (deduped) manifest and gets re-synthesized as a missing
++    # failure. Dotted-identifier frameworks never have classname == name, so
++    # this is a no-op for them.
++    if classname and classname == name:
++        return name
++    # Build the id the way the manifest does: normalize the `::`-joined
++    # qualified id as a whole (as `_wrapper_emitted_id` / the contract's
++    # `_canonical_id` do), not the separately-normalized parts joined with `.`.
++    # Joining with `.` reorders punctuation when the classname ends in `:`, so
++    # the present id would never match the expected id.
++    return normalize_name(f"{raw_classname}::{raw_name}") if raw_classname else name
++
++
++def add_missing_failures(suites, expected_nodeids, mode, exit_code):
++    cases = [case for suite in suites for case in suite.findall(".//testcase")]
++    # jest/JS fallback set (additive — leaves the dotted match below
++    # byte-identical). A describe-path classname is free-text and contains
++    # spaces, which dotted-identifier frameworks (pytest/Go/Rust/Java) never
++    # produce — so this set is empty for them and matching is unchanged. jest's
++    # display id is the space-joined "<classname> <name>", not "classname.name",
++    # and a describe ending in "." double-dots under the dotted join — so a
++    # manifest stored as the jest display title would never match. Built from
++    # raw attrs (before testcase_nodeid normalizes name) + a dot-collapsed
++    # variant (covering manifests captured under the whitespace-collapse
++    # normalizer).
++    present_jest = set()
++    for case in cases:
++        cn = case.attrib.get("classname", "")
++        if " " not in cn:
++            continue
++        disp = " ".join((cn + " " + case.attrib.get("name", "")).split())
++        present_jest.add(disp)
++        present_jest.add(re.sub(r"\s*\.\s*", ".", disp))
++    present = {testcase_nodeid(case) for case in cases}
++    missing = []
++    for nodeid in expected_nodeids:
++        norm = normalize_name(nodeid)
++        if norm in present:
++            continue
++        # jest doubling: the manifest stores qualified_id "classname::name" with
++        # classname == name (jest-junit repeats the full display title in BOTH
++        # attributes). testcase_nodeid already dedupes the PRESENT side to the
++        # single title; dedupe the EXPECTED side identically so the doubled
++        # regression test matches the run instead of being synthesized as a
++        # phantom `before` failure (kh75fzzz before_p2p_not_passing). partition
++        # on the FIRST "::" mirrors qualified_id's join; dotted-identifier
++        # frameworks (classname != name) never enter this branch, so they stay
++        # byte-identical.
++        raw_cls, sep, raw_nm = nodeid.partition("::")
++        if (
++            sep
++            and normalize_name(raw_cls) == normalize_name(raw_nm)
++            and normalize_name(raw_nm) in present
++        ):
++            continue
++        if " " in nodeid and " ".join(nodeid.split()) in present_jest:
++            continue
++        missing.append(norm)
++    if not missing:
++        return suites
++    suite = ET.Element(
++        "testsuite",
++        name=f"{mode}-fallback",
++        tests=str(len(missing)),
++        failures=str(len(missing)),
++        errors="0",
++        skipped="0",
++    )
++    message = f"{mode} tests were missing from the JUnit XML (exit code {exit_code})."
++    for nodeid in missing:
++        classname, _, name = nodeid.rpartition(".")
++        attrs = {"name": name or nodeid}
++        if classname:
++            attrs["classname"] = classname
++        case = ET.SubElement(suite, "testcase", **attrs)
++        failure = ET.SubElement(case, "failure", message=message)
++        failure.text = message
++    return [*suites, suite]
++
++
++def set_aggregate_attrs(root: ET.Element, suites) -> None:
++    int_keys = ("tests", "failures", "errors", "skipped")
++    float_keys = ("time",)
++    for key in int_keys:
++        total = 0
++        has_value = False
++        for suite in suites:
++            value = suite.attrib.get(key)
++            if value not in (None, ""):
++                total += int(float(value))
++                has_value = True
++            elif key == "tests":
++                total += len(suite.findall("./testcase"))
++                has_value = True
++        if has_value:
++            root.set(key, str(total))
++    for key in float_keys:
++        total = 0.0
++        has_value = False
++        for suite in suites:
++            value = suite.attrib.get(key)
++            if value not in (None, ""):
++                total += float(value)
++                has_value = True
++        if has_value:
++            root.set(key, str(total))
++
++
++with tempfile.TemporaryDirectory() as tmpdir:
++    tmpdir = Path(tmpdir)
++
++    # Restore p2p (regression) test files before grading. Standard
++    # SWE-bench practice — we ship pristine baselines at
++    # `.<harness>-eval/restore/<original_path>` and copy each one over the
++    # in-repo path so any agent edits to those files (e.g. weakening
++    # assertions in a regression suite) are clobbered before the
++    # base / new runs read them. No-op when no baselines were
++    # shipped (the caller passed `p2p_baseline_files=None`).
++    #
++    # After copying, REMOVE the `.<harness>-eval/restore/` tree. pytest's
++    # default `norecursedirs = .*` skips `.<harness>-eval/` so its leftovers
++    # don't pollute pytest test discovery, but vitest's default test
++    # discovery glob has no equivalent dotfile-directory exclusion —
++    # it walks `.<harness>-eval/restore/` and collects every shipped
++    # baseline as an additional testcase.
++    # Verified on PV `kd7c0fm4t9ahh83d2tf4aen1gs879ncx` (problem
++    # `kh78shzwtnxs8jk7tac72ybk3s878xy0`): code_validation ran 1919
++    # testcases — 1384 real + 513 from `.<harness>-eval/restore/src/...` —
++    # and 513 of those duplicates landed outside our p2p/f2p lists, so
++    # the grader pooled `f2p_total: 1919, p2p_total: 0` and reported
++    # "Tests fail with golden patch" even though the contributor's
++    # solution was correct. Removing the source tree post-restore
++    # closes the discovery hole without changing the ship-time path
++    # (test_patch can only write inside the repo, so we keep
++    # `.<harness>-eval/restore/` as the staging location and just clean it
++    # up before tests run).
++    # In-memory integrity snapshot of grade-time test artifacts, keyed by
++    # repo-relative path -> (bytes, mode). Built here — after the p2p
++    # baseline restore, before any test.sh run — so it captures the
++    # intended-at-grade-time state. `restore_protected()` rewrites any
++    # snapshotted file whose on-disk content drifts, and we call it before
++    # EVERY test.sh invocation. This defeats grade-time code execution that
++    # rewrites a hidden test file or test.sh between the base and new runs —
++    # e.g. a model-edited proc-macro / build.rs expanding during the base
++    # compile and stubbing the f2p test file before the new run compiles it
++    # (env_linter `kh70wsr8gvsyaftc0z9a89x0yn872jnb`), or a `.cargo` runner /
++    # rustc-wrapper doing the same. Edits to pre-existing source survive the
++    # sandbox->grading boundary filter, so they reach grade time; the snapshot
++    # lives in this wrapper process's memory, which the test subprocess (and
++    # any code it runs) cannot read or modify. NOTE: this covers cross-run
++    # tampering; a single cargo invocation that compiles multiple f2p files
++    # and rewrites a not-yet-compiled sibling mid-run is not covered here.
++    _snapshot: dict[str, tuple[bytes, int]] = {}
++
++    def _snap(rel_path) -> None:
++        candidate = Path.cwd() / rel_path
++        try:
++            if candidate.is_file():
++                _snapshot[str(rel_path)] = (candidate.read_bytes(), candidate.stat().st_mode)
++        except OSError:
++            pass
++
++    restore_root = _HERE / "restore"
++    if restore_root.exists():
++        for src in restore_root.rglob("*"):
++            if src.is_file():
++                rel = src.relative_to(restore_root)
++                dst = Path.cwd() / rel
++                dst.parent.mkdir(parents=True, exist_ok=True)
++                shutil.copy(src, dst)
++                # p2p baseline just restored — capture it pristine so the
++                # per-run restore also covers regression-test tampering, not
++                # just the one-shot restore the loop above does.
++                _snap(rel)
++        shutil.rmtree(restore_root)
++
++    # Hidden f2p test files + the contributor's test.sh, pristine at this
++    # point (no test.sh has run yet).
++    for protected_rel in PROTECTED_FILES:
++        _snap(protected_rel)
++
++    def restore_protected() -> None:
++        for rel_path, (content, mode) in _snapshot.items():
++            target = Path.cwd() / rel_path
++            try:
++                if (not target.exists()) or target.read_bytes() != content:
++                    target.parent.mkdir(parents=True, exist_ok=True)
++                    target.write_bytes(content)
++                    os.chmod(target, mode)
++            except OSError:
++                pass
++
++    def sanitize_cargo_config() -> None:
++        # Strip `rustc-wrapper` / `rustc-workspace-wrapper` from every cargo
++        # config in the repo tree. cargo resolves the wrapper from config at
++        # invocation start, and the env override above still lets a `rustc -vV`
++        # probe through when BOTH keys are set at once — removing the keys at
++        # the source closes that. Run before EVERY test.sh so a build.rs /
++        # proc-macro that rewrites the config during the base run can't carry
++        # into the new run. A config with no wrapper key is left untouched.
++        wrapper_keys = ("rustc-wrapper", "rustc-workspace-wrapper")
++        for cargo_dir in Path.cwd().rglob(".cargo"):
++            if not cargo_dir.is_dir():
++                continue
++            for _cfg_name in ("config.toml", "config"):
++                cfg = cargo_dir / _cfg_name
++                try:
++                    if not cfg.is_file():
++                        continue
++                    lines = cfg.read_text(encoding="utf-8").splitlines(keepends=True)
++                except OSError:
++                    continue
++                kept = [
++                    ln
++                    for ln in lines
++                    if ln.split("=", 1)[0].strip() not in wrapper_keys
++                ]
++                if len(kept) != len(lines):
++                    try:
++                        cfg.write_text("".join(kept), encoding="utf-8")
++                    except OSError:
++                        pass
++
++    base_xml = tmpdir / "base.xml"
++    new_xml = tmpdir / "new.xml"
++    restore_protected()
++    sanitize_cargo_config()
++    base_proc = subprocess.run(
++        ["./test.sh", "--output_path", str(base_xml), "base"],
++        env=_TEST_SH_ENV,
++        check=False,
++    )
++    restore_protected()
++    sanitize_cargo_config()
++    new_proc = subprocess.run(
++        ["./test.sh", "--output_path", str(new_xml), "new"],
++        env=_TEST_SH_ENV,
++        check=False,
++    )
++    base_suites = add_missing_failures(load_suites(base_xml), P2P, "base", base_proc.returncode)
++    new_suites = add_missing_failures(load_suites(new_xml), F2P, "new", new_proc.returncode)
++    all_suites = [copy.deepcopy(suite) for suite in [*base_suites, *new_suites]]
++    output_xml = Path(args.junit_output_path)
++    output_xml.parent.mkdir(parents=True, exist_ok=True)
++    root = ET.Element("testsuites")
++    set_aggregate_attrs(root, all_suites)
++    for suite in all_suites:
++        root.append(suite)
++    ET.ElementTree(root).write(output_xml, encoding="utf-8", xml_declaration=True)
++    if base_proc.returncode != 0:
++        raise SystemExit(base_proc.returncode)
++    if new_proc.returncode != 0:
++        raise SystemExit(new_proc.returncode)
+diff --git a/src/client.js b/src/client.js
+index 319011a..15b26c0 100644
+--- a/src/client.js
++++ b/src/client.js
+@@ -21,7 +21,7 @@ const Emitter = require('component-emitter');
+ const safeStringify = require('fast-safe-stringify');
+ const qs = require('qs');
+ const RequestBase = require('./request-base');
+-const { isObject, mixin, hasOwn } = require('./utils');
++const { isObject, mixin, hasOwn, byteLength } = require('./utils');
+ const ResponseBase = require('./response-base');
+ const Agent = require('./agent-base');
+ 
+@@ -629,12 +629,15 @@ Request.prototype._getFormData = function () {
+  */
+ 
+ Request.prototype.callback = function (error, res) {
++  if (this.called) return;
++
+   if (this._shouldRetry(error, res)) {
+     return this._retry();
+   }
+ 
+   const fn = this._callback;
+   this.clearTimeout();
++  this.called = true;
+ 
+   if (error) {
+     if (this._maxRetries) error.retries = this._retries - 1;
+@@ -766,6 +769,8 @@ Request.prototype._end = function () {
+       return;
+     }
+ 
++    if (self.hasSizeError()) return;
++
+     // In IE9, reads to any property (e.g. status) off of an aborted XHR will
+     // result in the error "Could not complete the operation due to error c00c023f"
+     let status;
+@@ -780,11 +785,31 @@ Request.prototype._end = function () {
+       return self.crossDomainError();
+     }
+ 
++    if (
++      self._maxResponseSize !== undefined &&
++      getResponseSize(xhr) > self._maxResponseSize
++    ) {
++      const error = self._createSizeError('response');
++      xhr.abort();
++      return self.callback(error);
++    }
++
+     self.emit('end');
+   });
+ 
+   // progress
+   const handleProgress = (direction, e) => {
++    if (
++      direction === 'upload' &&
++      self._maxRequestSize !== undefined &&
++      e.loaded > self._maxRequestSize
++    ) {
++      const error = self._createSizeError('request');
++      xhr.abort();
++      self.callback(error);
++      return;
++    }
++
+     if (e.total > 0) {
+       e.percent = (e.loaded / e.total) * 100;
+ 
+@@ -797,7 +822,7 @@ Request.prototype._end = function () {
+     self.emit('progress', e);
+   };
+ 
+-  if (this.hasListeners('progress')) {
++  if (this.hasListeners('progress') || this._maxRequestSize !== undefined) {
+     try {
+       xhr.addEventListener('progress', handleProgress.bind(null, 'download'));
+       if (xhr.upload) {
+@@ -852,6 +877,15 @@ Request.prototype._end = function () {
+     if (serialize) data = serialize(data);
+   }
+ 
++  if (
++    this._maxRequestSize !== undefined &&
++    byteLength(data) > this._maxRequestSize
++  ) {
++    const error = this._createSizeError('request');
++    xhr.abort();
++    return this.callback(error);
++  }
++
+   // set header fields
+   for (const field in this.header) {
+     if (this.header[field] === null) continue;
+@@ -874,6 +908,23 @@ Request.prototype._end = function () {
+ 
+ request.agent = () => new Agent();
+ 
++function getResponseSize(xhr) {
++  if (xhr.response && typeof xhr.response.byteLength === 'number') {
++    return xhr.response.byteLength;
++  }
++
++  if (xhr.response && typeof xhr.response.size === 'number') {
++    return xhr.response.size;
++  }
++
++  try {
++    return byteLength(xhr.responseText || '');
++  } catch (error) {
++    // responseText is inaccessible for responseType values such as json.
++    return 0;
++  }
++}
++
+ for (const method of ['GET', 'POST', 'OPTIONS', 'PATCH', 'PUT', 'DELETE']) {
+   Agent.prototype[method.toLowerCase()] = function (url, fn) {
+     const request_ = new request.Request(method, url);
+diff --git a/src/node/index.js b/src/node/index.js
+index c21231a..49095ca 100644
+--- a/src/node/index.js
++++ b/src/node/index.js
+@@ -414,6 +414,17 @@ Request.prototype.write = function (data, encoding) {
+     this._streamRequest = true;
+   }
+ 
++  if (this.hasSizeError()) return false;
++
++  this._requestBytes = (this._requestBytes || 0) + utils.byteLength(data, encoding);
++  if (
++    this._maxRequestSize !== undefined &&
++    this._requestBytes > this._maxRequestSize
++  ) {
++    this._failRequestSize();
++    return false;
++  }
++
+   return request_.write(data, encoding);
+ };
+ 
+@@ -808,6 +819,7 @@ Request.prototype.request = function () {
+     // because node will emit a faux-error "socket hang up"
+     // when request is aborted before a connection is made
+     if (this._aborted) return;
++    if (this.hasSizeError()) return;
+     // if not the same, we are in the **old** (cancelled) request,
+     // so need to continue (same as for above)
+     if (this._retries !== retries) return;
+@@ -859,6 +871,8 @@ Request.prototype.request = function () {
+  */
+ 
+ Request.prototype.callback = function (error, res) {
++  if (this.called) return;
++
+   if (this._shouldRetry(error, res)) {
+     return this._retry();
+   }
+@@ -866,7 +880,6 @@ Request.prototype.callback = function (error, res) {
+   // Avoid the error which is emitted from 'socket hang up' to cause the fn undefined error on JS runtime.
+   const fn = this._callback || noop;
+   this.clearTimeout();
+-  if (this.called) return console.warn('superagent: double callback bug');
+   this.called = true;
+ 
+   if (!error) {
+@@ -919,6 +932,24 @@ Request.prototype._isHost = function (object) {
+   );
+ };
+ 
++/**
++ * Terminate a request after its body exceeds the configured limit.
++ *
++ * @return {Error}
++ * @api private
++ */
++Request.prototype._failRequestSize = function () {
++  const error = this._createSizeError('request');
++
++  if (this.req && !this.req.destroyed) {
++    if (typeof this.req.destroy === 'function') this.req.destroy();
++    else if (typeof this.req.abort === 'function') this.req.abort();
++  }
++
++  if (this._endCalled) this.callback(error);
++  return error;
++};
++
+ /**
+  * Initiate request, invoking callback `fn(err, res)`
+  * with an instanceof `Response`.
+@@ -985,6 +1016,8 @@ Request.prototype._end = function () {
+       new Error('The request has been aborted even before .end() was called')
+     );
+ 
++  if (this.hasSizeError()) return this.callback(this._sizeErrorError);
++
+   let data = this._data;
+   const { req } = this;
+   const { method } = this;
+@@ -1015,6 +1048,13 @@ Request.prototype._end = function () {
+     }
+   }
+ 
++  if (
++    this._maxRequestSize !== undefined &&
++    utils.byteLength(data) > this._maxRequestSize
++  ) {
++    return this._failRequestSize();
++  }
++
+   // response
+   // eslint-disable-next-line complexity
+   req.once('response', (res) => {
+@@ -1142,19 +1182,19 @@ Request.prototype._end = function () {
+     let parserHandlesEnd = false;
+     if (buffer) {
+       // Protectiona against zip bombs and other nuisance
+-      let responseBytesLeft = this._maxResponseSize || 200000000;
++      let responseBytes = 0;
++      const maxResponseSize =
++        this._maxResponseSize === undefined ? 200000000 : this._maxResponseSize;
+       res.on('data', (buf) => {
+-        responseBytesLeft -= buf.byteLength || buf.length > 0 ? buf.length : 0;
+-        if (responseBytesLeft < 0) {
+-          // This will propagate through error event
+-          const error = new Error('Maximum response size reached');
+-          error.code = 'ETOOLARGE';
++        if (this.hasSizeError()) return;
++
++        responseBytes += utils.byteLength(buf);
++        if (responseBytes > maxResponseSize) {
++          const error = this._createSizeError('response');
+           // Parsers aren't required to observe error event,
+           // so would incorrectly report success
+           parserHandlesEnd = false;
+-          // Will not emit error event
+           res.destroy(error);
+-          // so we do callback now
+           this.callback(error, null);
+         }
+       });
+@@ -1172,6 +1212,8 @@ Request.prototype._end = function () {
+             return;
+           }
+ 
++          if (this.hasSizeError()) return;
++
+           // Intentional (non-timeout) abort is supposed to preserve partial response,
+           // even if it doesn't parse.
+           if (error && !this._aborted) {
+@@ -1206,7 +1248,7 @@ Request.prototype._end = function () {
+     // terminating events
+     res.once('error', (error) => {
+       parserHandlesEnd = false;
+-      this.callback(error, null);
++      this.callback(this._sizeErrorError || error, null);
+     });
+     if (!parserHandlesEnd)
+       res.once('end', () => {
+@@ -1222,11 +1264,19 @@ Request.prototype._end = function () {
+   const getProgressMonitor = () => {
+     const lengthComputable = true;
+     const total = req.getHeader('Content-Length');
++    const maxRequestSize = this._maxRequestSize;
+     let loaded = 0;
+ 
+     const progress = new Stream.Transform();
+     progress._transform = (chunk, encoding, callback) => {
+-      loaded += chunk.length;
++      loaded += utils.byteLength(chunk, encoding);
++
++      if (maxRequestSize !== undefined && loaded > maxRequestSize) {
++        const error = this._failRequestSize();
++        callback(error);
++        return;
++      }
++
+       this.emit('progress', {
+         direction: 'upload',
+         lengthComputable,
+@@ -1236,6 +1286,10 @@ Request.prototype._end = function () {
+       callback(null, chunk);
+     };
+ 
++    progress.on('error', (error) => {
++      if (!this.hasSizeError()) this.callback(error);
++    });
++
+     return progress;
+   };
+ 
+@@ -1281,8 +1335,17 @@ Request.prototype._end = function () {
+       debug('got FormData Content-Length: %s', length);
+       if (typeof length === 'number') {
+         req.setHeader('Content-Length', length);
++
++        if (
++          this._maxRequestSize !== undefined &&
++          length > this._maxRequestSize
++        ) {
++          this._failRequestSize();
++          return;
++        }
+       }
+ 
++      if (this.hasSizeError()) return;
+       formData.pipe(getProgressMonitor()).pipe(req);
+     });
+   } else if (Buffer.isBuffer(data)) {
+diff --git a/src/request-base.js b/src/request-base.js
+index c69262e..590925a 100644
+--- a/src/request-base.js
++++ b/src/request-base.js
+@@ -187,6 +187,13 @@ const STATUS_CODES = new Set([
+  * @returns {Boolean} if segment should be retried
+  */
+ RequestBase.prototype._shouldRetry = function (error, res) {
++  // A size limit is a deterministic client-side failure. It must not be
++  // retried, even when a custom retry callback would otherwise opt in.
++  if (error && error.code === 'ETOOLARGE') {
++    if (this._maxRetries) this._retries++;
++    return false;
++  }
++
+   if (!this._maxRetries || this._retries++ >= this._maxRetries) {
+     return false;
+   }
+@@ -556,6 +563,48 @@ RequestBase.prototype.maxResponseSize = function (n) {
+   return this;
+ };
+ 
++/**
++ * Maximum size of the request body, in bytes.
++ *
++ * @param {Number} n number of bytes
++ * @return {Request} for chaining
++ */
++RequestBase.prototype.maxRequestSize = function (n) {
++  if (typeof n !== 'number') {
++    throw new TypeError('Invalid argument');
++  }
++
++  this._maxRequestSize = n;
++  return this;
++};
++
++/**
++ * Return whether a request or response size limit was exceeded.
++ *
++ * @return {Boolean}
++ */
++RequestBase.prototype.hasSizeError = function () {
++  return this._sizeError === true;
++};
++
++/**
++ * Create and remember a size-limit error.
++ *
++ * @param {String} kind request or response
++ * @return {Error}
++ * @api private
++ */
++RequestBase.prototype._createSizeError = function (kind) {
++  if (!this._sizeErrorError) {
++    const error = new Error(`Maximum ${kind} size reached`);
++    error.code = 'ETOOLARGE';
++    this._sizeErrorError = error;
++  }
++
++  this._sizeError = true;
++  return this._sizeErrorError;
++};
++
+ /**
+  * Convert to a plain javascript object (not JSON string) of scalar properties.
+  * Note as this method is designed to return a useful non-this value,
+diff --git a/src/utils.js b/src/utils.js
+index 8f16ab0..9016ba0 100644
+--- a/src/utils.js
++++ b/src/utils.js
+@@ -88,6 +88,37 @@ exports.isObject = (object) => {
+   return object !== null && typeof object === 'object';
+ };
+ 
++/**
++ * Return the number of bytes represented by a body chunk.
++ *
++ * @param {String|TypedArray|ArrayBuffer|Blob} value
++ * @param {String} encoding
++ * @return {Number}
++ */
++exports.byteLength = (value, encoding) => {
++  if (typeof value === 'string') {
++    if (typeof Buffer !== 'undefined' && Buffer.byteLength) {
++      return Buffer.byteLength(value, encoding);
++    }
++
++    if (typeof TextEncoder !== 'undefined') {
++      return new TextEncoder().encode(value).length;
++    }
++
++    return unescape(encodeURIComponent(value)).length;
++  }
++
++  if (value && typeof value.byteLength === 'number') {
++    return value.byteLength;
++  }
++
++  if (value && typeof value.size === 'number') {
++    return value.size;
++  }
++
++  return 0;
++};
++
+ /**
+  * Object.hasOwn fallback/polyfill.
+  *
+diff --git a/test.sh b/test.sh
+new file mode 100755
+index 0000000..18e4ba3
+--- /dev/null
++++ b/test.sh
+@@ -0,0 +1,40 @@
++#!/bin/bash
++MODE=""
++OUTPUT_PATH=""
++
++# Parse arguments
++while [[ "$#" -gt 0 ]]; do
++    case $1 in
++        base|new) MODE="$1"; shift ;;
++        --output_path) OUTPUT_PATH="$2"; shift 2 ;;
++        *) shift ;;
++    esac
++done
++
++if [ -z "$MODE" ]; then
++    MODE="default"
++fi
++
++REPORTER_ARGS=""
++if [ -n "$OUTPUT_PATH" ]; then
++    REPORTER_ARGS="--reporter mocha-junit-reporter --reporter-options mochaFile=${OUTPUT_PATH}"
++fi
++
++echo "Running ${MODE} mode" >&2
++
++# The benchmark environment might not have built the `lib` folder.
++# Many baseline tests require `../..` (which resolves to `lib/node/index.js`)
++# or `../../lib/utils`. We must build it to prevent MODULE_NOT_FOUND.
++npm run build:lib >/dev/null 2>&1 || true
++
++if [ "$MODE" = "base" ]; then
++    # Base mode: run ONLY existing baseline tests that pass at the base commit.
++    # We must explicitly load setup.js first because utils.js relies on global 'should'
++    ./node_modules/.bin/mocha test/support/setup.js test/node/utils.js --timeout 15000 --exit $REPORTER_ARGS
++elif [ "$MODE" = "new" ]; then
++    # New mode: run only the newly added tests
++    ./node_modules/.bin/mocha test/support/setup.js test/node/hidden_verify.js --timeout 15000 --exit $REPORTER_ARGS
++else
++    # Default: run everything
++    ./node_modules/.bin/mocha test/support/setup.js test/node/utils.js test/node/hidden_verify.js --timeout 15000 --exit $REPORTER_ARGS
++fi
+diff --git a/test/node/hidden_verify.js b/test/node/hidden_verify.js
+new file mode 100644
+index 0000000..8d99e4d
+--- /dev/null
++++ b/test/node/hidden_verify.js
+@@ -0,0 +1,624 @@
++const assert = require('assert');
++const http = require('http');
++const request = require('../..');
++
++describe('hidden verification tests', function () {
++  this.timeout(20000);
++
++  let server;
++  let base;
++
++  before((done) => {
++    server = http.createServer((req, res) => {
++      if (req.url === '/large-response') {
++        res.writeHead(200, { 'Content-Type': 'text/plain' });
++        let sent = 0;
++        const interval = setInterval(() => {
++          res.write('a'.repeat(1024));
++          sent += 1024;
++          if (sent >= 1024 * 10) {
++            clearInterval(interval);
++            res.end();
++          }
++        }, 10);
++      } else if (req.url === '/exact-response-5') {
++        res.writeHead(200, { 'Content-Type': 'text/plain' });
++        res.end('12345');
++      } else if (req.url === '/echo') {
++        let body = [];
++        req.on('data', (chunk) => body.push(chunk));
++        req.on('end', () => {
++          res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
++          res.end(Buffer.concat(body));
++        });
++      } else {
++        res.writeHead(200);
++        res.end('OK');
++      }
++    });
++    server.listen(0, () => {
++      base = `http://localhost:${server.address().port}`;
++      done();
++    });
++  });
++
++  after((done) => {
++    server.close(done);
++  });
++
++  // T1: maxResponseSize exceeded -> error with code ETOOLARGE
++  it('should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded', (done) => {
++    let callbackCount = 0;
++    const req = request
++      .get(`${base}/large-response`)
++      .maxResponseSize(500)
++      .buffer(true);
++    assert.strictEqual(req.maxResponseSize(500), req, 'maxResponseSize() must be chainable');
++
++    req.end((err, res) => {
++      callbackCount++;
++      try {
++        assert.ok(err, 'Expected error to be present');
++        assert.equal(err.code, 'ETOOLARGE');
++        assert.strictEqual(req.hasSizeError(), true);
++        assert.equal(callbackCount, 1, 'Callback should be called exactly once');
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++  });
++
++  // T2: maxRequestSize exceeded on Node.js
++  it('should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)', (done) => {
++    let callbackCount = 0;
++    const req = request.post(`${base}/echo`);
++    assert.strictEqual(req.maxRequestSize(10), req, 'maxRequestSize() must be chainable');
++    req.send('This payload is definitely longer than 10 bytes');
++
++    req.end((err, res) => {
++      callbackCount++;
++      try {
++        assert.ok(err, 'Expected error to be present');
++        assert.equal(err.code, 'ETOOLARGE');
++        assert.strictEqual(req.hasSizeError(), true);
++        assert.equal(callbackCount, 1, 'Callback should be called exactly once');
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++  });
++
++  // T3: Multibyte UTF-8 byte counting
++  it('should measure byte length for multibyte UTF-8 strings in maxRequestSize', (done) => {
++    const euroStr = '€'; // 3 bytes in UTF-8: E2 82 AC
++    assert.equal(Buffer.byteLength(euroStr), 3);
++    assert.equal(euroStr.length, 1);
++
++    request
++      .post(`${base}/echo`)
++      .maxRequestSize(2)
++      .send(euroStr)
++      .end((err, res) => {
++        try {
++          assert.ok(err, 'Expected error because 3 bytes > 2 bytes');
++          assert.equal(err.code, 'ETOOLARGE');
++          done();
++        } catch (e) {
++          done(e);
++        }
++      });
++  });
++
++  // T4: Buffer request overflow
++  it('should emit ETOOLARGE when Buffer payload exceeds maxRequestSize', (done) => {
++    const buf = Buffer.alloc(100);
++    request
++      .post(`${base}/echo`)
++      .maxRequestSize(50)
++      .send(buf)
++      .end((err, res) => {
++        try {
++          assert.ok(err, 'Expected error for Buffer exceeding maxRequestSize');
++          assert.equal(err.code, 'ETOOLARGE');
++          done();
++        } catch (e) {
++          done(e);
++        }
++      });
++  });
++
++  // T5: Multipart upload progress monitor
++  it('should route multipart formData through an upload progress monitor and emit upload progress', (done) => {
++    let progressEmitted = false;
++    request
++      .post(`${base}/echo`)
++      .maxRequestSize(100000)
++      .field('testField', 'testValue')
++      .on('progress', (e) => {
++        if (e.direction === 'upload') {
++          progressEmitted = true;
++        }
++      })
++      .end((err, res) => {
++        try {
++          assert.ifError(err);
++          assert.strictEqual(progressEmitted, true, 'Progress event with direction=upload should be emitted for multipart uploads');
++          done();
++        } catch (e) {
++          done(e);
++        }
++      });
++  });
++
++  // T6: In-limit multipart upload
++  it('should succeed for in-limit multipart upload with 200 status', (done) => {
++    request
++      .post(`${base}/echo`)
++      .maxRequestSize(100000)
++      .field('name', 'superagent')
++      .end((err, res) => {
++        try {
++          assert.ifError(err);
++          assert.ok(res);
++          assert.equal(res.status, 200);
++          done();
++        } catch (e) {
++          done(e);
++        }
++      });
++  });
++
++  // T7: Multipart overflow
++  it('should emit ETOOLARGE on maxRequestSize exceeded during multipart upload', (done) => {
++    request
++      .post(`${base}/echo`)
++      .maxRequestSize(10)
++      .field('key', 'large_value_exceeding_ten_bytes')
++      .end((err, res) => {
++        try {
++          assert.ok(err, 'Expected error for multipart exceeding maxRequestSize');
++          assert.equal(err.code, 'ETOOLARGE');
++          done();
++        } catch (e) {
++          done(e);
++        }
++      });
++  });
++
++  // T8: hasSizeError() returns false when no size limit exceeded
++  it('should return false from hasSizeError() when no size limit is exceeded', (done) => {
++    const req = request
++      .post(`${base}/echo`)
++      .maxRequestSize(100)
++      .send('hello');
++
++    assert.strictEqual(req.hasSizeError(), false, 'hasSizeError should be false initially');
++    req.end((err, res) => {
++      try {
++        assert.ifError(err);
++        assert.strictEqual(req.hasSizeError(), false, 'hasSizeError should remain false on success');
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++  });
++
++  // T9: Request equality boundary
++  it('should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary', (done) => {
++    const payload = '12345';
++    const req = request
++      .post(`${base}/echo`)
++      .maxRequestSize(5)
++      .send(payload);
++
++    req.end((err, res) => {
++      try {
++        assert.ifError(err);
++        assert.strictEqual(req.hasSizeError(), false);
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++  });
++
++  // T10: Response equality boundary
++  it('should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary', (done) => {
++    const req = request
++      .get(`${base}/exact-response-5`)
++      .maxResponseSize(5)
++      .buffer(true);
++
++    req.end((err, res) => {
++      try {
++        assert.ifError(err);
++        assert.strictEqual(req.hasSizeError(), false);
++        assert.equal(res.text, '12345');
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++  });
++
++  // T11: Initial hasSizeError() strict boolean false
++  it('hasSizeError() should return strict boolean false before any request is made', () => {
++    const req = request.get(`${base}/echo`);
++    assert.strictEqual(req.hasSizeError(), false);
++  });
++
++  // T12: hasSizeError() strict boolean true after response overflow
++  it('hasSizeError() should return strict boolean true after a maxResponseSize error', (done) => {
++    const req = request
++      .get(`${base}/large-response`)
++      .maxResponseSize(100)
++      .buffer(true);
++
++    req.end((err, res) => {
++      try {
++        assert.ok(err);
++        assert.equal(err.code, 'ETOOLARGE');
++        assert.strictEqual(req.hasSizeError(), true);
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++  });
++
++  // T13: Cumulative Request.write() overflow
++  it('should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize', (done) => {
++    const req = request
++      .post(`${base}/echo`)
++      .maxRequestSize(15);
++
++    let callbackCount = 0;
++    req.end((err, res) => {
++      callbackCount++;
++      try {
++        assert.ok(err, 'Expected error on cumulative write');
++        assert.equal(err.code, 'ETOOLARGE');
++        assert.strictEqual(req.hasSizeError(), true);
++        assert.equal(callbackCount, 1);
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++
++    req.write('1234567890');
++    req.write('1234567890');
++  });
++
++  // T14: Multipart Content-Length overflow
++  it('should enforce maxRequestSize using reported Content-Length for multipart', (done) => {
++    const req = request
++      .post(`${base}/echo`)
++      .maxRequestSize(20)
++      .field('name', 'very_long_multipart_payload_that_exceeds_twenty_bytes');
++
++    req.end((err, res) => {
++      try {
++        assert.ok(err, 'Expected error for multipart Content-Length');
++        assert.equal(err.code, 'ETOOLARGE');
++        assert.strictEqual(req.hasSizeError(), true);
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++  });
++
++  // T15: Promise rejection on response overflow
++  it('should reject Promise with ETOOLARGE on response overflow', async () => {
++    assert.strictEqual(typeof request.get('/').hasSizeError, 'function');
++    try {
++      await request
++        .get(`${base}/large-response`)
++        .maxResponseSize(100)
++        .buffer(true);
++      assert.fail('Promise should have rejected');
++    } catch (err) {
++      assert.equal(err.code, 'ETOOLARGE');
++    }
++  });
++
++  // T16: Promise rejection on request overflow
++  it('should reject Promise with ETOOLARGE on request overflow', async () => {
++    try {
++      await request
++        .post(`${base}/echo`)
++        .maxRequestSize(5)
++        .send('overflowing payload');
++      assert.fail('Promise should have rejected');
++    } catch (err) {
++      assert.equal(err.code, 'ETOOLARGE');
++    }
++  });
++
++  // T17: hasSizeError() true after Promise rejection
++  it('should have hasSizeError true after Promise response overflow', async () => {
++    const req = request
++      .get(`${base}/large-response`)
++      .maxResponseSize(100)
++      .buffer(true);
++
++    try {
++      await req;
++      assert.fail('Promise should have rejected');
++    } catch (err) {
++      assert.equal(err.code, 'ETOOLARGE');
++      assert.strictEqual(req.hasSizeError(), true);
++    }
++  });
++
++  // T18: request overflow with retry(3)
++  it('should not retry request size error when retry(3) is configured', (done) => {
++    let callbackCount = 0;
++    const req = request
++      .post(`${base}/echo`)
++      .retry(3)
++      .maxRequestSize(5)
++      .send('This exceeds limit');
++
++    req.end((err, res) => {
++      callbackCount++;
++      if (callbackCount === 1) {
++        try {
++          assert.ok(err, 'Must produce error');
++          assert.equal(err.code, 'ETOOLARGE');
++          assert.strictEqual(req.hasSizeError(), true);
++        } catch (e) {
++          return done(e);
++        }
++        setTimeout(() => {
++          try {
++            assert.equal(callbackCount, 1, 'Callback must fire exactly once - request size error must NOT trigger a retry');
++            done();
++          } catch (e) {
++            done(e);
++          }
++        }, 100);
++      }
++    });
++  });
++
++  // T19: response overflow with retry(3)
++  it('should not retry response size error when retry(3) is configured', (done) => {
++    let callbackCount = 0;
++    const req = request
++      .post(`${base}/echo`)
++      .retry(3)
++      .maxResponseSize(5)
++      .send('x'.repeat(100))
++      .buffer(true);
++
++    req.end((err, res) => {
++      callbackCount++;
++      if (callbackCount === 1) {
++        try {
++          assert.ok(err, 'Must produce error');
++          assert.equal(err.code, 'ETOOLARGE');
++          assert.strictEqual(req.hasSizeError(), true);
++        } catch (e) {
++          return done(e);
++        }
++        setTimeout(() => {
++          try {
++            assert.equal(callbackCount, 1, 'Callback must fire exactly once - response size error must NOT trigger a retry');
++            done();
++          } catch (e) {
++            done(e);
++          }
++        }, 100);
++      }
++    });
++  });
++
++  // T20: Browser readyState 1 non-settlement and readyState 4 completion
++  it('should not settle browser request at readyState 1 and complete normally at readyState 4', (done) => {
++    const EventEmitter = require('events');
++    const clientRequest = require('../../src/client');
++
++    class MockXHR extends EventEmitter {
++      constructor() {
++        super();
++        this.readyState = 0;
++        this.status = 0;
++        this.headers = {};
++        this.upload = new EventEmitter();
++        this.responseHeaders = {};
++      }
++      open(method, url) {
++        this.method = method;
++        this.url = url;
++        this.readyState = 1;
++        this.emit('readystatechange');
++      }
++      setRequestHeader(name, val) { this.headers[name] = val; }
++      getResponseHeader(name) { return this.responseHeaders[name.toLowerCase()] || null; }
++      getAllResponseHeaders() {
++        return Object.entries(this.responseHeaders).map(([k, v]) => `${k}: ${v}`).join('\r\n') + '\r\n';
++      }
++      send(data) { this.sentData = data; }
++      abort() { this.aborted = true; }
++      addEventListener(event, fn) { this.on(event, fn); }
++    }
++
++    const mock = new MockXHR();
++    clientRequest.getXHR = () => mock;
++    let called = false;
++    const req = clientRequest('GET', '/test').maxResponseSize(10);
++    assert.strictEqual(typeof req.hasSizeError, 'function');
++    req.end((err, res) => {
++      called = true;
++      try {
++        assert.strictEqual(err, null);
++        assert.ok(res && res.status === 200);
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++    assert.strictEqual(called, false, 'Browser request must NOT settle or fail at readyState 1');
++    mock.readyState = 4;
++    mock.status = 200;
++    mock.response = 'ok';
++    mock.responseText = 'ok';
++    mock.emit('readystatechange');
++  });
++
++  // T21: Browser maxResponseSize on progress
++  it('should emit ETOOLARGE on browser response download progress overflow', (done) => {
++    const EventEmitter = require('events');
++    const clientRequest = require('../../src/client');
++
++    class MockXHR extends EventEmitter {
++      constructor() {
++        super();
++        this.readyState = 0;
++        this.status = 0;
++        this.headers = {};
++        this.upload = new EventEmitter();
++      }
++      open() { this.readyState = 1; }
++      setRequestHeader() {}
++      getResponseHeader() { return null; }
++      getAllResponseHeaders() { return ''; }
++      send() {}
++      abort() { this.aborted = true; }
++      addEventListener(event, fn) { this.on(event, fn); }
++    }
++
++    const mock = new MockXHR();
++    clientRequest.getXHR = () => mock;
++    const req = clientRequest('GET', '/large').maxResponseSize(5);
++    req.end((err) => {
++      try {
++        assert.ok(err, 'Should produce error');
++        assert.equal(err.code, 'ETOOLARGE');
++        assert.strictEqual(req.hasSizeError(), true);
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++    mock.emit('progress', { direction: 'download', loaded: 10, total: 10 });
++  });
++
++  // T22: Browser maxRequestSize overflow
++  it('should emit ETOOLARGE on browser request send overflow', (done) => {
++    const EventEmitter = require('events');
++    const clientRequest = require('../../src/client');
++
++    class MockXHR extends EventEmitter {
++      constructor() {
++        super();
++        this.readyState = 0;
++        this.status = 0;
++        this.headers = {};
++        this.upload = new EventEmitter();
++      }
++      open() { this.readyState = 1; }
++      setRequestHeader() {}
++      getResponseHeader() { return null; }
++      getAllResponseHeaders() { return ''; }
++      send() {}
++      abort() { this.aborted = true; }
++      addEventListener(event, fn) { this.on(event, fn); }
++    }
++
++    const mock = new MockXHR();
++    clientRequest.getXHR = () => mock;
++    const req = clientRequest('POST', '/send').maxRequestSize(5).send('1234567890');
++    req.end((err) => {
++      try {
++        assert.ok(err, 'Should produce error');
++        assert.equal(err.code, 'ETOOLARGE');
++        assert.strictEqual(req.hasSizeError(), true);
++        done();
++      } catch (e) {
++        done(e);
++      }
++    });
++  });
++
++  // T23: JSON object payload sizing
++  it('should measure byte length for JSON object payload in maxRequestSize', (done) => {
++    const payload = { "hello": "world", "multibyte": "€" };
++    const payloadStr = JSON.stringify(payload);
++    const byteLength = Buffer.byteLength(payloadStr);
++
++    request
++      .post(`${base}/echo`)
++      .maxRequestSize(byteLength - 1)
++      .send(payload)
++      .end((err, res) => {
++        try {
++          assert.ok(err, 'Expected error because JSON payload exceeds maxRequestSize');
++          assert.equal(err.code, 'ETOOLARGE');
++          done();
++        } catch (e) {
++          done(e);
++        }
++      });
++  });
++
++  // T24: Multipart .attach() size enforcement
++  it('should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach', (done) => {
++    const fs = require('fs');
++    const path = require('path');
++    const tempFile = path.join(__dirname, 'temp_large_file.txt');
++    fs.writeFileSync(tempFile, 'large_value_exceeding_ten_bytes');
++
++    request
++      .post(`${base}/echo`)
++      .maxRequestSize(10)
++      .attach('file', tempFile)
++      .end((err, res) => {
++        try {
++          if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
++          assert.ok(err, 'Expected error for multipart file attach exceeding maxRequestSize');
++          assert.equal(err.code, 'ETOOLARGE');
++          done();
++        } catch (e) {
++          if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
++          done(e);
++        }
++      });
++  });
++
++  // T25: Unbuffered chunked response overflow rejects Promise with ETOOLARGE
++  it('should reject Promise with ETOOLARGE on unbuffered chunked response overflow', async () => {
++    try {
++      await request
++        .get(`${base}/large-response`)
++        .buffer(false)
++        .maxResponseSize(500);
++      assert.fail('Promise should have rejected on unbuffered response overflow');
++    } catch (err) {
++      assert.equal(err.code, 'ETOOLARGE');
++    }
++  });
++
++  // T26: Unbuffered chunked response overflow calls callback with ETOOLARGE
++  it('should invoke callback with ETOOLARGE on unbuffered chunked response overflow', (done) => {
++    request
++      .get(`${base}/large-response`)
++      .buffer(false)
++      .maxResponseSize(500)
++      .end((err, res) => {
++        try {
++          assert.ok(err, 'Expected error on unbuffered response overflow');
++          assert.equal(err.code, 'ETOOLARGE');
++          done();
++        } catch (e) {
++          done(e);
++        }
++      });
++  });
++});
++
+diff --git a/test/node/size-limits.js b/test/node/size-limits.js
+new file mode 100644
+index 0000000..71555c4
+--- /dev/null
++++ b/test/node/size-limits.js
+@@ -0,0 +1,103 @@
++'use strict';
++
++const assert = require('assert');
++const getSetup = require('../support/setup');
++const request = require('../support/client');
++
++describe('Request size limits', () => {
++  let base;
++
++  before(async () => {
++    ({ uri: base } = await getSetup());
++  });
++
++  it('enforces maxRequestSize using UTF-8 byte length', (done) => {
++    const request_ = request
++      .post(`${base}/echo`)
++      .maxRequestSize(1)
++      .send('é');
++
++    assert.strictEqual(request_.hasSizeError(), false);
++    request_.end((error) => {
++      assert.strictEqual(error.code, 'ETOOLARGE');
++      assert.strictEqual(request_.hasSizeError(), true);
++      done();
++    });
++  });
++
++  it('accepts a request body exactly at the limit', (done) => {
++    request
++      .post(`${base}/echo`)
++      .type('text/plain')
++      .maxRequestSize(2)
++      .send('é')
++      .end((error, res) => {
++        assert.ifError(error);
++        assert.strictEqual(res.text, 'é');
++        done();
++      });
++  });
++
++  it('enforces maxRequestSize for write()', (done) => {
++    const request_ = request.post(`${base}/echo`).maxRequestSize(2);
++    request_.write('é');
++    request_.write('a');
++    request_.end((error) => {
++      assert.strictEqual(error.code, 'ETOOLARGE');
++      assert.strictEqual(request_.hasSizeError(), true);
++      done();
++    });
++  });
++
++  it('does not retry size errors', (done) => {
++    let retryCallbackCalls = 0;
++    const request_ = request
++      .post(`${base}/echo`)
++      .maxRequestSize(1)
++      .retry(2, () => {
++        retryCallbackCalls++;
++        return true;
++      })
++      .send('too large');
++
++    request_.end((error) => {
++      assert.strictEqual(error.code, 'ETOOLARGE');
++      assert.strictEqual(retryCallbackCalls, 0);
++      done();
++    });
++  });
++
++  it('enforces multipart Content-Length and emits upload progress', (done) => {
++    let uploadProgress = false;
++    request
++      .post(`${base}/echo`)
++      .maxRequestSize(223)
++      .attach('document', 'test/node/fixtures/user.html')
++      .on('progress', (event) => {
++        if (event.direction === 'upload') uploadProgress = true;
++      })
++      .end((error, res) => {
++        assert.ifError(error);
++        assert.strictEqual(res.files.document.originalFilename, 'user.html');
++        assert.strictEqual(uploadProgress, true);
++        done();
++      });
++  });
++
++  it('reports response size errors once', (done) => {
++    let callbackCalls = 0;
++    const request_ = request
++      .get(`${base}/delay/slowbody`)
++      .buffer(true)
++      .maxResponseSize(1)
++      .retry(2);
++
++    request_.end((error) => {
++      callbackCalls++;
++      assert.strictEqual(error.code, 'ETOOLARGE');
++      assert.strictEqual(callbackCalls, 1);
++      assert.strictEqual(request_.hasSizeError(), true);
++      done();
++    });
++  });
++});
