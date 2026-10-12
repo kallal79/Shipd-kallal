@@ -1,0 +1,114 @@
+<testsuite name="Mocha Tests" tests="112" failures="0" errors="0" skipped="0" timestamp="Tue, 15 Sep 2026 22:16:15 GMT" time="2.051">
+<testcase classname="hidden verification tests" name="should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded" time="0.052"/>
+<testcase classname="hidden verification tests" name="should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)" time="0.001"/>
+<testcase classname="hidden verification tests" name="should measure byte length for multibyte UTF-8 strings in maxRequestSize" time="0.001"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE when Buffer payload exceeds maxRequestSize" time="0.001"/>
+<testcase classname="hidden verification tests" name="should route multipart formData through an upload progress monitor and emit upload progress" time="0.024"/>
+<testcase classname="hidden verification tests" name="should succeed for in-limit multipart upload with 200 status" time="0.022"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE on maxRequestSize exceeded during multipart upload" time="0.001"/>
+<testcase classname="hidden verification tests" name="should return false from hasSizeError() when no size limit is exceeded" time="0.003"/>
+<testcase classname="hidden verification tests" name="should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary" time="0.002"/>
+<testcase classname="hidden verification tests" name="should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary" time="0.003"/>
+<testcase classname="hidden verification tests" name="hasSizeError() should return strict boolean false before any request is made" time="0"/>
+<testcase classname="hidden verification tests" name="hasSizeError() should return strict boolean true after a maxResponseSize error" time="0.028"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize" time="0.001"/>
+<testcase classname="hidden verification tests" name="should enforce maxRequestSize using reported Content-Length for multipart" time="0.003"/>
+<testcase classname="hidden verification tests" name="should reject Promise with ETOOLARGE on response overflow" time="0.026"/>
+<testcase classname="hidden verification tests" name="should reject Promise with ETOOLARGE on request overflow" time="0.001"/>
+<testcase classname="hidden verification tests" name="should have hasSizeError true after Promise response overflow" time="0.022"/>
+<testcase classname="hidden verification tests" name="should not retry request size error when retry(3) is configured" time="0.002"/>
+<testcase classname="hidden verification tests" name="should not retry response size error when retry(3) is configured" time="0.028"/>
+<testcase classname="hidden verification tests" name="should abort with ETOOLARGE when redirect response body exceeds maxResponseSize" time="0.008"/>
+<testcase classname="hidden verification tests" name="should successfully follow compressed redirect when no maxResponseSize is configured" time="0.012"/>
+<testcase classname="hidden verification tests" name="should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize" time="0.008"/>
+<testcase classname="hidden verification tests" name="should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize" time="0.064"/>
+<testcase classname="hidden verification tests" name="should abort with ETOOLARGE when decompressed non-redirect gzip response exceeds maxResponseSize (Node)" time="0.009"/>
+<testcase classname="hidden verification tests" name="should preserve readable stream on unbuffered response when maxResponseSize is configured" time="0.036"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE error when intermediate redirect exceeds maxResponseSize during pipe" time="0.007"/>
+<testcase classname="hidden verification tests" name="should not treat bodyless 304 response with Content-Length as size error" time="0.006"/>
+<testcase classname="hidden verification tests" name="should not treat bodyless 204 response with Content-Length as size error (Node)" time="0.003"/>
+<testcase classname="hidden verification tests" name="should invoke end callback with ETOOLARGE on write overflow before end even with error listener" time="0.001"/>
+<testcase classname="hidden verification tests" name="should not treat Node HEAD redirect with Content-Length as size error" time="0.006"/>
+<testcase classname="hidden verification tests" name="should measure byte length for JSON object payload in maxRequestSize" time="0.001"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach" time="0.002"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE on unbuffered chunked response stream overflow" time="0.029"/>
+<testcase classname="hidden verification tests" name="should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize" time="0.004"/>
+<testcase classname="hidden verification tests" name="should replay serialized multipart payload on retry after 500 error on Node" time="0.035"/>
+<testcase classname="hidden verification tests" name="should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives" time="0.519"/>
+<testcase classname="hidden verification tests" name="should report err.retries === 0 on size error with retry(0) configured (Node)" time="0.031"/>
+<testcase classname="hidden verification tests" name="should stream Node multipart upload directly when maxRequestSize is not set" time="0.008"/>
+<testcase classname="hidden verification tests" name="should deliver ETOOLARGE to request error listener and response stream on unbuffered chunked overflow" time="0.064"/>
+<testcase classname="hidden verification tests" name="should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured" time="0.035"/>
+<testcase classname="hidden verification tests" name="should complete normally with res.once(&#x22;end&#x22;, done) on unbuffered response within maxResponseSize without data listener" time="0.024"/>
+<testcase classname="hidden verification tests" name="should emit ECONNRESET on unbuffered response stream when connection resets" time="0.033"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE when early response arrives but unbuffered upload later exceeds maxRequestSize" time="0.063"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE when browser decompressed GB18030 U+0080 response exceeds maxResponseSize(2)" time="0.008"/>
+<testcase classname="hidden verification tests" name="should accurately measure GB18030 U+0080 response within maxResponseSize(4)" time="0.019"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE when browser decompressed UTF-8 response consumed BOM but entity was 4 bytes" time="0.001"/>
+<testcase classname="hidden verification tests" name="should preserve POST body on cross-origin 307 redirect" time="0.016"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE when browser decompressed GB18030 U+0400 response exceeds maxResponseSize(2)" time="0.001"/>
+<testcase classname="hidden verification tests" name="should accurately measure GB18030 U+0400 response within maxResponseSize(4)" time="0.024"/>
+<testcase classname="hidden verification tests" name="should strip Authorization and Cookie on 307 redirect across origins" time="0.016"/>
+<testcase classname="hidden verification tests" name="should preserve Authorization and Cookie on 307 redirect on same origin" time="0.01"/>
+<testcase classname="hidden verification tests" name="should not emit ETOOLARGE for GB18030 0x80 (U+20AC euro) decoded body at maxResponseSize(1)" time="0.019"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE for GB18030 two Euro characters exceeding maxResponseSize(1)" time="0.016"/>
+<testcase classname="hidden verification tests" name="should preserve POST body on 305 redirect" time="0.014"/>
+<testcase classname="hidden verification tests" name="should emit ETOOLARGE when browser responseType(&#x22;text&#x22;) decompressed UTF-8 response consumed BOM but entity was 4 bytes" time="0.001"/>
+<testcase classname="hidden verification tests" name="should accurately measure browser responseType(&#x22;text&#x22;) UTF-8 response with BOM within maxResponseSize(4)" time="0.016"/>
+<testcase classname="hidden verification tests" name="should stream data chunks to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).end callback" time="0.037"/>
+<testcase classname="hidden verification tests" name="should retry post-header ECONNRESET and replay multipart payload on unbuffered limited response" time="0.071"/>
+<testcase classname="hidden verification tests" name="should preserve request-event responseType=&#x22;arraybuffer&#x22; override when maxResponseSize is set" time="0.023"/>
+<testcase classname="hidden verification tests" name="should replay multipart FormData body on 307 redirect when maxRequestSize is set and retries=0" time="0.029"/>
+<testcase classname="hidden verification tests" name="should deliver streaming response immediately upon headers for .buffer(false).retry(1) without maxResponseSize" time="0.061"/>
+<testcase classname="hidden verification tests" name="should serialize multipart once before opening request and replay byte-for-byte across retries" time="0.038"/>
+<testcase classname="hidden verification tests" name="should not race multipart spooling with immediate socket drop on attempt 1 and replay full payload" time="0.022"/>
+<testcase classname="hidden verification tests" name="should deliver unbuffered response without size limit immediately on headers and not accumulate chunks" time="0.079"/>
+<testcase classname="hidden verification tests" name="should invoke callback once for in-limit buffered POST with http2() and maxRequestSize" time="0.025"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should not settle browser request at readyState 1 and complete normally at readyState 4" time="0.026"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE on browser text response exceeding maxResponseSize without headers or progress events" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should complete normally on browser text response within maxResponseSize without headers or progress events" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE on browser text response exceeding maxResponseSize via Content-Length without progress event" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE on browser FormData send exceeding maxRequestSize without upload progress events" time="0.003"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize" time="0.003"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit progress event with direction upload during browser upload" time="0.002"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should not treat browser HEAD response with Content-Length as size error" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should not treat browser 204 response with Content-Length as size error" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE for empty native FormData when maxRequestSize is 0" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should succeed for browser FormData when body is within limit" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser upload progress loaded exceeds maxRequestSize" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser download progress loaded exceeds maxResponseSize" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser request payload length exceeds maxRequestSize" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE on browser direct Blob request exceeding maxRequestSize without upload progress" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE on browser ArrayBuffer response exceeding maxResponseSize without wire metadata" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should report 0 retries on browser size error with retry(3) configured" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should successfully transmit in-limit browser FormData without size error when progress events are absent" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should enforce decoded size for browser CORS gzip response when Content-Encoding is unexposed" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should normalize legacy XHR 1223 status to 204 and treat as bodyless before size check" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should retain and resend multipart payload on retry when maxRequestSize is configured" time="0.002"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should succeed when browser unexposed compressed response wire size exceeds maxResponseSize but decoded size is within limit" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should succeed when browser unexposed compressed response wire size exceeds max during progress but decodes within limit" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should report err.retries === 0 on size error with retry(0) configured (Browser)" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should safely transmit browser multipart fields within maxRequestSize" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should transmit consistent multipart boundary in header and body within maxRequestSize" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should complete normally for responses within maxResponseSize without false size error" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize" time="0"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should succeed when browser decompressed UTF-16LE response is within maxResponseSize" time="0.022"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should account for BOM in browser compressed UTF-16 response decoded byte size" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should serialize File/Blob in browser FormData and enforce maxRequestSize" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should not emit ETOOLARGE for Shift_JIS 0x80 (U+0080) decoded body at maxResponseSize(1)" time="0.018"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should accurately measure Shift_JIS compressed text response within maxResponseSize without false ETOOLARGE" time="0.018"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize" time="0.002"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should accurately measure GBK compressed text response within maxResponseSize without false ETOOLARGE" time="0.014"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should not emit ETOOLARGE for GBK 0x80 (U+20AC euro) decoded body at maxResponseSize(1)" time="0.016"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize" time="0.002"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should accurately measure ISO-2022-JP compressed text response within maxResponseSize" time="0.015"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should accurately measure ISO-2022-JP compressed text response with JIS X 0201 Roman state (Yen) within maxResponseSize" time="0.016"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when ISO-2022-JP compressed text response with JIS X 0201 Roman state exceeds maxResponseSize" time="0.002"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should retain and resend multipart payload on retry when only maxResponseSize is configured" time="0.002"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser decompressed UTF-8 response with BOM exceeds maxResponseSize" time="0.001"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should emit ETOOLARGE when browser compressed HZ-GB-2312 response exceeds maxResponseSize accounting for state escapes" time="0.01"/>
+<testcase classname="hidden verification tests browser simulation tests" name="should accurately measure HZ-GB-2312 compressed text response within maxResponseSize without false ETOOLARGE" time="0.018"/>
+</testsuite>
