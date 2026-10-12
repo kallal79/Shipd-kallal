@@ -1,0 +1,82 @@
+{
+  "summary": "Agent passed baseline tests but failed 33 of 87 size-limit compliance tests.",
+  "test_results": {
+    "baseline_passed": true,
+    "new_tests_passed": false,
+    "baseline_exit_code": 0,
+    "new_tests_exit_code": 1,
+    "passed": 54,
+    "failed": 33,
+    "total": 87,
+    "failures": [
+      "should abort with ETOOLARGE when redirect response body exceeds maxResponseSize",
+      "should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize",
+      "should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize",
+      "should preserve readable stream on unbuffered response when maxResponseSize is configured",
+      "should emit ETOOLARGE error when intermediate redirect exceeds maxResponseSize during pipe",
+      "should emit ETOOLARGE on unbuffered chunked response stream overflow",
+      "should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize",
+      "should replay serialized multipart payload on retry after 500 error on Node",
+      "should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives",
+      "should report err.retries === 0 on size error with retry(0) configured (Node)",
+      "should deliver ETOOLARGE to end callback, request error listener, and response stream on unbuffered chunked overflow",
+      "should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured",
+      "should complete normally with res.once(\"end\", done) on unbuffered response within maxResponseSize without data listener",
+      "should retry and succeed when unbuffered response with maxResponseSize encounters ECONNRESET",
+      "should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize",
+      "should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length",
+      "should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize",
+      "should report 0 retries on browser size error with retry(3) configured",
+      "should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit",
+      "should enforce decoded size for browser CORS gzip response when Content-Encoding is unexposed",
+      "should retain and resend multipart payload on retry when maxRequestSize is configured",
+      "should succeed when browser unexposed compressed response wire size exceeds maxResponseSize but decoded size is within limit",
+      "should succeed when browser unexposed compressed response wire size exceeds max during progress but decodes within limit",
+      "should report err.retries === 0 on size error with retry(0) configured (Browser)",
+      "should safely transmit browser multipart fields within maxRequestSize",
+      "should transmit consistent multipart boundary in header and body within maxRequestSize",
+      "should complete normally for responses within maxResponseSize without false size error",
+      "should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize",
+      "should account for BOM in browser compressed UTF-16 response decoded byte size",
+      "should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize",
+      "should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize",
+      "should retain and resend multipart payload on retry when only maxResponseSize is configured",
+      "should emit ETOOLARGE when browser compressed HZ-GB-2312 response exceeds maxResponseSize accounting for state escapes"
+    ]
+  },
+  "details": {
+    "kind": "fail",
+    "primary_category": "missed_requirement",
+    "reasoning": "The agent implementation attempted size-limit enforcement but failed 16 tests. Critical missing behaviors include: should abort with ETOOLARGE when redirect response body exceeds maxResponseSize; should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize; should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize.",
+    "secondary_factors": null
+  },
+  "quick_failure_summary": "Failed tests include: should abort with ETOOLARGE when redirect response body exceeds maxResponseSize, should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize, should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize",
+  "justification": {
+    "issue_description": "maxResponseSize is not enforced for unbuffered chunked Node responses.",
+    "was_mentioned_in_description": true,
+    "was_inferable_from_codebase_excluding_tests": true,
+    "was_inferable_from_existing_tests": false,
+    "was_inferable_from_new_tests_not_visible_to_agent": false,
+    "evidence": "The prompt requires an ETOOLARGE error when an incoming response payload exceeds the configured byte threshold, without limiting that requirement to buffered responses. In the submitted code, src/node/index.js counts response bytes only under `if (buffer)` (around lines 1193-1215), while the `if (!buffer)` branch immediately calls `this.callback(null, this._emitResponse())` (around lines 1251-1259).",
+    "verdict_reasoning": "This is a documented behavior gap, not an undocumented test convention: an unbuffered response is still an incoming response payload and must be terminated when it exceeds the configured limit. The verifier failures are direct assertion failures in those two cases, so FAIL_MISSED_REQUIREMENT is the appropriate primary verdict."
+  },
+  "problem_assessment": {
+    "description_clear": true,
+    "tests_deterministic": true,
+    "difficulty": "challenging",
+    "notes": "The task is challenging but solvable. Tests deterministically expose missing requirements."
+  },
+  "environment_assessment": {
+    "evidence": [
+      "junit_base.xml reports 188 baseline tests with 0 failures.",
+      "junit-new.xml reports 44 tests with 16 failures.",
+      "The failures map directly to incomplete size-limit enforcement in the agent patch."
+    ],
+    "finding": "No environment or verifier blocker was found; the failed cases map directly to missing enforcement branches in the agent source.",
+    "blocker_type": "none",
+    "confidence": "high",
+    "agent_blame_unfair": false,
+    "blocker_detected": false
+  },
+  "verdict": "FAIL_MISSED_REQUIREMENT"
+}

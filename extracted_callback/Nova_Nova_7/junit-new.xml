@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="30.292" tests="13" failures="5">
+  <testsuite name="Root Suite" timestamp="2026-08-18T14:55:19" tests="0" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="hidden verification tests" timestamp="2026-08-18T14:55:19" tests="10" file="/app/test/node/hidden_verify.js" time="0.283" failures="2">
+    <testcase name="hidden verification tests should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded" time="0.074" classname="should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded">
+    </testcase>
+    <testcase name="hidden verification tests should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)" time="0.051" classname="should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)">
+    </testcase>
+    <testcase name="hidden verification tests should delegate multipart sending to Request.prototype._sendMultipartBody" time="0.001" classname="should delegate multipart sending to Request.prototype._sendMultipartBody">
+      <failure message="Cannot read properties of undefined (reading &apos;setHeader&apos;)" type="TypeError"><![CDATA[TypeError: Cannot read properties of undefined (reading 'setHeader')
+    at Request._sendMultipartBody (lib/node/index.js:1221:11)
+    at request.Request._sendMultipartBody (test/node/hidden_verify.js:86:23)
+    at Request._end (lib/node/index.js:1182:10)
+    at Request.end (lib/node/index.js:943:8)
+    at Context.<anonymous> (test/node/hidden_verify.js:92:8)
+    at process.processImmediate (node:internal/timers:504:21)]]></failure>
+    </testcase>
+    <testcase name="hidden verification tests should emit ETOOLARGE on maxRequestSize exceeded during multipart upload" time="0.001" classname="should emit ETOOLARGE on maxRequestSize exceeded during multipart upload">
+      <failure message="Cannot read properties of undefined (reading &apos;setHeader&apos;)" type="TypeError"><![CDATA[TypeError: Cannot read properties of undefined (reading 'setHeader')
+    at Request._sendMultipartBody (lib/node/index.js:1221:11)
+    at request.Request._sendMultipartBody (test/node/hidden_verify.js:86:23)
+    at Request._end (lib/node/index.js:1182:10)
+    at Request.end (lib/node/index.js:943:8)
+    at Context.<anonymous> (test/node/hidden_verify.js:113:9)
+    at process.processImmediate (node:internal/timers:504:21)]]></failure>
+    </testcase>
+    <testcase name="hidden verification tests should return false from hasSizeError() when no size limit is exceeded" time="0.012" classname="should return false from hasSizeError() when no size limit is exceeded">
+    </testcase>
+    <testcase name="hidden verification tests should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary" time="0.002" classname="should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary">
+    </testcase>
+    <testcase name="hidden verification tests should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary" time="0.002" classname="should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary">
+    </testcase>
+    <testcase name="hidden verification tests hasSizeError() should return strict boolean false before any request is made" time="0.000" classname="hasSizeError() should return strict boolean false before any request is made">
+    </testcase>
+    <testcase name="hidden verification tests hasSizeError() should return strict boolean true after a maxResponseSize error" time="0.002" classname="hasSizeError() should return strict boolean true after a maxResponseSize error">
+    </testcase>
+    <testcase name="hidden verification tests should not double-callback if socket emits error after maxRequestSize abort" time="0.052" classname="should not double-callback if socket emits error after maxRequestSize abort">
+    </testcase>
+  </testsuite>
+  <testsuite name="Client-side maxRequestSize and maxResponseSize" timestamp="2026-08-18T14:55:19" tests="3" file="/app/test/node/client_mock.js" time="30.007" failures="3">
+    <testcase name="Client-side maxRequestSize and maxResponseSize should abort and emit exactly once an error with code ETOOLARGE if payload exceeds maxRequestSize" time="10.001" classname="should abort and emit exactly once an error with code ETOOLARGE if payload exceeds maxRequestSize">
+      <failure message="Timeout of 10000ms exceeded. For async tests and hooks, ensure &quot;done()&quot; is called; if returning a Promise, ensure it resolves. (/app/test/node/client_mock.js)" type="Error"><![CDATA[Error: Timeout of 10000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/app/test/node/client_mock.js)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)]]></failure>
+    </testcase>
+    <testcase name="Client-side maxRequestSize and maxResponseSize should abort and emit ETOOLARGE if response exceeds maxResponseSize" time="10.000" classname="should abort and emit ETOOLARGE if response exceeds maxResponseSize">
+      <failure message="Timeout of 10000ms exceeded. For async tests and hooks, ensure &quot;done()&quot; is called; if returning a Promise, ensure it resolves. (/app/test/node/client_mock.js)" type="Error"><![CDATA[Error: Timeout of 10000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/app/test/node/client_mock.js)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)]]></failure>
+    </testcase>
+    <testcase name="Client-side maxRequestSize and maxResponseSize should not double-callback if network error occurs after maxRequestSize abort" time="10.000" classname="should not double-callback if network error occurs after maxRequestSize abort">
+      <failure message="Timeout of 10000ms exceeded. For async tests and hooks, ensure &quot;done()&quot; is called; if returning a Promise, ensure it resolves. (/app/test/node/client_mock.js)" type="Error"><![CDATA[Error: Timeout of 10000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/app/test/node/client_mock.js)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

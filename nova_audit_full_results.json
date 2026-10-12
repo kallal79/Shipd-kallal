@@ -1,0 +1,123 @@
+[
+  {
+    "agent": "Nova_Nova_1",
+    "status": "PASS",
+    "verdict": "PASS_LEGITIMATE",
+    "passed": 129,
+    "failed": 0,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 0,
+    "patchBytes": 118750
+  },
+  {
+    "agent": "Nova_Nova_2",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "passed": 67,
+    "failed": 62,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 62,
+    "patchBytes": 12555
+  },
+  {
+    "agent": "Nova_Nova_3",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "passed": 67,
+    "failed": 62,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 62,
+    "patchBytes": 15615
+  },
+  {
+    "agent": "Nova_Nova_4",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "passed": 67,
+    "failed": 62,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 62,
+    "patchBytes": 17370
+  },
+  {
+    "agent": "Nova_Nova_5",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "passed": 67,
+    "failed": 62,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 62,
+    "patchBytes": 16202
+  },
+  {
+    "agent": "Nova_Nova_6",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "passed": 67,
+    "failed": 62,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 62,
+    "patchBytes": 14094
+  },
+  {
+    "agent": "Nova_Nova_7",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "passed": 67,
+    "failed": 62,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 62,
+    "patchBytes": 14201
+  },
+  {
+    "agent": "Nova_Nova_8",
+    "status": "PASS",
+    "verdict": "PASS_LEGITIMATE",
+    "passed": 129,
+    "failed": 0,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 0,
+    "patchBytes": 118750
+  },
+  {
+    "agent": "Nova_Nova_9",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "passed": 67,
+    "failed": 62,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 62,
+    "patchBytes": 12880
+  },
+  {
+    "agent": "Nova_Nova_10",
+    "status": "PASS",
+    "verdict": "PASS_LEGITIMATE",
+    "passed": 129,
+    "failed": 0,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 0,
+    "patchBytes": 118750
+  },
+  {
+    "agent": "Orion_Nova",
+    "status": "PASS",
+    "verdict": "PASS_LEGITIMATE",
+    "passed": 129,
+    "failed": 0,
+    "total": 129,
+    "junitTests": 129,
+    "junitFails": 0,
+    "patchBytes": 118750
+  }
+]

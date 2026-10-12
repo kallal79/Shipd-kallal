@@ -1,0 +1,269 @@
+[
+  {
+    "agent": "Nova_Nova_1",
+    "status": "PASS",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 138,
+      "failed": 0,
+      "total": 138,
+      "failuresCount": 0,
+      "sampleFailures": []
+    }
+  },
+  {
+    "agent": "Nova_Nova_2",
+    "status": "FAIL",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 68,
+      "failed": 70,
+      "total": 138,
+      "failuresCount": 70,
+      "sampleFailures": [
+        {
+          "title": "should not retry request size error when retry(3) is configured",
+          "err": "Expected err.retries to be 0 on size error"
+        },
+        {
+          "title": "should not retry response size error when retry(3) is configured",
+          "err": "Expected err.retries to be 0 on size error"
+        },
+        {
+          "title": "should abort with ETOOLARGE when redirect response body exceeds maxResponseSize",
+          "err": "Expected error when redirect body exceeds maxResponseSize"
+        }
+      ]
+    }
+  },
+  {
+    "agent": "Nova_Nova_3",
+    "status": "FAIL",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 86,
+      "failed": 52,
+      "total": 138,
+      "failuresCount": 52,
+      "sampleFailures": [
+        {
+          "title": "should abort with ETOOLARGE when redirect response body exceeds maxResponseSize",
+          "err": "Expected error when redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize",
+          "err": "Expected error when decompressed redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize",
+          "err": "Expected ETOOLARGE error for delayed oversized redirect body"
+        }
+      ]
+    }
+  },
+  {
+    "agent": "Nova_Nova_4",
+    "status": "FAIL",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 83,
+      "failed": 55,
+      "total": 138,
+      "failuresCount": 55,
+      "sampleFailures": [
+        {
+          "title": "should abort with ETOOLARGE when redirect response body exceeds maxResponseSize",
+          "err": "Expected error when redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize",
+          "err": "Expected error when decompressed redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize",
+          "err": "Expected ETOOLARGE error for delayed oversized redirect body"
+        }
+      ]
+    }
+  },
+  {
+    "agent": "Nova_Nova_5",
+    "status": "FAIL",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 86,
+      "failed": 52,
+      "total": 138,
+      "failuresCount": 52,
+      "sampleFailures": [
+        {
+          "title": "should abort with ETOOLARGE when redirect response body exceeds maxResponseSize",
+          "err": "Expected error when redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize",
+          "err": "Expected error when decompressed redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize",
+          "err": "Expected ETOOLARGE error for delayed oversized redirect body"
+        }
+      ]
+    }
+  },
+  {
+    "agent": "Nova_Nova_6",
+    "status": "FAIL",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 81,
+      "failed": 57,
+      "total": 138,
+      "failuresCount": 57,
+      "sampleFailures": [
+        {
+          "title": "should abort with ETOOLARGE when redirect response body exceeds maxResponseSize",
+          "err": "Expected error when redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize",
+          "err": "Expected error when decompressed redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize",
+          "err": "Expected ETOOLARGE error for delayed oversized redirect body"
+        }
+      ]
+    }
+  },
+  {
+    "agent": "Nova_Nova_7",
+    "status": "FAIL",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 77,
+      "failed": 72,
+      "total": 138,
+      "failuresCount": 72,
+      "sampleFailures": [
+        {
+          "title": "should abort with ETOOLARGE when redirect response body exceeds maxResponseSize",
+          "err": "Expected error when redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize",
+          "err": "Expected error when decompressed redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize",
+          "err": "Expected ETOOLARGE error for delayed oversized redirect body"
+        }
+      ]
+    }
+  },
+  {
+    "agent": "Nova_Nova_8",
+    "status": "PASS",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 138,
+      "failed": 0,
+      "total": 138,
+      "failuresCount": 0,
+      "sampleFailures": []
+    }
+  },
+  {
+    "agent": "Nova_Nova_9",
+    "status": "FAIL",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 67,
+      "failed": 71,
+      "total": 138,
+      "failuresCount": 71,
+      "sampleFailures": [
+        {
+          "title": "should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize",
+          "err": "Expected overflowing write() to return false\n\ntrue !== false\n"
+        },
+        {
+          "title": "should abort with ETOOLARGE when redirect response body exceeds maxResponseSize",
+          "err": "Expected error when redirect body exceeds maxResponseSize"
+        },
+        {
+          "title": "should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize",
+          "err": "Expected error when decompressed redirect body exceeds maxResponseSize"
+        }
+      ]
+    }
+  },
+  {
+    "agent": "Nova_Nova_10",
+    "status": "PASS",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 138,
+      "failed": 0,
+      "total": 138,
+      "failuresCount": 0,
+      "sampleFailures": []
+    }
+  },
+  {
+    "agent": "Orion_Nova",
+    "status": "PASS",
+    "base": {
+      "passed": 31,
+      "total": 31,
+      "error": null
+    },
+    "new": {
+      "passed": 138,
+      "failed": 0,
+      "total": 138,
+      "failuresCount": 0,
+      "sampleFailures": []
+    }
+  }
+]

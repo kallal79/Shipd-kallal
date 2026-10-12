@@ -1,0 +1,22 @@
+  hidden verification tests
+    1) should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize
+    2) should abort with ETOOLARGE when redirect response body exceeds maxResponseSize
+    3) should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize
+    4) should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize
+    5) should preserve readable stream on unbuffered response when maxResponseSize is configured
+    6) should emit ETOOLARGE error when intermediate redirect exceeds maxResponseSize during pipe
+    7) should invoke end callback with ETOOLARGE on write overflow before end even with error listener
+    8) should emit ETOOLARGE on unbuffered chunked response stream overflow
+    9) should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize
+    10) should replay serialized multipart payload on retry after 500 error on Node
+    11) should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives
+    12) should report err.retries === 0 on size error with retry(0) configured (Node)
+    13) should deliver ETOOLARGE to end callback, request error listener, and response stream on unbuffered chunked overflow
+    14) should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured
+    15) should complete normally with res.once("end", done) on unbuffered response within maxResponseSize without data listener
+    16) should retry and succeed when unbuffered response with maxResponseSize encounters ECONNRESET
+    17) "before all" hook
+    18) "before each" hook in "browser simulation tests"
+
+  26 passing (15s)
+  18 failing

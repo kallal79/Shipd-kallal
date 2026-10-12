@@ -1,0 +1,1880 @@
+﻿{
+  "stats": {
+    "suites": 3,
+    "tests": 133,
+    "passes": 133,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-09-23T19:54:35.273Z",
+    "end": "2026-09-23T19:54:37.819Z",
+    "duration": 2546
+  },
+  "tests": [
+    {
+      "title": "should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded",
+      "fullTitle": "hidden verification tests should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded",
+      "duration": 62,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)",
+      "fullTitle": "hidden verification tests should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should measure byte length for multibyte UTF-8 strings in maxRequestSize",
+      "fullTitle": "hidden verification tests should measure byte length for multibyte UTF-8 strings in maxRequestSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when Buffer payload exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when Buffer payload exceeds maxRequestSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should route multipart formData through an upload progress monitor and emit upload progress",
+      "fullTitle": "hidden verification tests should route multipart formData through an upload progress monitor and emit upload progress",
+      "duration": 36,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should succeed for in-limit multipart upload with 200 status",
+      "fullTitle": "hidden verification tests should succeed for in-limit multipart upload with 200 status",
+      "duration": 27,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on maxRequestSize exceeded during multipart upload",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE on maxRequestSize exceeded during multipart upload",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should return false from hasSizeError() when no size limit is exceeded",
+      "fullTitle": "hidden verification tests should return false from hasSizeError() when no size limit is exceeded",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary",
+      "fullTitle": "hidden verification tests should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary",
+      "duration": 4,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary",
+      "fullTitle": "hidden verification tests should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary",
+      "duration": 5,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "hasSizeError() should return strict boolean false before any request is made",
+      "fullTitle": "hidden verification tests hasSizeError() should return strict boolean false before any request is made",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "hasSizeError() should return strict boolean true after a maxResponseSize error",
+      "fullTitle": "hidden verification tests hasSizeError() should return strict boolean true after a maxResponseSize error",
+      "duration": 19,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should enforce maxRequestSize using reported Content-Length for multipart",
+      "fullTitle": "hidden verification tests should enforce maxRequestSize using reported Content-Length for multipart",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should reject Promise with ETOOLARGE on response overflow",
+      "fullTitle": "hidden verification tests should reject Promise with ETOOLARGE on response overflow",
+      "duration": 27,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should reject Promise with ETOOLARGE on request overflow",
+      "fullTitle": "hidden verification tests should reject Promise with ETOOLARGE on request overflow",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should have hasSizeError true after Promise response overflow",
+      "fullTitle": "hidden verification tests should have hasSizeError true after Promise response overflow",
+      "duration": 30,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not retry request size error when retry(3) is configured",
+      "fullTitle": "hidden verification tests should not retry request size error when retry(3) is configured",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not retry response size error when retry(3) is configured",
+      "fullTitle": "hidden verification tests should not retry response size error when retry(3) is configured",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should successfully follow compressed redirect when no maxResponseSize is configured",
+      "fullTitle": "hidden verification tests should successfully follow compressed redirect when no maxResponseSize is configured",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort with ETOOLARGE when decompressed non-redirect gzip response exceeds maxResponseSize (Node)",
+      "fullTitle": "hidden verification tests should abort with ETOOLARGE when decompressed non-redirect gzip response exceeds maxResponseSize (Node)",
+      "duration": 5,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve readable stream on unbuffered response when maxResponseSize is configured",
+      "fullTitle": "hidden verification tests should preserve readable stream on unbuffered response when maxResponseSize is configured",
+      "duration": 30,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat bodyless 304 response with Content-Length as size error",
+      "fullTitle": "hidden verification tests should not treat bodyless 304 response with Content-Length as size error",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat bodyless 204 response with Content-Length as size error (Node)",
+      "fullTitle": "hidden verification tests should not treat bodyless 204 response with Content-Length as size error (Node)",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should invoke end callback with ETOOLARGE on write overflow before end even with error listener",
+      "fullTitle": "hidden verification tests should invoke end callback with ETOOLARGE on write overflow before end even with error listener",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat Node HEAD redirect with Content-Length as size error",
+      "fullTitle": "hidden verification tests should not treat Node HEAD redirect with Content-Length as size error",
+      "duration": 6,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should measure byte length for JSON object payload in maxRequestSize",
+      "fullTitle": "hidden verification tests should measure byte length for JSON object payload in maxRequestSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on unbuffered chunked response stream overflow",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE on unbuffered chunked response stream overflow",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should replay serialized multipart payload on retry after 500 error on Node",
+      "fullTitle": "hidden verification tests should replay serialized multipart payload on retry after 500 error on Node",
+      "duration": 20,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives",
+      "fullTitle": "hidden verification tests should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives",
+      "duration": 515,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should stream Node multipart upload directly when maxRequestSize is not set",
+      "fullTitle": "hidden verification tests should stream Node multipart upload directly when maxRequestSize is not set",
+      "duration": 33,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured",
+      "fullTitle": "hidden verification tests should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured",
+      "duration": 34,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when early response arrives but unbuffered upload later exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when early response arrives but unbuffered upload later exceeds maxRequestSize",
+      "duration": 60,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed GB18030 U+0080 response exceeds maxResponseSize(2)",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when browser decompressed GB18030 U+0080 response exceeds maxResponseSize(2)",
+      "duration": 7,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure GB18030 U+0080 response within maxResponseSize(4)",
+      "fullTitle": "hidden verification tests should accurately measure GB18030 U+0080 response within maxResponseSize(4)",
+      "duration": 29,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve POST body on cross-origin 307 redirect",
+      "fullTitle": "hidden verification tests should preserve POST body on cross-origin 307 redirect",
+      "duration": 22,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed GB18030 U+0400 response exceeds maxResponseSize(2)",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when browser decompressed GB18030 U+0400 response exceeds maxResponseSize(2)",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure GB18030 U+0400 response within maxResponseSize(4)",
+      "fullTitle": "hidden verification tests should accurately measure GB18030 U+0400 response within maxResponseSize(4)",
+      "duration": 17,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and GB18030 response within maxResponseSize(3)",
+      "fullTitle": "hidden verification tests should accurately measure mixed ASCII and GB18030 response within maxResponseSize(3)",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and GB18030 response exceeds maxResponseSize(2)",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when mixed ASCII and GB18030 response exceeds maxResponseSize(2)",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip Authorization and Cookie on 307 redirect across origins",
+      "fullTitle": "hidden verification tests should strip Authorization and Cookie on 307 redirect across origins",
+      "duration": 11,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip credentials configured with auth type auto on cross-origin 307 redirect",
+      "fullTitle": "hidden verification tests should strip credentials configured with auth type auto on cross-origin 307 redirect",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip agent cookies on cross-origin 307 redirect",
+      "fullTitle": "hidden verification tests should strip agent cookies on cross-origin 307 redirect",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip agent cookies on cross-origin 305 redirect",
+      "fullTitle": "hidden verification tests should strip agent cookies on cross-origin 305 redirect",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve Authorization and Cookie on 307 redirect on same origin",
+      "fullTitle": "hidden verification tests should preserve Authorization and Cookie on 307 redirect on same origin",
+      "duration": 11,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve POST body on 305 redirect",
+      "fullTitle": "hidden verification tests should preserve POST body on 305 redirect",
+      "duration": 14,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should replay multipart payload on 305 redirect when maxRequestSize is configured",
+      "fullTitle": "hidden verification tests should replay multipart payload on 305 redirect when maxRequestSize is configured",
+      "duration": 42,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should stream data chunks to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).end callback",
+      "fullTitle": "hidden verification tests should stream data chunks to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).end callback",
+      "duration": 29,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver all in-limit data chunks for unbuffered response larger than 64 KiB in end callback",
+      "fullTitle": "hidden verification tests should deliver all in-limit data chunks for unbuffered response larger than 64 KiB in end callback",
+      "duration": 7,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retry post-header ECONNRESET and replay multipart payload on unbuffered limited response",
+      "fullTitle": "hidden verification tests should retry post-header ECONNRESET and replay multipart payload on unbuffered limited response",
+      "duration": 61,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve request-event responseType=\"arraybuffer\" override when maxResponseSize is set",
+      "fullTitle": "hidden verification tests should preserve request-event responseType=\"arraybuffer\" override when maxResponseSize is set",
+      "duration": 76,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should replay multipart FormData body on 307 redirect when maxRequestSize is set and retries=0",
+      "fullTitle": "hidden verification tests should replay multipart FormData body on 307 redirect when maxRequestSize is set and retries=0",
+      "duration": 39,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver streaming response immediately upon headers for .buffer(false).retry(1) without maxResponseSize",
+      "fullTitle": "hidden verification tests should deliver streaming response immediately upon headers for .buffer(false).retry(1) without maxResponseSize",
+      "duration": 62,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve and replay multipart payload across retries",
+      "fullTitle": "hidden verification tests should preserve and replay multipart payload across retries",
+      "duration": 34,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not race multipart spooling with immediate socket drop on attempt 1 and replay full payload",
+      "fullTitle": "hidden verification tests should not race multipart spooling with immediate socket drop on attempt 1 and replay full payload",
+      "duration": 40,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver unbuffered response without size limit immediately on headers and not accumulate chunks",
+      "fullTitle": "hidden verification tests should deliver unbuffered response without size limit immediately on headers and not accumulate chunks",
+      "duration": 66,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should invoke callback once for in-limit buffered POST with http2() and maxRequestSize",
+      "fullTitle": "hidden verification tests should invoke callback once for in-limit buffered POST with http2() and maxRequestSize",
+      "duration": 42,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort with ETOOLARGE when HTTP/2 request payload exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests should abort with ETOOLARGE when HTTP/2 request payload exceeds maxRequestSize",
+      "duration": 6,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort with ETOOLARGE when HTTP/2 response payload exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests should abort with ETOOLARGE when HTTP/2 response payload exceeds maxResponseSize",
+      "duration": 12,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retry post-header ECONNRESET and replay multipart payload when only maxRequestSize is configured",
+      "fullTitle": "hidden verification tests should retry post-header ECONNRESET and replay multipart payload when only maxRequestSize is configured",
+      "duration": 65,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should detach old upload pipeline on early retry without counter corruption or false ETOOLARGE",
+      "fullTitle": "hidden verification tests should detach old upload pipeline on early retry without counter corruption or false ETOOLARGE",
+      "duration": 23,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "fullTitle": "hidden verification tests should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "duration": 5,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not retain queued chunks for unbuffered response when no data listener is attached",
+      "fullTitle": "hidden verification tests should not retain queued chunks for unbuffered response when no data listener is attached",
+      "duration": 5,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "fullTitle": "hidden verification tests should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "duration": 6,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit response end event exactly once for unbuffered limited retry on response event",
+      "fullTitle": "hidden verification tests should emit response end event exactly once for unbuffered limited retry on response event",
+      "duration": 61,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener",
+      "fullTitle": "hidden verification tests should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener",
+      "duration": 36,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit end event exactly once for pre-registered response end listener with retry and size limit",
+      "fullTitle": "hidden verification tests should emit end event exactly once for pre-registered response end listener with retry and size limit",
+      "duration": 62,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should stream directly and not queue chunks in memory for maxRequestSize-only retry receiving response stream",
+      "fullTitle": "hidden verification tests should stream directly and not queue chunks in memory for maxRequestSize-only retry receiving response stream",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver ETOOLARGE when early-header unbuffered multipart POST exceeds maxResponseSize after upload finish",
+      "fullTitle": "hidden verification tests should deliver ETOOLARGE when early-header unbuffered multipart POST exceeds maxResponseSize after upload finish",
+      "duration": 62,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retry and replay multipart when early-header unbuffered upload finishes and connection resets",
+      "fullTitle": "hidden verification tests should retry and replay multipart when early-header unbuffered upload finishes and connection resets",
+      "duration": 67,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not settle browser request at readyState 1 and complete normally at readyState 4",
+      "fullTitle": "hidden verification tests browser simulation tests should not settle browser request at readyState 1 and complete normally at readyState 4",
+      "duration": 23,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser text response exceeding maxResponseSize without headers or progress events",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser text response exceeding maxResponseSize without headers or progress events",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should complete normally on browser text response within maxResponseSize without headers or progress events",
+      "fullTitle": "hidden verification tests browser simulation tests should complete normally on browser text response within maxResponseSize without headers or progress events",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser text response exceeding maxResponseSize via Content-Length without progress event",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser text response exceeding maxResponseSize via Content-Length without progress event",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser FormData send exceeding maxRequestSize without upload progress events",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser FormData send exceeding maxRequestSize without upload progress events",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit progress event with direction upload during browser upload",
+      "fullTitle": "hidden verification tests browser simulation tests should emit progress event with direction upload during browser upload",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat browser HEAD response with Content-Length as size error",
+      "fullTitle": "hidden verification tests browser simulation tests should not treat browser HEAD response with Content-Length as size error",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat browser 204 response with Content-Length as size error",
+      "fullTitle": "hidden verification tests browser simulation tests should not treat browser 204 response with Content-Length as size error",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE for empty native FormData when maxRequestSize is 0",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE for empty native FormData when maxRequestSize is 0",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should succeed for browser FormData when body is within limit",
+      "fullTitle": "hidden verification tests browser simulation tests should succeed for browser FormData when body is within limit",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser upload progress loaded exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser upload progress loaded exceeds maxRequestSize",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser download progress loaded exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser download progress loaded exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser request payload length exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser request payload length exceeds maxRequestSize",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser direct Blob request exceeding maxRequestSize without upload progress",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser direct Blob request exceeding maxRequestSize without upload progress",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should send browser multibyte string within exact maxRequestSize boundary without upload progress",
+      "fullTitle": "hidden verification tests browser simulation tests should send browser multibyte string within exact maxRequestSize boundary without upload progress",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should send browser Blob payload within exact maxRequestSize boundary without upload progress",
+      "fullTitle": "hidden verification tests browser simulation tests should send browser Blob payload within exact maxRequestSize boundary without upload progress",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser ArrayBuffer response exceeding maxResponseSize without wire metadata",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser ArrayBuffer response exceeding maxResponseSize without wire metadata",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should report 0 retries on browser size error with retry(3) configured",
+      "fullTitle": "hidden verification tests browser simulation tests should report 0 retries on browser size error with retry(3) configured",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit",
+      "fullTitle": "hidden verification tests browser simulation tests should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should successfully transmit in-limit browser FormData without size error when progress events are absent",
+      "fullTitle": "hidden verification tests browser simulation tests should successfully transmit in-limit browser FormData without size error when progress events are absent",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should normalize legacy XHR 1223 status to 204 and treat as bodyless before size check",
+      "fullTitle": "hidden verification tests browser simulation tests should normalize legacy XHR 1223 status to 204 and treat as bodyless before size check",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retain and resend multipart payload on retry when maxRequestSize is configured",
+      "fullTitle": "hidden verification tests browser simulation tests should retain and resend multipart payload on retry when maxRequestSize is configured",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should safely transmit browser multipart fields within maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should safely transmit browser multipart fields within maxRequestSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should complete normally for responses within maxResponseSize without false size error",
+      "fullTitle": "hidden verification tests browser simulation tests should complete normally for responses within maxResponseSize without false size error",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should succeed when browser decompressed UTF-16LE response is within maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should succeed when browser decompressed UTF-16LE response is within maxResponseSize",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should account for BOM in browser compressed UTF-16 response decoded byte size",
+      "fullTitle": "hidden verification tests browser simulation tests should account for BOM in browser compressed UTF-16 response decoded byte size",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should account for BOM in browser compressed UTF-16LE response decoded byte size",
+      "fullTitle": "hidden verification tests browser simulation tests should account for BOM in browser compressed UTF-16LE response decoded byte size",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should serialize File/Blob in browser FormData and enforce maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should serialize File/Blob in browser FormData and enforce maxRequestSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not emit ETOOLARGE for Shift_JIS 0x80 (U+0080) decoded body at maxResponseSize(1)",
+      "fullTitle": "hidden verification tests browser simulation tests should not emit ETOOLARGE for Shift_JIS 0x80 (U+0080) decoded body at maxResponseSize(1)",
+      "duration": 12,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure Shift_JIS compressed text response within maxResponseSize without false ETOOLARGE",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure Shift_JIS compressed text response within maxResponseSize without false ETOOLARGE",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and Shift_JIS response within maxResponseSize(4)",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure mixed ASCII and Shift_JIS response within maxResponseSize(4)",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and Shift_JIS response exceeds maxResponseSize(3)",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and Shift_JIS response exceeds maxResponseSize(3)",
+      "duration": 14,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure GBK compressed text response within maxResponseSize without false ETOOLARGE",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure GBK compressed text response within maxResponseSize without false ETOOLARGE",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not emit ETOOLARGE for GBK 0x80 (U+20AC euro) decoded body at maxResponseSize(1)",
+      "fullTitle": "hidden verification tests browser simulation tests should not emit ETOOLARGE for GBK 0x80 (U+20AC euro) decoded body at maxResponseSize(1)",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and GBK response within maxResponseSize(4)",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure mixed ASCII and GBK response within maxResponseSize(4)",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and GBK response exceeds maxResponseSize(3)",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and GBK response exceeds maxResponseSize(3)",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure ISO-2022-JP compressed text response within maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure ISO-2022-JP compressed text response within maxResponseSize",
+      "duration": 27,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure ISO-2022-JP compressed text response with JIS X 0201 Roman state (Yen) within maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure ISO-2022-JP compressed text response with JIS X 0201 Roman state (Yen) within maxResponseSize",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when ISO-2022-JP compressed text response with JIS X 0201 Roman state exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when ISO-2022-JP compressed text response with JIS X 0201 Roman state exceeds maxResponseSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and ISO-2022-JP state transitions within maxResponseSize(9)",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure mixed ASCII and ISO-2022-JP state transitions within maxResponseSize(9)",
+      "duration": 13,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and ISO-2022-JP state transitions exceed maxResponseSize(8)",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and ISO-2022-JP state transitions exceed maxResponseSize(8)",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retain and resend multipart payload on retry when only maxResponseSize is configured",
+      "fullTitle": "hidden verification tests browser simulation tests should retain and resend multipart payload on retry when only maxResponseSize is configured",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed UTF-8 response with BOM exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed UTF-8 response with BOM exceeds maxResponseSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser compressed HZ-GB-2312 response exceeds maxResponseSize accounting for state escapes",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser compressed HZ-GB-2312 response exceeds maxResponseSize accounting for state escapes",
+      "duration": 11,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure HZ-GB-2312 compressed text response within maxResponseSize without false ETOOLARGE",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure HZ-GB-2312 compressed text response within maxResponseSize without false ETOOLARGE",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and HZ-GB-2312 state transitions within maxResponseSize(7)",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure mixed ASCII and HZ-GB-2312 state transitions within maxResponseSize(7)",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and HZ-GB-2312 state transitions exceed maxResponseSize(6)",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and HZ-GB-2312 state transitions exceed maxResponseSize(6)",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should follow method-preserving 305 redirect and replay multipart payload in browser",
+      "fullTitle": "hidden verification tests browser simulation tests should follow method-preserving 305 redirect and replay multipart payload in browser",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip Authorization and Cookie on cross-origin 305 redirect in browser",
+      "fullTitle": "hidden verification tests browser simulation tests should strip Authorization and Cookie on cross-origin 305 redirect in browser",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser compressed JSON response exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser responseType override tests should emit ETOOLARGE when browser compressed JSON response exceeds maxResponseSize",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve request-event responseType=\"document\" override when maxResponseSize is set",
+      "fullTitle": "hidden verification tests browser responseType override tests should preserve request-event responseType=\"document\" override when maxResponseSize is set",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should complete large unbuffered stream with 10GB maxResponseSize within bounded memory",
+      "fullTitle": "hidden verification tests browser responseType override tests should complete large unbuffered stream with 10GB maxResponseSize within bounded memory",
+      "duration": 14,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve request-event responseType=\"\" override clearing configured responseType under maxResponseSize",
+      "fullTitle": "hidden verification tests browser responseType override tests should preserve request-event responseType=\"\" override clearing configured responseType under maxResponseSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should complete in-limit default and explicit text response on native XHR without InvalidStateError",
+      "fullTitle": "hidden verification tests browser responseType override tests should complete in-limit default and explicit text response on native XHR without InvalidStateError",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve custom attachment filename override in browser multipart serialization under maxRequestSize",
+      "fullTitle": "hidden verification tests browser responseType override tests should preserve custom attachment filename override in browser multipart serialization under maxRequestSize",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    }
+  ],
+  "pending": [],
+  "failures": [],
+  "passes": [
+    {
+      "title": "should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded",
+      "fullTitle": "hidden verification tests should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded",
+      "duration": 62,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)",
+      "fullTitle": "hidden verification tests should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should measure byte length for multibyte UTF-8 strings in maxRequestSize",
+      "fullTitle": "hidden verification tests should measure byte length for multibyte UTF-8 strings in maxRequestSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when Buffer payload exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when Buffer payload exceeds maxRequestSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should route multipart formData through an upload progress monitor and emit upload progress",
+      "fullTitle": "hidden verification tests should route multipart formData through an upload progress monitor and emit upload progress",
+      "duration": 36,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should succeed for in-limit multipart upload with 200 status",
+      "fullTitle": "hidden verification tests should succeed for in-limit multipart upload with 200 status",
+      "duration": 27,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on maxRequestSize exceeded during multipart upload",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE on maxRequestSize exceeded during multipart upload",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should return false from hasSizeError() when no size limit is exceeded",
+      "fullTitle": "hidden verification tests should return false from hasSizeError() when no size limit is exceeded",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary",
+      "fullTitle": "hidden verification tests should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary",
+      "duration": 4,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary",
+      "fullTitle": "hidden verification tests should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary",
+      "duration": 5,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "hasSizeError() should return strict boolean false before any request is made",
+      "fullTitle": "hidden verification tests hasSizeError() should return strict boolean false before any request is made",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "hasSizeError() should return strict boolean true after a maxResponseSize error",
+      "fullTitle": "hidden verification tests hasSizeError() should return strict boolean true after a maxResponseSize error",
+      "duration": 19,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should enforce maxRequestSize using reported Content-Length for multipart",
+      "fullTitle": "hidden verification tests should enforce maxRequestSize using reported Content-Length for multipart",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should reject Promise with ETOOLARGE on response overflow",
+      "fullTitle": "hidden verification tests should reject Promise with ETOOLARGE on response overflow",
+      "duration": 27,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should reject Promise with ETOOLARGE on request overflow",
+      "fullTitle": "hidden verification tests should reject Promise with ETOOLARGE on request overflow",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should have hasSizeError true after Promise response overflow",
+      "fullTitle": "hidden verification tests should have hasSizeError true after Promise response overflow",
+      "duration": 30,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not retry request size error when retry(3) is configured",
+      "fullTitle": "hidden verification tests should not retry request size error when retry(3) is configured",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not retry response size error when retry(3) is configured",
+      "fullTitle": "hidden verification tests should not retry response size error when retry(3) is configured",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should successfully follow compressed redirect when no maxResponseSize is configured",
+      "fullTitle": "hidden verification tests should successfully follow compressed redirect when no maxResponseSize is configured",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort with ETOOLARGE when decompressed non-redirect gzip response exceeds maxResponseSize (Node)",
+      "fullTitle": "hidden verification tests should abort with ETOOLARGE when decompressed non-redirect gzip response exceeds maxResponseSize (Node)",
+      "duration": 5,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve readable stream on unbuffered response when maxResponseSize is configured",
+      "fullTitle": "hidden verification tests should preserve readable stream on unbuffered response when maxResponseSize is configured",
+      "duration": 30,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat bodyless 304 response with Content-Length as size error",
+      "fullTitle": "hidden verification tests should not treat bodyless 304 response with Content-Length as size error",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat bodyless 204 response with Content-Length as size error (Node)",
+      "fullTitle": "hidden verification tests should not treat bodyless 204 response with Content-Length as size error (Node)",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should invoke end callback with ETOOLARGE on write overflow before end even with error listener",
+      "fullTitle": "hidden verification tests should invoke end callback with ETOOLARGE on write overflow before end even with error listener",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat Node HEAD redirect with Content-Length as size error",
+      "fullTitle": "hidden verification tests should not treat Node HEAD redirect with Content-Length as size error",
+      "duration": 6,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should measure byte length for JSON object payload in maxRequestSize",
+      "fullTitle": "hidden verification tests should measure byte length for JSON object payload in maxRequestSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on unbuffered chunked response stream overflow",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE on unbuffered chunked response stream overflow",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should replay serialized multipart payload on retry after 500 error on Node",
+      "fullTitle": "hidden verification tests should replay serialized multipart payload on retry after 500 error on Node",
+      "duration": 20,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives",
+      "fullTitle": "hidden verification tests should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives",
+      "duration": 515,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should stream Node multipart upload directly when maxRequestSize is not set",
+      "fullTitle": "hidden verification tests should stream Node multipart upload directly when maxRequestSize is not set",
+      "duration": 33,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured",
+      "fullTitle": "hidden verification tests should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured",
+      "duration": 34,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when early response arrives but unbuffered upload later exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when early response arrives but unbuffered upload later exceeds maxRequestSize",
+      "duration": 60,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed GB18030 U+0080 response exceeds maxResponseSize(2)",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when browser decompressed GB18030 U+0080 response exceeds maxResponseSize(2)",
+      "duration": 7,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure GB18030 U+0080 response within maxResponseSize(4)",
+      "fullTitle": "hidden verification tests should accurately measure GB18030 U+0080 response within maxResponseSize(4)",
+      "duration": 29,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve POST body on cross-origin 307 redirect",
+      "fullTitle": "hidden verification tests should preserve POST body on cross-origin 307 redirect",
+      "duration": 22,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed GB18030 U+0400 response exceeds maxResponseSize(2)",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when browser decompressed GB18030 U+0400 response exceeds maxResponseSize(2)",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure GB18030 U+0400 response within maxResponseSize(4)",
+      "fullTitle": "hidden verification tests should accurately measure GB18030 U+0400 response within maxResponseSize(4)",
+      "duration": 17,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and GB18030 response within maxResponseSize(3)",
+      "fullTitle": "hidden verification tests should accurately measure mixed ASCII and GB18030 response within maxResponseSize(3)",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and GB18030 response exceeds maxResponseSize(2)",
+      "fullTitle": "hidden verification tests should emit ETOOLARGE when mixed ASCII and GB18030 response exceeds maxResponseSize(2)",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip Authorization and Cookie on 307 redirect across origins",
+      "fullTitle": "hidden verification tests should strip Authorization and Cookie on 307 redirect across origins",
+      "duration": 11,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip credentials configured with auth type auto on cross-origin 307 redirect",
+      "fullTitle": "hidden verification tests should strip credentials configured with auth type auto on cross-origin 307 redirect",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip agent cookies on cross-origin 307 redirect",
+      "fullTitle": "hidden verification tests should strip agent cookies on cross-origin 307 redirect",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip agent cookies on cross-origin 305 redirect",
+      "fullTitle": "hidden verification tests should strip agent cookies on cross-origin 305 redirect",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve Authorization and Cookie on 307 redirect on same origin",
+      "fullTitle": "hidden verification tests should preserve Authorization and Cookie on 307 redirect on same origin",
+      "duration": 11,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve POST body on 305 redirect",
+      "fullTitle": "hidden verification tests should preserve POST body on 305 redirect",
+      "duration": 14,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should replay multipart payload on 305 redirect when maxRequestSize is configured",
+      "fullTitle": "hidden verification tests should replay multipart payload on 305 redirect when maxRequestSize is configured",
+      "duration": 42,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should stream data chunks to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).end callback",
+      "fullTitle": "hidden verification tests should stream data chunks to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).end callback",
+      "duration": 29,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver all in-limit data chunks for unbuffered response larger than 64 KiB in end callback",
+      "fullTitle": "hidden verification tests should deliver all in-limit data chunks for unbuffered response larger than 64 KiB in end callback",
+      "duration": 7,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retry post-header ECONNRESET and replay multipart payload on unbuffered limited response",
+      "fullTitle": "hidden verification tests should retry post-header ECONNRESET and replay multipart payload on unbuffered limited response",
+      "duration": 61,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve request-event responseType=\"arraybuffer\" override when maxResponseSize is set",
+      "fullTitle": "hidden verification tests should preserve request-event responseType=\"arraybuffer\" override when maxResponseSize is set",
+      "duration": 76,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should replay multipart FormData body on 307 redirect when maxRequestSize is set and retries=0",
+      "fullTitle": "hidden verification tests should replay multipart FormData body on 307 redirect when maxRequestSize is set and retries=0",
+      "duration": 39,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver streaming response immediately upon headers for .buffer(false).retry(1) without maxResponseSize",
+      "fullTitle": "hidden verification tests should deliver streaming response immediately upon headers for .buffer(false).retry(1) without maxResponseSize",
+      "duration": 62,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve and replay multipart payload across retries",
+      "fullTitle": "hidden verification tests should preserve and replay multipart payload across retries",
+      "duration": 34,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not race multipart spooling with immediate socket drop on attempt 1 and replay full payload",
+      "fullTitle": "hidden verification tests should not race multipart spooling with immediate socket drop on attempt 1 and replay full payload",
+      "duration": 40,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver unbuffered response without size limit immediately on headers and not accumulate chunks",
+      "fullTitle": "hidden verification tests should deliver unbuffered response without size limit immediately on headers and not accumulate chunks",
+      "duration": 66,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should invoke callback once for in-limit buffered POST with http2() and maxRequestSize",
+      "fullTitle": "hidden verification tests should invoke callback once for in-limit buffered POST with http2() and maxRequestSize",
+      "duration": 42,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort with ETOOLARGE when HTTP/2 request payload exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests should abort with ETOOLARGE when HTTP/2 request payload exceeds maxRequestSize",
+      "duration": 6,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should abort with ETOOLARGE when HTTP/2 response payload exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests should abort with ETOOLARGE when HTTP/2 response payload exceeds maxResponseSize",
+      "duration": 12,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retry post-header ECONNRESET and replay multipart payload when only maxRequestSize is configured",
+      "fullTitle": "hidden verification tests should retry post-header ECONNRESET and replay multipart payload when only maxRequestSize is configured",
+      "duration": 65,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should detach old upload pipeline on early retry without counter corruption or false ETOOLARGE",
+      "fullTitle": "hidden verification tests should detach old upload pipeline on early retry without counter corruption or false ETOOLARGE",
+      "duration": 23,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "fullTitle": "hidden verification tests should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "duration": 5,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not retain queued chunks for unbuffered response when no data listener is attached",
+      "fullTitle": "hidden verification tests should not retain queued chunks for unbuffered response when no data listener is attached",
+      "duration": 5,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "fullTitle": "hidden verification tests should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "duration": 6,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit response end event exactly once for unbuffered limited retry on response event",
+      "fullTitle": "hidden verification tests should emit response end event exactly once for unbuffered limited retry on response event",
+      "duration": 61,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener",
+      "fullTitle": "hidden verification tests should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener",
+      "duration": 36,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit end event exactly once for pre-registered response end listener with retry and size limit",
+      "fullTitle": "hidden verification tests should emit end event exactly once for pre-registered response end listener with retry and size limit",
+      "duration": 62,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should stream directly and not queue chunks in memory for maxRequestSize-only retry receiving response stream",
+      "fullTitle": "hidden verification tests should stream directly and not queue chunks in memory for maxRequestSize-only retry receiving response stream",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should deliver ETOOLARGE when early-header unbuffered multipart POST exceeds maxResponseSize after upload finish",
+      "fullTitle": "hidden verification tests should deliver ETOOLARGE when early-header unbuffered multipart POST exceeds maxResponseSize after upload finish",
+      "duration": 62,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retry and replay multipart when early-header unbuffered upload finishes and connection resets",
+      "fullTitle": "hidden verification tests should retry and replay multipart when early-header unbuffered upload finishes and connection resets",
+      "duration": 67,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not settle browser request at readyState 1 and complete normally at readyState 4",
+      "fullTitle": "hidden verification tests browser simulation tests should not settle browser request at readyState 1 and complete normally at readyState 4",
+      "duration": 23,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser text response exceeding maxResponseSize without headers or progress events",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser text response exceeding maxResponseSize without headers or progress events",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should complete normally on browser text response within maxResponseSize without headers or progress events",
+      "fullTitle": "hidden verification tests browser simulation tests should complete normally on browser text response within maxResponseSize without headers or progress events",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser text response exceeding maxResponseSize via Content-Length without progress event",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser text response exceeding maxResponseSize via Content-Length without progress event",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser FormData send exceeding maxRequestSize without upload progress events",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser FormData send exceeding maxRequestSize without upload progress events",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit progress event with direction upload during browser upload",
+      "fullTitle": "hidden verification tests browser simulation tests should emit progress event with direction upload during browser upload",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat browser HEAD response with Content-Length as size error",
+      "fullTitle": "hidden verification tests browser simulation tests should not treat browser HEAD response with Content-Length as size error",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not treat browser 204 response with Content-Length as size error",
+      "fullTitle": "hidden verification tests browser simulation tests should not treat browser 204 response with Content-Length as size error",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE for empty native FormData when maxRequestSize is 0",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE for empty native FormData when maxRequestSize is 0",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should succeed for browser FormData when body is within limit",
+      "fullTitle": "hidden verification tests browser simulation tests should succeed for browser FormData when body is within limit",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser upload progress loaded exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser upload progress loaded exceeds maxRequestSize",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser download progress loaded exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser download progress loaded exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser request payload length exceeds maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser request payload length exceeds maxRequestSize",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser direct Blob request exceeding maxRequestSize without upload progress",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser direct Blob request exceeding maxRequestSize without upload progress",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should send browser multibyte string within exact maxRequestSize boundary without upload progress",
+      "fullTitle": "hidden verification tests browser simulation tests should send browser multibyte string within exact maxRequestSize boundary without upload progress",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should send browser Blob payload within exact maxRequestSize boundary without upload progress",
+      "fullTitle": "hidden verification tests browser simulation tests should send browser Blob payload within exact maxRequestSize boundary without upload progress",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE on browser ArrayBuffer response exceeding maxResponseSize without wire metadata",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE on browser ArrayBuffer response exceeding maxResponseSize without wire metadata",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should report 0 retries on browser size error with retry(3) configured",
+      "fullTitle": "hidden verification tests browser simulation tests should report 0 retries on browser size error with retry(3) configured",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit",
+      "fullTitle": "hidden verification tests browser simulation tests should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should successfully transmit in-limit browser FormData without size error when progress events are absent",
+      "fullTitle": "hidden verification tests browser simulation tests should successfully transmit in-limit browser FormData without size error when progress events are absent",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should normalize legacy XHR 1223 status to 204 and treat as bodyless before size check",
+      "fullTitle": "hidden verification tests browser simulation tests should normalize legacy XHR 1223 status to 204 and treat as bodyless before size check",
+      "duration": 0,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retain and resend multipart payload on retry when maxRequestSize is configured",
+      "fullTitle": "hidden verification tests browser simulation tests should retain and resend multipart payload on retry when maxRequestSize is configured",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should safely transmit browser multipart fields within maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should safely transmit browser multipart fields within maxRequestSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should complete normally for responses within maxResponseSize without false size error",
+      "fullTitle": "hidden verification tests browser simulation tests should complete normally for responses within maxResponseSize without false size error",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should succeed when browser decompressed UTF-16LE response is within maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should succeed when browser decompressed UTF-16LE response is within maxResponseSize",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should account for BOM in browser compressed UTF-16 response decoded byte size",
+      "fullTitle": "hidden verification tests browser simulation tests should account for BOM in browser compressed UTF-16 response decoded byte size",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should account for BOM in browser compressed UTF-16LE response decoded byte size",
+      "fullTitle": "hidden verification tests browser simulation tests should account for BOM in browser compressed UTF-16LE response decoded byte size",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should serialize File/Blob in browser FormData and enforce maxRequestSize",
+      "fullTitle": "hidden verification tests browser simulation tests should serialize File/Blob in browser FormData and enforce maxRequestSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not emit ETOOLARGE for Shift_JIS 0x80 (U+0080) decoded body at maxResponseSize(1)",
+      "fullTitle": "hidden verification tests browser simulation tests should not emit ETOOLARGE for Shift_JIS 0x80 (U+0080) decoded body at maxResponseSize(1)",
+      "duration": 12,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure Shift_JIS compressed text response within maxResponseSize without false ETOOLARGE",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure Shift_JIS compressed text response within maxResponseSize without false ETOOLARGE",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and Shift_JIS response within maxResponseSize(4)",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure mixed ASCII and Shift_JIS response within maxResponseSize(4)",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and Shift_JIS response exceeds maxResponseSize(3)",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and Shift_JIS response exceeds maxResponseSize(3)",
+      "duration": 14,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure GBK compressed text response within maxResponseSize without false ETOOLARGE",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure GBK compressed text response within maxResponseSize without false ETOOLARGE",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should not emit ETOOLARGE for GBK 0x80 (U+20AC euro) decoded body at maxResponseSize(1)",
+      "fullTitle": "hidden verification tests browser simulation tests should not emit ETOOLARGE for GBK 0x80 (U+20AC euro) decoded body at maxResponseSize(1)",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and GBK response within maxResponseSize(4)",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure mixed ASCII and GBK response within maxResponseSize(4)",
+      "duration": 10,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and GBK response exceeds maxResponseSize(3)",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and GBK response exceeds maxResponseSize(3)",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure ISO-2022-JP compressed text response within maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure ISO-2022-JP compressed text response within maxResponseSize",
+      "duration": 27,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure ISO-2022-JP compressed text response with JIS X 0201 Roman state (Yen) within maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure ISO-2022-JP compressed text response with JIS X 0201 Roman state (Yen) within maxResponseSize",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when ISO-2022-JP compressed text response with JIS X 0201 Roman state exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when ISO-2022-JP compressed text response with JIS X 0201 Roman state exceeds maxResponseSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and ISO-2022-JP state transitions within maxResponseSize(9)",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure mixed ASCII and ISO-2022-JP state transitions within maxResponseSize(9)",
+      "duration": 13,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and ISO-2022-JP state transitions exceed maxResponseSize(8)",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and ISO-2022-JP state transitions exceed maxResponseSize(8)",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should retain and resend multipart payload on retry when only maxResponseSize is configured",
+      "fullTitle": "hidden verification tests browser simulation tests should retain and resend multipart payload on retry when only maxResponseSize is configured",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser decompressed UTF-8 response with BOM exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed UTF-8 response with BOM exceeds maxResponseSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser compressed HZ-GB-2312 response exceeds maxResponseSize accounting for state escapes",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when browser compressed HZ-GB-2312 response exceeds maxResponseSize accounting for state escapes",
+      "duration": 11,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure HZ-GB-2312 compressed text response within maxResponseSize without false ETOOLARGE",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure HZ-GB-2312 compressed text response within maxResponseSize without false ETOOLARGE",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should accurately measure mixed ASCII and HZ-GB-2312 state transitions within maxResponseSize(7)",
+      "fullTitle": "hidden verification tests browser simulation tests should accurately measure mixed ASCII and HZ-GB-2312 state transitions within maxResponseSize(7)",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when mixed ASCII and HZ-GB-2312 state transitions exceed maxResponseSize(6)",
+      "fullTitle": "hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and HZ-GB-2312 state transitions exceed maxResponseSize(6)",
+      "duration": 16,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should follow method-preserving 305 redirect and replay multipart payload in browser",
+      "fullTitle": "hidden verification tests browser simulation tests should follow method-preserving 305 redirect and replay multipart payload in browser",
+      "duration": 1,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should strip Authorization and Cookie on cross-origin 305 redirect in browser",
+      "fullTitle": "hidden verification tests browser simulation tests should strip Authorization and Cookie on cross-origin 305 redirect in browser",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should emit ETOOLARGE when browser compressed JSON response exceeds maxResponseSize",
+      "fullTitle": "hidden verification tests browser responseType override tests should emit ETOOLARGE when browser compressed JSON response exceeds maxResponseSize",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve request-event responseType=\"document\" override when maxResponseSize is set",
+      "fullTitle": "hidden verification tests browser responseType override tests should preserve request-event responseType=\"document\" override when maxResponseSize is set",
+      "duration": 15,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should complete large unbuffered stream with 10GB maxResponseSize within bounded memory",
+      "fullTitle": "hidden verification tests browser responseType override tests should complete large unbuffered stream with 10GB maxResponseSize within bounded memory",
+      "duration": 14,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve request-event responseType=\"\" override clearing configured responseType under maxResponseSize",
+      "fullTitle": "hidden verification tests browser responseType override tests should preserve request-event responseType=\"\" override clearing configured responseType under maxResponseSize",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should complete in-limit default and explicit text response on native XHR without InvalidStateError",
+      "fullTitle": "hidden verification tests browser responseType override tests should complete in-limit default and explicit text response on native XHR without InvalidStateError",
+      "duration": 2,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "should preserve custom attachment filename override in browser multipart serialization under maxRequestSize",
+      "fullTitle": "hidden verification tests browser responseType override tests should preserve custom attachment filename override in browser multipart serialization under maxRequestSize",
+      "duration": 3,
+      "currentRetry": 0,
+      "err": {}
+    }
+  ]
+}

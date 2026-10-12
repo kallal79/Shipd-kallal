@@ -1,0 +1,330 @@
+
+> mocha test/node/size_limits_compliance_b5e2d.js --timeout 15000
+
+
+  hidden verification tests
+    ✓ should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded
+    ✓ should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)
+    ✓ should measure byte length for multibyte UTF-8 strings in maxRequestSize
+    ✓ should emit ETOOLARGE when Buffer payload exceeds maxRequestSize
+    ✓ should route multipart formData through an upload progress monitor and emit upload progress
+    ✓ should succeed for in-limit multipart upload with 200 status
+    ✓ should emit ETOOLARGE on maxRequestSize exceeded during multipart upload
+    ✓ should return false from hasSizeError() when no size limit is exceeded
+    ✓ should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary
+    ✓ should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary
+    ✓ hasSizeError() should return strict boolean false before any request is made
+    ✓ hasSizeError() should return strict boolean true after a maxResponseSize error
+    ✓ should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize
+    ✓ should enforce maxRequestSize using reported Content-Length for multipart
+    ✓ should reject Promise with ETOOLARGE on response overflow
+    ✓ should reject Promise with ETOOLARGE on request overflow
+    ✓ should have hasSizeError true after Promise response overflow
+    ✓ should not retry request size error when retry(3) is configured
+    ✓ should not retry response size error when retry(3) is configured
+    ✓ should successfully follow compressed redirect when no maxResponseSize is configured
+    ✓ should abort with ETOOLARGE when decompressed non-redirect gzip response exceeds maxResponseSize (Node)
+    ✓ should preserve readable stream on unbuffered response when maxResponseSize is configured
+    ✓ should not treat bodyless 304 response with Content-Length as size error
+    ✓ should not treat bodyless 204 response with Content-Length as size error (Node)
+    ✓ should invoke end callback with ETOOLARGE on write overflow before end even with error listener
+    ✓ should not treat Node HEAD redirect with Content-Length as size error
+    ✓ should measure byte length for JSON object payload in maxRequestSize
+    ✓ should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach
+    ✓ should emit ETOOLARGE on unbuffered chunked response stream overflow
+    ✓ should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize
+    ✓ should replay serialized multipart payload on retry after 500 error on Node
+    ✓ should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives
+    ✓ should stream Node multipart upload directly when maxRequestSize is not set
+    ✓ should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured
+    ✓ should emit ETOOLARGE when early response arrives but unbuffered upload later exceeds maxRequestSize
+    1) should emit ETOOLARGE when browser decompressed GB18030 U+0080 response exceeds maxResponseSize(2)
+    1) should accurately measure GB18030 U+0080 response within maxResponseSize(4)
+    ✓ should preserve POST body on cross-origin 307 redirect
+    1) should emit ETOOLARGE when browser decompressed GB18030 U+0400 response exceeds maxResponseSize(2)
+    1) should accurately measure GB18030 U+0400 response within maxResponseSize(4)
+    1) should accurately measure mixed ASCII and GB18030 response within maxResponseSize(3)
+    1) should emit ETOOLARGE when mixed ASCII and GB18030 response exceeds maxResponseSize(2)
+    ✓ should strip Authorization and Cookie on 307 redirect across origins
+    ✓ should strip credentials configured with auth type auto on cross-origin 307 redirect
+    ✓ should strip agent cookies on cross-origin 307 redirect
+    ✓ should strip agent cookies on cross-origin 305 redirect
+    ✓ should preserve Authorization and Cookie on 307 redirect on same origin
+    ✓ should preserve POST body on 305 redirect
+    ✓ should replay multipart payload on 305 redirect when maxRequestSize is configured
+    ✓ should stream data chunks to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).end callback
+    ✓ should deliver all in-limit data chunks for unbuffered response larger than 64 KiB in end callback
+    ✓ should retry post-header ECONNRESET and replay multipart payload on unbuffered limited response
+    1) should preserve request-event responseType="arraybuffer" override when maxResponseSize is set
+    ✓ should replay multipart FormData body on 307 redirect when maxRequestSize is set and retries=0
+    ✓ should deliver streaming response immediately upon headers for .buffer(false).retry(1) without maxResponseSize
+    ✓ should preserve and replay multipart payload across retries
+    ✓ should not race multipart spooling with immediate socket drop on attempt 1 and replay full payload
+    ✓ should deliver unbuffered response without size limit immediately on headers and not accumulate chunks
+    ✓ should invoke callback once for in-limit buffered POST with http2() and maxRequestSize
+    ✓ should abort with ETOOLARGE when HTTP/2 request payload exceeds maxRequestSize
+    ✓ should abort with ETOOLARGE when HTTP/2 response payload exceeds maxResponseSize
+    ✓ should retry post-header ECONNRESET and replay multipart payload when only maxRequestSize is configured
+    ✓ should detach old upload pipeline on early retry without counter corruption or false ETOOLARGE
+    ✓ should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback
+    ✓ should not retain queued chunks for unbuffered response when no data listener is attached
+    ✓ should stream directly and not queue chunks for request-size-only unbuffered retry
+    ✓ should emit response end event exactly once for unbuffered limited retry on response event
+    ✓ should emit end event exactly once for pre-registered response end listener with retry and size limit
+    ✓ should stream directly and not queue chunks in memory for maxRequestSize-only retry receiving response stream
+    ✓ should retry and replay multipart when early-header unbuffered upload finishes and connection resets
+
+  hidden verification tests browser simulation tests
+    1) should not settle browser request at readyState 1 and complete normally at readyState 4
+    1) should emit ETOOLARGE on browser text response exceeding maxResponseSize without headers or progress events
+    1) should complete normally on browser text response within maxResponseSize without headers or progress events
+    1) should emit ETOOLARGE on browser text response exceeding maxResponseSize via Content-Length without progress event
+    1) should emit ETOOLARGE on browser FormData send exceeding maxRequestSize without upload progress events
+    1) should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize
+    1) should emit progress event with direction upload during browser upload
+    1) should not treat browser HEAD response with Content-Length as size error
+    1) should not treat browser 204 response with Content-Length as size error
+    1) should emit ETOOLARGE for empty native FormData when maxRequestSize is 0
+    1) should succeed for browser FormData when body is within limit
+    1) should emit ETOOLARGE when browser upload progress loaded exceeds maxRequestSize
+    1) should emit ETOOLARGE when browser download progress loaded exceeds maxResponseSize
+    1) should emit ETOOLARGE when browser request payload length exceeds maxRequestSize
+    1) should emit ETOOLARGE on browser direct Blob request exceeding maxRequestSize without upload progress
+    1) should send browser multibyte string within exact maxRequestSize boundary without upload progress
+    1) should send browser Blob payload within exact maxRequestSize boundary without upload progress
+    1) should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length
+    1) should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize
+    1) should emit ETOOLARGE on browser ArrayBuffer response exceeding maxResponseSize without wire metadata
+    1) should report 0 retries on browser size error with retry(3) configured
+    1) should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit
+    1) should successfully transmit in-limit browser FormData without size error when progress events are absent
+    1) should normalize legacy XHR 1223 status to 204 and treat as bodyless before size check
+    1) should retain and resend multipart payload on retry when maxRequestSize is configured
+    1) should safely transmit browser multipart fields within maxRequestSize
+    1) should complete normally for responses within maxResponseSize without false size error
+    1) should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize
+    1) should succeed when browser decompressed UTF-16LE response is within maxResponseSize
+    1) should account for BOM in browser compressed UTF-16 response decoded byte size
+    1) should account for BOM in browser compressed UTF-16LE response decoded byte size
+    1) should serialize File/Blob in browser FormData and enforce maxRequestSize
+    1) should not emit ETOOLARGE for Shift_JIS 0x80 (U+0080) decoded body at maxResponseSize(1)
+    1) should accurately measure Shift_JIS compressed text response within maxResponseSize without false ETOOLARGE
+    1) should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize
+    1) should accurately measure mixed ASCII and Shift_JIS response within maxResponseSize(4)
+    1) should emit ETOOLARGE when mixed ASCII and Shift_JIS response exceeds maxResponseSize(3)
+    1) should accurately measure GBK compressed text response within maxResponseSize without false ETOOLARGE
+    1) should not emit ETOOLARGE for GBK 0x80 (U+20AC euro) decoded body at maxResponseSize(1)
+    1) should accurately measure mixed ASCII and GBK response within maxResponseSize(4)
+    1) should emit ETOOLARGE when mixed ASCII and GBK response exceeds maxResponseSize(3)
+    1) should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize
+    1) should accurately measure ISO-2022-JP compressed text response within maxResponseSize
+    1) should accurately measure ISO-2022-JP compressed text response with JIS X 0201 Roman state (Yen) within maxResponseSize
+    1) should emit ETOOLARGE when ISO-2022-JP compressed text response with JIS X 0201 Roman state exceeds maxResponseSize
+    1) should accurately measure mixed ASCII and ISO-2022-JP state transitions within maxResponseSize(9)
+    1) should emit ETOOLARGE when mixed ASCII and ISO-2022-JP state transitions exceed maxResponseSize(8)
+    1) should retain and resend multipart payload on retry when only maxResponseSize is configured
+    1) should emit ETOOLARGE when browser decompressed UTF-8 response with BOM exceeds maxResponseSize
+    1) should emit ETOOLARGE when browser compressed HZ-GB-2312 response exceeds maxResponseSize accounting for state escapes
+    1) should accurately measure HZ-GB-2312 compressed text response within maxResponseSize without false ETOOLARGE
+    1) should accurately measure mixed ASCII and HZ-GB-2312 state transitions within maxResponseSize(7)
+    1) should emit ETOOLARGE when mixed ASCII and HZ-GB-2312 state transitions exceed maxResponseSize(6)
+
+  hidden verification tests browser responseType override tests
+    1) should preserve request-event responseType="document" override when maxResponseSize is set
+    ✓ should complete large unbuffered stream with 10GB maxResponseSize within bounded memory
+    1) should complete in-limit default and explicit text response on native XHR without InvalidStateError
+    1) should preserve custom attachment filename override in browser multipart serialization under maxRequestSize
+
+
+  64 passing (2s)
+  63 failing
+
+  1) hidden verification tests should emit ETOOLARGE when browser decompressed GB18030 U+0080 response exceeds maxResponseSize(2):
+     Error: Request exceeded size limit
+
+  2) hidden verification tests should accurately measure GB18030 U+0080 response within maxResponseSize(4):
+     Error: Request exceeded size limit
+
+  3) hidden verification tests should emit ETOOLARGE when browser decompressed GB18030 U+0400 response exceeds maxResponseSize(2):
+     Error: Request exceeded size limit
+
+  4) hidden verification tests should accurately measure GB18030 U+0400 response within maxResponseSize(4):
+     Error: Request exceeded size limit
+
+  5) hidden verification tests should accurately measure mixed ASCII and GB18030 response within maxResponseSize(3):
+     Error: Request exceeded size limit
+
+  6) hidden verification tests should emit ETOOLARGE when mixed ASCII and GB18030 response exceeds maxResponseSize(2):
+     Error: Request exceeded size limit
+
+  7) hidden verification tests should preserve request-event responseType="arraybuffer" override when maxResponseSize is set:
+     Error: Request exceeded size limit
+
+  8) hidden verification tests browser simulation tests should not settle browser request at readyState 1 and complete normally at readyState 4:
+     Error: Request exceeded size limit
+
+  9) hidden verification tests browser simulation tests should emit ETOOLARGE on browser text response exceeding maxResponseSize without headers or progress events:
+     Error: Request exceeded size limit
+
+  10) hidden verification tests browser simulation tests should complete normally on browser text response within maxResponseSize without headers or progress events:
+     Error: Request exceeded size limit
+
+  11) hidden verification tests browser simulation tests should emit ETOOLARGE on browser text response exceeding maxResponseSize via Content-Length without progress event:
+     Error: Request exceeded size limit
+
+  12) hidden verification tests browser simulation tests should emit ETOOLARGE on browser FormData send exceeding maxRequestSize without upload progress events:
+     Error: Request exceeded size limit
+
+  13) hidden verification tests browser simulation tests should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize:
+     Error: Request exceeded size limit
+
+  14) hidden verification tests browser simulation tests should emit progress event with direction upload during browser upload:
+     Error: Request exceeded size limit
+
+  15) hidden verification tests browser simulation tests should not treat browser HEAD response with Content-Length as size error:
+     Error: Request exceeded size limit
+
+  16) hidden verification tests browser simulation tests should not treat browser 204 response with Content-Length as size error:
+     Error: Request exceeded size limit
+
+  17) hidden verification tests browser simulation tests should emit ETOOLARGE for empty native FormData when maxRequestSize is 0:
+     Error: Request exceeded size limit
+
+  18) hidden verification tests browser simulation tests should succeed for browser FormData when body is within limit:
+     Error: Request exceeded size limit
+
+  19) hidden verification tests browser simulation tests should emit ETOOLARGE when browser upload progress loaded exceeds maxRequestSize:
+     Error: Request exceeded size limit
+
+  20) hidden verification tests browser simulation tests should emit ETOOLARGE when browser download progress loaded exceeds maxResponseSize:
+     Error: Request exceeded size limit
+
+  21) hidden verification tests browser simulation tests should emit ETOOLARGE when browser request payload length exceeds maxRequestSize:
+     Error: Request exceeded size limit
+
+  22) hidden verification tests browser simulation tests should emit ETOOLARGE on browser direct Blob request exceeding maxRequestSize without upload progress:
+     Error: Request exceeded size limit
+
+  23) hidden verification tests browser simulation tests should send browser multibyte string within exact maxRequestSize boundary without upload progress:
+     Error: Request exceeded size limit
+
+  24) hidden verification tests browser simulation tests should send browser Blob payload within exact maxRequestSize boundary without upload progress:
+     Error: Request exceeded size limit
+
+  25) hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length:
+     Error: Request exceeded size limit
+
+  26) hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize:
+     Error: Request exceeded size limit
+
+  27) hidden verification tests browser simulation tests should emit ETOOLARGE on browser ArrayBuffer response exceeding maxResponseSize without wire metadata:
+     Error: Request exceeded size limit
+
+  28) hidden verification tests browser simulation tests should report 0 retries on browser size error with retry(3) configured:
+     Error: Request exceeded size limit
+
+  29) hidden verification tests browser simulation tests should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit:
+     Error: Request exceeded size limit
+
+  30) hidden verification tests browser simulation tests should successfully transmit in-limit browser FormData without size error when progress events are absent:
+     Error: Request exceeded size limit
+
+  31) hidden verification tests browser simulation tests should normalize legacy XHR 1223 status to 204 and treat as bodyless before size check:
+     Error: Request exceeded size limit
+
+  32) hidden verification tests browser simulation tests should retain and resend multipart payload on retry when maxRequestSize is configured:
+     Error: Request exceeded size limit
+
+  33) hidden verification tests browser simulation tests should safely transmit browser multipart fields within maxRequestSize:
+     Error: Request exceeded size limit
+
+  34) hidden verification tests browser simulation tests should complete normally for responses within maxResponseSize without false size error:
+     Error: Request exceeded size limit
+
+  35) hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize:
+     Error: Request exceeded size limit
+
+  36) hidden verification tests browser simulation tests should succeed when browser decompressed UTF-16LE response is within maxResponseSize:
+     Error: Request exceeded size limit
+
+  37) hidden verification tests browser simulation tests should account for BOM in browser compressed UTF-16 response decoded byte size:
+     Error: Request exceeded size limit
+
+  38) hidden verification tests browser simulation tests should account for BOM in browser compressed UTF-16LE response decoded byte size:
+     Error: Request exceeded size limit
+
+  39) hidden verification tests browser simulation tests should serialize File/Blob in browser FormData and enforce maxRequestSize:
+     Error: Request exceeded size limit
+
+  40) hidden verification tests browser simulation tests should not emit ETOOLARGE for Shift_JIS 0x80 (U+0080) decoded body at maxResponseSize(1):
+     Error: Request exceeded size limit
+
+  41) hidden verification tests browser simulation tests should accurately measure Shift_JIS compressed text response within maxResponseSize without false ETOOLARGE:
+     Error: Request exceeded size limit
+
+  42) hidden verification tests browser simulation tests should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize:
+     Error: Request exceeded size limit
+
+  43) hidden verification tests browser simulation tests should accurately measure mixed ASCII and Shift_JIS response within maxResponseSize(4):
+     Error: Request exceeded size limit
+
+  44) hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and Shift_JIS response exceeds maxResponseSize(3):
+     Error: Request exceeded size limit
+
+  45) hidden verification tests browser simulation tests should accurately measure GBK compressed text response within maxResponseSize without false ETOOLARGE:
+     Error: Request exceeded size limit
+
+  46) hidden verification tests browser simulation tests should not emit ETOOLARGE for GBK 0x80 (U+20AC euro) decoded body at maxResponseSize(1):
+     Error: Request exceeded size limit
+
+  47) hidden verification tests browser simulation tests should accurately measure mixed ASCII and GBK response within maxResponseSize(4):
+     Error: Request exceeded size limit
+
+  48) hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and GBK response exceeds maxResponseSize(3):
+     Error: Request exceeded size limit
+
+  49) hidden verification tests browser simulation tests should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize:
+     Error: Request exceeded size limit
+
+  50) hidden verification tests browser simulation tests should accurately measure ISO-2022-JP compressed text response within maxResponseSize:
+     Error: Request exceeded size limit
+
+  51) hidden verification tests browser simulation tests should accurately measure ISO-2022-JP compressed text response with JIS X 0201 Roman state (Yen) within maxResponseSize:
+     Error: Request exceeded size limit
+
+  52) hidden verification tests browser simulation tests should emit ETOOLARGE when ISO-2022-JP compressed text response with JIS X 0201 Roman state exceeds maxResponseSize:
+     Error: Request exceeded size limit
+
+  53) hidden verification tests browser simulation tests should accurately measure mixed ASCII and ISO-2022-JP state transitions within maxResponseSize(9):
+     Error: Request exceeded size limit
+
+  54) hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and ISO-2022-JP state transitions exceed maxResponseSize(8):
+     Error: Request exceeded size limit
+
+  55) hidden verification tests browser simulation tests should retain and resend multipart payload on retry when only maxResponseSize is configured:
+     Error: Request exceeded size limit
+
+  56) hidden verification tests browser simulation tests should emit ETOOLARGE when browser decompressed UTF-8 response with BOM exceeds maxResponseSize:
+     Error: Request exceeded size limit
+
+  57) hidden verification tests browser simulation tests should emit ETOOLARGE when browser compressed HZ-GB-2312 response exceeds maxResponseSize accounting for state escapes:
+     Error: Request exceeded size limit
+
+  58) hidden verification tests browser simulation tests should accurately measure HZ-GB-2312 compressed text response within maxResponseSize without false ETOOLARGE:
+     Error: Request exceeded size limit
+
+  59) hidden verification tests browser simulation tests should accurately measure mixed ASCII and HZ-GB-2312 state transitions within maxResponseSize(7):
+     Error: Request exceeded size limit
+
+  60) hidden verification tests browser simulation tests should emit ETOOLARGE when mixed ASCII and HZ-GB-2312 state transitions exceed maxResponseSize(6):
+     Error: Request exceeded size limit
+
+  61) hidden verification tests browser responseType override tests should preserve request-event responseType="document" override when maxResponseSize is set:
+     Error: Request exceeded size limit
+
+  62) hidden verification tests browser responseType override tests should complete in-limit default and explicit text response on native XHR without InvalidStateError:
+     Error: Request exceeded size limit
+
+  63) hidden verification tests browser responseType override tests should preserve custom attachment filename override in browser multipart serialization under maxRequestSize:
+     Error: Request exceeded size limit
+

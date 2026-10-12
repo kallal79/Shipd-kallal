@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="16" failures="0" errors="0" skipped="0"><testsuite name="baseline" tests="16" failures="0" errors="0" skipped="0"><testcase name="utils.type(str) should return the mime type" time="0.000" classname="should return the mime type">
+    </testcase>
+  <testcase name="utils.params(str) should return the field parameters" time="0.000" classname="should return the field parameters">
+    </testcase>
+  <testcase name="utils.parseLinks(str) should parse links" time="0.000" classname="should parse links">
+    </testcase>
+  <testcase name="utils.isGzipOrDeflateEncoding(res) should return true when content encoding is gzip" time="0.000" classname="should return true when content encoding is gzip">
+    </testcase>
+    <testcase name="utils.isGzipOrDeflateEncoding(res) should return true when content encoding is deflate" time="0.000" classname="should return true when content encoding is deflate">
+    </testcase>
+    <testcase name="utils.isGzipOrDeflateEncoding(res) should return false when content encoding is bla" time="0.000" classname="should return false when content encoding is bla">
+    </testcase>
+    <testcase name="utils.isGzipOrDeflateEncoding(res) should return true when content encoding has a lot of spaces followed with gzip" time="0.000" classname="should return true when content encoding has a lot of spaces followed with gzip">
+    </testcase>
+    <testcase name="utils.isGzipOrDeflateEncoding(res) should return true when content encoding repeates it self" time="0.001" classname="should return true when content encoding repeates it self">
+    </testcase>
+    <testcase name="utils.isGzipOrDeflateEncoding(res) should return true when content encoding repeates it self wuth a lot of spaces" time="0.000" classname="should return true when content encoding repeates it self wuth a lot of spaces">
+    </testcase>
+    <testcase name="utils.isGzipOrDeflateEncoding(res) should return true when content encoding - nested patterns" time="0.000" classname="should return true when content encoding - nested patterns">
+    </testcase>
+  <testcase name="utils.isBrotliEncoding(res) should return true when content encoding is br" time="0.000" classname="should return true when content encoding is br">
+    </testcase>
+    <testcase name="utils.isBrotliEncoding(res) should return false when content encoding is bla" time="0.000" classname="should return false when content encoding is bla">
+    </testcase>
+    <testcase name="utils.isBrotliEncoding(res) should return true when content encoding has a lot of spaces followed with br" time="0.000" classname="should return true when content encoding has a lot of spaces followed with br">
+    </testcase>
+    <testcase name="utils.isBrotliEncoding(res) should return true when content encoding repeates it self" time="0.000" classname="should return true when content encoding repeates it self">
+    </testcase>
+    <testcase name="utils.isBrotliEncoding(res) should return true when content encoding repeates it self wuth a lot of spaces" time="0.000" classname="should return true when content encoding repeates it self wuth a lot of spaces">
+    </testcase>
+    <testcase name="utils.isBrotliEncoding(res) should return true when content encoding - nested patterns" time="0.000" classname="should return true when content encoding - nested patterns">
+    </testcase>
+  </testsuite></testsuites>

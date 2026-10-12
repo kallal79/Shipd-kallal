@@ -1,0 +1,95 @@
+
+
+  hidden verification tests
+    √ should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded (53ms)
+    √ should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)
+    √ should measure byte length for multibyte UTF-8 strings in maxRequestSize
+    √ should emit ETOOLARGE when Buffer payload exceeds maxRequestSize
+    √ should route multipart formData through an upload progress monitor and emit upload progress
+    √ should succeed for in-limit multipart upload with 200 status
+    √ should emit ETOOLARGE on maxRequestSize exceeded during multipart upload
+    √ should return false from hasSizeError() when no size limit is exceeded
+    √ should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary
+    √ should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary
+    √ hasSizeError() should return strict boolean false before any request is made
+    √ hasSizeError() should return strict boolean true after a maxResponseSize error
+    √ should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize
+    √ should enforce maxRequestSize using reported Content-Length for multipart
+    √ should reject Promise with ETOOLARGE on response overflow
+    √ should reject Promise with ETOOLARGE on request overflow
+    √ should have hasSizeError true after Promise response overflow
+    √ should not retry request size error when retry(3) is configured
+    √ should not retry response size error when retry(3) is configured
+    √ should abort with ETOOLARGE when redirect response body exceeds maxResponseSize
+    √ should successfully follow compressed redirect when no maxResponseSize is configured
+    √ should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize
+    √ should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize (69ms)
+    √ should abort with ETOOLARGE when decompressed non-redirect gzip response exceeds maxResponseSize (Node)
+    √ should preserve readable stream on unbuffered response when maxResponseSize is configured (41ms)
+    √ should emit ETOOLARGE error when intermediate redirect exceeds maxResponseSize during pipe
+    √ should not treat bodyless 304 response with Content-Length as size error
+    √ should not treat bodyless 204 response with Content-Length as size error (Node)
+    √ should invoke end callback with ETOOLARGE on write overflow before end even with error listener
+    √ should not treat Node HEAD redirect with Content-Length as size error
+    √ should measure byte length for JSON object payload in maxRequestSize
+    √ should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach
+    √ should emit ETOOLARGE on unbuffered chunked response stream overflow
+    √ should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize
+    √ should replay serialized multipart payload on retry after 500 error on Node
+    √ should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives (511ms)
+    √ should report err.retries === 0 on size error with retry(0) configured (Node)
+    √ should stream Node multipart upload directly when maxRequestSize is not set
+    √ should deliver ETOOLARGE to end callback, request error listener, and response stream on unbuffered chunked overflow (65ms)
+    √ should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured
+    √ should complete normally with res.once("end", done) on unbuffered response within maxResponseSize without data listener
+    √ should retry and succeed when unbuffered response with maxResponseSize encounters ECONNRESET (104ms)
+    browser simulation tests
+      √ should not settle browser request at readyState 1 and complete normally at readyState 4
+      √ should emit ETOOLARGE on browser text response exceeding maxResponseSize without headers or progress events
+      √ should complete normally on browser text response within maxResponseSize without headers or progress events
+      √ should emit ETOOLARGE on browser text response exceeding maxResponseSize via Content-Length without progress event
+      √ should emit ETOOLARGE on browser FormData send exceeding maxRequestSize without upload progress events
+      √ should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize
+      √ should emit progress event with direction upload during browser upload
+      √ should not treat browser HEAD response with Content-Length as size error
+      √ should not treat browser 204 response with Content-Length as size error
+      √ should emit ETOOLARGE for empty native FormData when maxRequestSize is 0
+      √ should succeed for browser FormData when body is within limit
+      √ should emit ETOOLARGE when browser upload progress loaded exceeds maxRequestSize
+      √ should emit ETOOLARGE when browser download progress loaded exceeds maxResponseSize
+      √ should emit ETOOLARGE when browser request payload length exceeds maxRequestSize
+      √ should emit ETOOLARGE on browser direct Blob request exceeding maxRequestSize without upload progress
+      √ should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length
+      √ should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize
+      √ should emit ETOOLARGE on browser ArrayBuffer response exceeding maxResponseSize without wire metadata
+      √ should report 0 retries on browser size error with retry(3) configured
+      √ should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit
+      √ should successfully transmit in-limit browser FormData without size error when progress events are absent
+      √ should enforce decoded size for browser CORS gzip response when Content-Encoding is unexposed
+      √ should normalize legacy XHR 1223 status to 204 and treat as bodyless before size check
+      √ should retain and resend multipart payload on retry when maxRequestSize is configured
+      √ should succeed when browser unexposed compressed response wire size exceeds maxResponseSize but decoded size is within limit
+      √ should succeed when browser unexposed compressed response wire size exceeds max during progress but decodes within limit
+      √ should report err.retries === 0 on size error with retry(0) configured (Browser)
+      √ should safely transmit browser multipart fields within maxRequestSize
+      √ should transmit consistent multipart boundary in header and body within maxRequestSize
+      √ should complete normally for responses within maxResponseSize without false size error
+      √ should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize
+      √ should succeed when browser decompressed UTF-16LE response is within maxResponseSize
+      √ should account for BOM in browser compressed UTF-16 response decoded byte size
+      √ should serialize File/Blob in browser FormData and enforce maxRequestSize
+      √ should not emit ETOOLARGE for Shift_JIS 0x80 (U+0080) decoded body at maxResponseSize(1)
+      √ should accurately measure Shift_JIS compressed text response within maxResponseSize without false ETOOLARGE
+      √ should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize
+      √ should accurately measure GBK compressed text response within maxResponseSize without false ETOOLARGE
+      √ should not emit ETOOLARGE for GBK 0x80 (U+20AC euro) decoded body at maxResponseSize(1)
+      √ should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize
+      √ should accurately measure ISO-2022-JP compressed text response within maxResponseSize
+      √ should retain and resend multipart payload on retry when only maxResponseSize is configured
+      √ should emit ETOOLARGE when browser decompressed UTF-8 response with BOM exceeds maxResponseSize
+      √ should emit ETOOLARGE when browser compressed HZ-GB-2312 response exceeds maxResponseSize accounting for state escapes
+      √ should accurately measure HZ-GB-2312 compressed text response within maxResponseSize without false ETOOLARGE
+
+
+  87 passing (1s)
+

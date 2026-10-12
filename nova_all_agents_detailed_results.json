@@ -1,0 +1,154 @@
+{
+  "Nova_Nova_1": {
+    "agent": "Nova_Nova_1",
+    "status": "PASS",
+    "verdict": "PASS_LEGITIMATE",
+    "baseline_passed": true,
+    "passed": 120,
+    "failed": 0,
+    "total": 120,
+    "failures": []
+  },
+  "Nova_Nova_2": {
+    "agent": "Nova_Nova_2",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "baseline_passed": true,
+    "passed": 58,
+    "failed": 62,
+    "total": 120,
+    "failures": [
+      "should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "should not retain queued chunks for unbuffered response when no data listener is attached",
+      "should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "should emit response end event exactly once for unbuffered limited retry on response event",
+      "should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener"
+    ]
+  },
+  "Nova_Nova_3": {
+    "agent": "Nova_Nova_3",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "baseline_passed": true,
+    "passed": 58,
+    "failed": 62,
+    "total": 120,
+    "failures": [
+      "should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "should not retain queued chunks for unbuffered response when no data listener is attached",
+      "should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "should emit response end event exactly once for unbuffered limited retry on response event",
+      "should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener"
+    ]
+  },
+  "Nova_Nova_4": {
+    "agent": "Nova_Nova_4",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "baseline_passed": true,
+    "passed": 58,
+    "failed": 62,
+    "total": 120,
+    "failures": [
+      "should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "should not retain queued chunks for unbuffered response when no data listener is attached",
+      "should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "should emit response end event exactly once for unbuffered limited retry on response event",
+      "should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener"
+    ]
+  },
+  "Nova_Nova_5": {
+    "agent": "Nova_Nova_5",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "baseline_passed": true,
+    "passed": 58,
+    "failed": 62,
+    "total": 120,
+    "failures": [
+      "should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "should not retain queued chunks for unbuffered response when no data listener is attached",
+      "should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "should emit response end event exactly once for unbuffered limited retry on response event",
+      "should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener"
+    ]
+  },
+  "Nova_Nova_6": {
+    "agent": "Nova_Nova_6",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "baseline_passed": true,
+    "passed": 58,
+    "failed": 62,
+    "total": 120,
+    "failures": [
+      "should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "should not retain queued chunks for unbuffered response when no data listener is attached",
+      "should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "should emit response end event exactly once for unbuffered limited retry on response event",
+      "should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener"
+    ]
+  },
+  "Nova_Nova_7": {
+    "agent": "Nova_Nova_7",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "baseline_passed": true,
+    "passed": 58,
+    "failed": 62,
+    "total": 120,
+    "failures": [
+      "should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "should not retain queued chunks for unbuffered response when no data listener is attached",
+      "should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "should emit response end event exactly once for unbuffered limited retry on response event",
+      "should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener"
+    ]
+  },
+  "Nova_Nova_8": {
+    "agent": "Nova_Nova_8",
+    "status": "PASS",
+    "verdict": "PASS_LEGITIMATE",
+    "baseline_passed": true,
+    "passed": 120,
+    "failed": 0,
+    "total": 120,
+    "failures": []
+  },
+  "Nova_Nova_9": {
+    "agent": "Nova_Nova_9",
+    "status": "FAIL",
+    "verdict": "FAIL_MISSED_REQUIREMENT",
+    "baseline_passed": true,
+    "passed": 58,
+    "failed": 62,
+    "total": 120,
+    "failures": [
+      "should deliver streaming body to data and end listeners attached inside an in-limit .buffer(false).maxResponseSize(...).retry(...) callback",
+      "should not retain queued chunks for unbuffered response when no data listener is attached",
+      "should stream directly and not queue chunks for request-size-only unbuffered retry",
+      "should emit response end event exactly once for unbuffered limited retry on response event",
+      "should deliver ETOOLARGE to end callback for unbuffered chunked response exceeding maxResponseSize without error listener"
+    ]
+  },
+  "Nova_Nova_10": {
+    "agent": "Nova_Nova_10",
+    "status": "PASS",
+    "verdict": "PASS_LEGITIMATE",
+    "baseline_passed": true,
+    "passed": 120,
+    "failed": 0,
+    "total": 120,
+    "failures": []
+  },
+  "Orion_Nova": {
+    "agent": "Orion_Nova",
+    "status": "PASS",
+    "verdict": "PASS_LEGITIMATE",
+    "baseline_passed": true,
+    "passed": 120,
+    "failed": 0,
+    "total": 120,
+    "failures": []
+  }
+}

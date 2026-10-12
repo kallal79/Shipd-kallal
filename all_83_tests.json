@@ -1,0 +1,334 @@
+[
+  {
+    "suite": "hidden verification tests",
+    "title": "should invoke callback exactly once with an error with code ETOOLARGE on maxResponseSize exceeded"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should emit exactly once an error with code ETOOLARGE on maxRequestSize exceeded (Node)"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should measure byte length for multibyte UTF-8 strings in maxRequestSize"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should emit ETOOLARGE when Buffer payload exceeds maxRequestSize"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should route multipart formData through an upload progress monitor and emit upload progress"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should succeed for in-limit multipart upload with 200 status"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should emit ETOOLARGE on maxRequestSize exceeded during multipart upload"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should return false from hasSizeError() when no size limit is exceeded"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should not trigger ETOOLARGE when request payload is exactly at maxRequestSize boundary"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should not trigger ETOOLARGE when response is exactly at maxResponseSize boundary"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "hasSizeError() should return strict boolean false before any request is made"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "hasSizeError() should return strict boolean true after a maxResponseSize error"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should emit ETOOLARGE when cumulative Request.write() exceeds maxRequestSize"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should enforce maxRequestSize using reported Content-Length for multipart"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should reject Promise with ETOOLARGE on response overflow"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should reject Promise with ETOOLARGE on request overflow"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should have hasSizeError true after Promise response overflow"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should not retry request size error when retry(3) is configured"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should not retry response size error when retry(3) is configured"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should abort with ETOOLARGE when redirect response body exceeds maxResponseSize"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should successfully follow compressed redirect when no maxResponseSize is configured"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should abort with ETOOLARGE when decompressed redirect response body exceeds maxResponseSize"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should abort with ETOOLARGE when delayed chunked redirect response body exceeds maxResponseSize"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should abort with ETOOLARGE when decompressed non-redirect gzip response exceeds maxResponseSize (Node)"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should preserve readable stream on unbuffered response when maxResponseSize is configured"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should emit ETOOLARGE error when intermediate redirect exceeds maxResponseSize during pipe"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should not treat bodyless 304 response with Content-Length as size error"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should not treat bodyless 204 response with Content-Length as size error (Node)"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should invoke end callback with ETOOLARGE on write overflow before end even with error listener"
+  },
+  {
+    "suite": "hidden verification tests",
+    "title": "should not treat Node HEAD redirect with Content-Length as size error"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should not settle browser request at readyState 1 and complete normally at readyState 4"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE on browser text response exceeding maxResponseSize without headers or progress events"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should complete normally on browser text response within maxResponseSize without headers or progress events"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE on browser text response exceeding maxResponseSize via Content-Length without progress event"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE on browser FormData send exceeding maxRequestSize without upload progress events"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE on browser field with multipart framing overhead exceeding maxRequestSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit progress event with direction upload during browser upload"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should not treat browser HEAD response with Content-Length as size error"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should not treat browser 204 response with Content-Length as size error"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE for empty native FormData when maxRequestSize is 0"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should succeed for browser FormData when body is within limit"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE when browser upload progress loaded exceeds maxRequestSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE when browser download progress loaded exceeds maxResponseSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE when browser request payload length exceeds maxRequestSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE on browser direct Blob request exceeding maxRequestSize without upload progress"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE when browser decompressed response exceeds maxResponseSize despite small Content-Length"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE when browser decompressed multibyte string exceeds maxResponseSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE on browser ArrayBuffer response exceeding maxResponseSize without wire metadata"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should report 0 retries on browser size error with retry(3) configured"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should not error when browser compressed response wire size exceeds maxResponseSize but decoded size is within limit"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should successfully transmit in-limit browser FormData without size error when progress events are absent"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should enforce decoded size for browser CORS gzip response when Content-Encoding is unexposed"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should normalize legacy XHR 1223 status to 204 and treat as bodyless before size check"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should retain and resend multipart payload on retry when maxRequestSize is configured"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should succeed when browser unexposed compressed response wire size exceeds maxResponseSize but decoded size is within limit"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should succeed when browser unexposed compressed response wire size exceeds max during progress but decodes within limit"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should report err.retries === 0 on size error with retry(0) configured (Browser)"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should safely transmit browser multipart fields within maxRequestSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should transmit consistent multipart boundary in header and body within maxRequestSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should complete normally for responses within maxResponseSize without false size error"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE when browser decompressed UTF-16LE response exceeds maxResponseSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should succeed when browser decompressed UTF-16LE response is within maxResponseSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should account for BOM in browser compressed UTF-16 response decoded byte size"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should serialize File/Blob in browser FormData and enforce maxRequestSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should accurately measure Shift_JIS compressed text response within maxResponseSize without false ETOOLARGE"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE when browser compressed Shift_JIS text response exceeds maxResponseSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should accurately measure GBK compressed text response within maxResponseSize without false ETOOLARGE"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE when browser compressed ISO-2022-JP text response exceeds maxResponseSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should accurately measure ISO-2022-JP compressed text response within maxResponseSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should retain and resend multipart payload on retry when only maxResponseSize is configured"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE when browser decompressed UTF-8 response with BOM exceeds maxResponseSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should measure byte length for JSON object payload in maxRequestSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE on maxRequestSize exceeded during multipart file attach"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should emit ETOOLARGE on unbuffered chunked response stream overflow"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should abort with ETOOLARGE on unbuffered response when Content-Length exceeds maxResponseSize"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should replay serialized multipart payload on retry after 500 error on Node"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should abort piped response with ETOOLARGE on declared oversized Content-Length before body arrives"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should report err.retries === 0 on size error with retry(0) configured (Node)"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should stream Node multipart upload directly when maxRequestSize is not set"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should deliver ETOOLARGE to end callback, request error listener, and response stream on unbuffered chunked overflow"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should replay serialized multipart payload on retry after 500 error when only maxResponseSize is configured"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should complete normally with res.once(\"end\", done) on unbuffered response within maxResponseSize without data listener"
+  },
+  {
+    "suite": "browser simulation tests",
+    "title": "should retry and succeed when unbuffered response with maxResponseSize encounters ECONNRESET"
+  }
+]

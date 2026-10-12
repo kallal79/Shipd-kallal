@@ -1,0 +1,79 @@
+[
+  {
+    "agent": "Nova_Nova_1",
+    "passes": 120,
+    "failures": 0,
+    "total": 120,
+    "verdict": "PASS"
+  },
+  {
+    "agent": "Nova_Nova_10",
+    "passes": 120,
+    "failures": 0,
+    "total": 120,
+    "verdict": "PASS"
+  },
+  {
+    "agent": "Nova_Nova_2",
+    "passes": 64,
+    "failures": 56,
+    "total": 120,
+    "verdict": "FAIL"
+  },
+  {
+    "agent": "Nova_Nova_3",
+    "passes": 80,
+    "failures": 40,
+    "total": 120,
+    "verdict": "FAIL"
+  },
+  {
+    "agent": "Nova_Nova_4",
+    "passes": 78,
+    "failures": 42,
+    "total": 120,
+    "verdict": "FAIL"
+  },
+  {
+    "agent": "Nova_Nova_5",
+    "passes": 81,
+    "failures": 39,
+    "total": 120,
+    "verdict": "FAIL"
+  },
+  {
+    "agent": "Nova_Nova_6",
+    "passes": 77,
+    "failures": 43,
+    "total": 120,
+    "verdict": "FAIL"
+  },
+  {
+    "agent": "Nova_Nova_7",
+    "passes": 73,
+    "failures": 54,
+    "total": 120,
+    "verdict": "FAIL"
+  },
+  {
+    "agent": "Nova_Nova_8",
+    "passes": 120,
+    "failures": 0,
+    "total": 120,
+    "verdict": "PASS"
+  },
+  {
+    "agent": "Nova_Nova_9",
+    "passes": 63,
+    "failures": 57,
+    "total": 120,
+    "verdict": "FAIL"
+  },
+  {
+    "agent": "Orion_Nova",
+    "passes": 120,
+    "failures": 0,
+    "total": 120,
+    "verdict": "PASS"
+  }
+]

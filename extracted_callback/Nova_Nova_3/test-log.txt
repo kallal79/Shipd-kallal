@@ -1,0 +1,20 @@
+[00:04:37] [post_agent] Resetting HEAD to baseline commit c5630934
+[00:04:38] [post_agent] Cleaning Git index for artifact generation
+[00:04:38] [post_agent] Generating solution patch
+[00:04:39] [post_agent] Solution patch: 9071 bytes (sandbox LOC: 156)
+[00:04:39] [post_agent] Changed files: 2
+[00:04:40] [post_agent] Removing 3 patch-created test file(s) before apply
+[00:04:42] [post_agent] Re-applying test.patch
+[00:04:43] [post_agent] Running baseline tests
+[00:04:45] [post_agent] Baseline: PASSED (16 tests, 16 passed)
+[00:04:45] [post_agent] Running new tests
+[00:05:18] [post_agent] New tests: FAILED (13 tests, 8 passed, 5 failed) (exit 5)
+[00:05:18] [post_agent] Cleaning up test.patch
+
+--- Baseline Test Output ---
+Running base mode
+
+
+--- New Test Output ---
+Running new mode
+
